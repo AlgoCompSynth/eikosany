@@ -1,0 +1,14 @@
+Package: eikosany
+Title: Compute Various Structures Within Erv Wilson's Eikosany
+Version: 0.0.0.9000
+Authors@R: 
+    person("M. Edward (Ed)", "Borasky", , "znmeb@algocompsynth.com",
+    role = c("aut", "cre"))
+Description: Erv Wilson's Eiksosany is a microtonal musical scale with 20 notes.
+    The Eikosany is based on Wilson's concept of Combination Product Sets. This
+    package computes various structures useful for algorithmic composition
+    using the Eikosany.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
