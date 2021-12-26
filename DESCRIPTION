@@ -17,5 +17,6 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-Depends: 
+Imports: 
     DiagrammeR
+

@@ -34,3 +34,10 @@ of the fundamental.
 that are consonant when played on musical instruments whose spectrum is
 harmonic. The Eikosany is a just intonation scale. See [@sethares2013tuning]
 for the mathematics of harmonic spectra and just intonation.
+
+```{r}
+raw_combinations <- t(utils::combn(c("A", "B", "C", "D", "E", "F"), 3))
+node_products <- paste(raw_combinations[, 1], raw_combinations[, 2], raw_combinations[, 3], sep = "*")
+node_df <- DiagrammeR::create_node_df(length(node_products), type = "product", label = node_products)
+node_df
+```
