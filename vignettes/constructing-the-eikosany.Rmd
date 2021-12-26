@@ -26,7 +26,7 @@ definitions for context:
 - _Microtonality_: Technically, _microtonality_ refers to musical scales with
 more notes than the standard 12 notes of the Western equal-tempered scale.
 However, the definition has been broadened somewhat to include scales with 12
-or fewer notes, as long as they aren't identical to the Western standard ones.
+or fewer notes, as long as they aren't identical to the Western  standard ones.
 - _Harmonic spectrum_: A note has a _harmonic spectrum_ if the spectrum
 consists of a fundamental frequency plus overtones that are integer multiples
 of the fundamental.
