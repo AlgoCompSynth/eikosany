@@ -36,34 +36,66 @@ harmonic. The Eikosany is a just intonation scale. See [@sethares2013tuning]
 for the mathematics of harmonic spectra and just intonation.
 
 ```{r}
-library(sets)
+library(gmp)
+library(data.table)
+big1 <- as.bigq(1)
+big2 <- as.bigq(2)
+big15 <- as.bigq(15)
 
-harmonics <- set("A", "B", "C", "D", "E", "F")
-subharmonics <- set("1/A", "1/B", "1/C", "1/D", "1/E", "1/F")
-eikosany <- set_combn(harmonics, 3)
-tetrads <- set_combn(harmonics, 4)
-subtetrads <- set_combn(subharmonics, 4)
+octave <- function(x) {
+  w <- as.bigq(x)
+  
+  ix <- (w > big2)
+  while (any(ix)) {
+    w[ix] <- w[ix] / big2
+    ix <- (w > big2)
+  }
+  
+  ix <- (w < big1)
+  while (any(ix)) {
+    w[ix] <- w[ix] * big2
+    ix <- (w < big1)
+  }
 
-for (t in tetrads) {
-  others <- harmonics - t
-  print(others)
-  notes <- set()
+  return(w)
+}
+```
 
-  for (tx in t) {
-    note <- set_union(others, tx)
-    notes <- set_union(notes, set(note))
+```{r}
+harmonics <- c(1, 3, 5, 7, 9, 11)
+eikosany <- as.data.table(t(combn(harmonics, 3)))
+eikosany <- eikosany[, .(
+  cps_label = paste(V1, V2, V3, sep = "*"), product = V1 * V2 * V3
+  )]
+eikosany <- eikosany[, .(
+  cps_label, ratio = octave(as.bigq(product) / big15)
+  )]
+eikosany <- eikosany[, .(
+  cps_label, ratio = as.character(ratio), num_ratio = as.numeric(ratio)
+  )]
+setkey(eikosany, num_ratio)
+eikosany <- eikosany[, .(
+  cps_label, ratio, num_ratio, midi_note_number = 60:79
+  )]
+print(eikosany)
+```
+
+```{r}
+tetrads <- t(combn(harmonics, 4))
+for (it in 1:nrow(tetrads)) {
+  tx <- tetrads[it, ]
+  print (tx)
+  others <- setdiff(harmonics, tx)
+  notes <- list()
+
+  for (nx in 1:length(tx)) {
+    note <- union(others, tx[nx])
+    notes <- union(notes, list(note))
   }
   
   print(notes)
   
 }
-
-
-
-
-
-
-
-
 ```
+
 ## References

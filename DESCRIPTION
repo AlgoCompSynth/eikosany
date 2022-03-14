@@ -19,4 +19,6 @@ Suggests:
 VignetteBuilder: knitr
 Imports: 
     sets,
-    DiagrammeR
+    DiagrammeR,
+    gmp,
+    data.table
