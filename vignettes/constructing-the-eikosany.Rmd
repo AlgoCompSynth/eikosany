@@ -84,7 +84,7 @@ print(eikosany)
 tetrads <- t(combn(harmonics, 4))
 for (it in 1:nrow(tetrads)) {
   tx <- tetrads[it, ]
-  print (tx)
+  print(paste(tx, collapse = "|"))
   others <- setdiff(harmonics, tx)
   notes <- c()
   inv_notes <- c()
