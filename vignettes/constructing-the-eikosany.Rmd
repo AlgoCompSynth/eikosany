@@ -59,6 +59,10 @@ octave <- function(x) {
 
   return(w)
 }
+
+ratio2cents <- function(ratio) {
+  return(log2(ratio) * 1200)
+}
 ```
 
 ```{r}
