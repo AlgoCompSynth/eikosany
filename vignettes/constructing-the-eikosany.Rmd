@@ -86,14 +86,18 @@ for (it in 1:nrow(tetrads)) {
   tx <- tetrads[it, ]
   print (tx)
   others <- setdiff(harmonics, tx)
-  notes <- list()
+  notes <- c()
+  inv_notes <- c()
 
   for (nx in 1:length(tx)) {
-    note <- union(others, tx[nx])
-    notes <- union(notes, list(note))
+    note <- paste(sort(union(others, tx[nx])), collapse = "*")
+    notes <- union(notes, note)
+    inv_note <- paste(sort(setdiff(tx, tx[nx])), collapse = "*")
+    inv_notes <- union(inv_notes, inv_note)
   }
   
   print(notes)
+  print(inv_notes)
   
 }
 ```
