@@ -67,6 +67,7 @@ ratio2cents <- function(ratio) {
 
 ```{r}
 harmonics <- c(1, 3, 5, 7, 9, 11)
+middle_c <- 440 / (2 ^ (9 / 12))
 eikosany <- as.data.table(t(combn(harmonics, 3)))
 eikosany <- eikosany[, .(
   cps_label = paste(V1, V2, V3, sep = "*"), product = V1 * V2 * V3
@@ -75,12 +76,23 @@ eikosany <- eikosany[, .(
   cps_label, ratio = octave(as.bigq(product) / big15)
   )]
 eikosany <- eikosany[, .(
-  cps_label, ratio = as.character(ratio), num_ratio = as.numeric(ratio)
+  cps_label,
+  ratio = as.character(ratio),
+  cents = ratio2cents(as.numeric(ratio)),
+  frequency = middle_c * as.numeric(ratio)
   )]
-setkey(eikosany, num_ratio)
+setkey(eikosany, cents)
 eikosany <- eikosany[, .(
-  cps_label, ratio, num_ratio, midi_note_number = 60:79
+  midi_note_number = 60:79,
+  cps_label,
+  ratio,
+  cents,
+  frequency,
+  interval = cents - shift(cents, type = "lag")
   )]
+eikosany$cents <- round(eikosany$cents, 2)
+eikosany$frequency <- round(eikosany$frequency, 2)
+eikosany$interval <- round(eikosany$interval, 2)
 print(eikosany)
 ```
 
