@@ -63,6 +63,36 @@ octave <- function(x) {
 ratio2cents <- function(ratio) {
   return(log2(ratio) * 1200)
 }
+
+label2note_number <- function(label, scale_table) {
+  as.numeric(scale_table[cps_label == label, .(midi_note_number)])
+}
+
+tetrad2note_numbers <- function(tetrad, harmonics, scale) {
+  notes <- as.numeric(unlist(strsplit(tetrad, ":")))
+  others <- setdiff(harmonics, notes)
+
+  note_numbers <- c()
+  for (i in 1:length(notes)) {
+    note <- paste(sort(union(notes[i], others)), collapse = "*")
+    note_numbers <- c(note_numbers, label2note_number(note, scale))
+  }
+  
+  return(paste(sort(note_numbers), collapse = ":"))
+}
+
+sub_tetrad2note_numbers <- function(tetrad, scale) {
+  notes <- as.numeric(unlist(strsplit(tetrad, ":")))
+
+  note_numbers <- c()
+  for (i in 1:length(notes)) {
+    note <- paste(sort(setdiff(notes, notes[i])), collapse = "*")
+    note_numbers <- c(note_numbers, label2note_number(note, scale))
+  }
+  
+  return(paste(sort(note_numbers), collapse = ":"))
+}
+
 ```
 
 ```{r}
@@ -88,7 +118,7 @@ eikosany <- eikosany[, .(
   ratio,
   cents,
   frequency,
-  interval = cents - shift(cents, type = "lag")
+  interval = cents - shift(cents)
   )]
 eikosany$cents <- round(eikosany$cents, 2)
 eikosany$frequency <- round(eikosany$frequency, 2)
@@ -97,25 +127,25 @@ print(eikosany)
 ```
 
 ```{r}
-tetrads <- t(combn(harmonics, 4))
-for (it in 1:nrow(tetrads)) {
-  tx <- tetrads[it, ]
-  print(paste(tx, collapse = "|"))
-  others <- setdiff(harmonics, tx)
-  notes <- c()
-  inv_notes <- c()
-
-  for (nx in 1:length(tx)) {
-    note <- paste(sort(union(others, tx[nx])), collapse = "*")
-    notes <- union(notes, note)
-    inv_note <- paste(sort(setdiff(tx, tx[nx])), collapse = "*")
-    inv_notes <- union(inv_notes, inv_note)
+tetrads <- as.data.table(t(combn(harmonics, 4)))[, .(
+  tetrad_label = paste(V1, V2, V3, V4, sep = ":")
+  )]
+harmonic_tetrads <- tetrads[, .(tetrad_label, note_numbers = ":")]
+for (it in 1:nrow(harmonic_tetrads)) {
+  harmonic_tetrads$note_numbers[it] <-
+    tetrad2note_numbers(
+      harmonic_tetrads$tetrad_label[it], harmonics, eikosany
+      )
   }
-  
-  print(notes)
-  print(inv_notes)
-  
-}
+
+sub_harmonic_tetrads <- tetrads[, .(tetrad_label, sub_note_numbers = ":")]
+for (it in 1:nrow(sub_harmonic_tetrads)) {
+  sub_harmonic_tetrads$sub_note_numbers[it] <-
+    sub_tetrad2note_numbers(
+      sub_harmonic_tetrads$tetrad_label[it], eikosany
+      )
+  }
+
 ```
 
 ## References
