@@ -41,23 +41,22 @@ library(gmp)
 library(data.table)
 
 # ratio octave reduction
-big1 <- as.bigq(1)
-big2 <- as.bigq(2)
-big15 <- as.bigq(15)
+BIG1 <- as.bigq(1)
+BIG2 <- as.bigq(2)
 
 octave_reduce <- function(x) {
   w <- as.bigq(x)
   
-  ix <- (w > big2)
+  ix <- (w > BIG2)
   while (any(ix)) {
-    w[ix] <- w[ix] / big2
-    ix <- (w > big2)
+    w[ix] <- w[ix] / BIG2
+    ix <- (w > BIG2)
   }
   
-  ix <- (w < big1)
+  ix <- (w < BIG1)
   while (any(ix)) {
-    w[ix] <- w[ix] * big2
-    ix <- (w < big1)
+    w[ix] <- w[ix] * BIG2
+    ix <- (w < BIG1)
   }
 
   return(w)
@@ -81,12 +80,12 @@ note_number2key <- function(note_number, scale_table) {
     .(key)])
 }
 
-split_tetrad <- function(tetrad) {
-  as.numeric(unlist(strsplit(tetrad, ":")))
+split_chord <- function(chord) {
+  as.numeric(unlist(strsplit(chord, ":")))
 }
 
-tetrad2note_numbers <- function(tetrad, harmonics, scale) {
-  notes <- split_tetrad(tetrad)
+chord2note_numbers <- function(chord, harmonics, scale) {
+  notes <- split_chord(chord)
   others <- setdiff(harmonics, notes)
 
   note_numbers <- c()
@@ -98,9 +97,9 @@ tetrad2note_numbers <- function(tetrad, harmonics, scale) {
   return(paste(sort(note_numbers), collapse = ":"))
 }
 
-tetrad2keys <- function(tetrad, harmonics, scale) {
-  note_numbers <- split_tetrad(tetrad2note_numbers(
-    tetrad, harmonics, scale
+chord2keys <- function(chord, harmonics, scale) {
+  note_numbers <- split_chord(chord2note_numbers(
+    chord, harmonics, scale
   ))
 
   keys <- c()
@@ -111,8 +110,8 @@ tetrad2keys <- function(tetrad, harmonics, scale) {
   return(paste(keys, collapse = ":"))
 }
 
-sub_tetrad2note_numbers <- function(tetrad, scale) {
-  notes <- split_tetrad(tetrad)
+sub_chord2note_numbers <- function(chord, scale) {
+  notes <- split_chord(chord)
 
   note_numbers <- c()
   for (i in 1:length(notes)) {
@@ -123,9 +122,9 @@ sub_tetrad2note_numbers <- function(tetrad, scale) {
   return(paste(sort(note_numbers), collapse = ":"))
 }
 
-sub_tetrad2keys <- function(tetrad, scale) {
-  note_numbers <- split_tetrad(sub_tetrad2note_numbers(
-    tetrad, scale
+sub_chord2keys <- function(chord, scale) {
+  note_numbers <- split_chord(sub_chord2note_numbers(
+    chord, scale
   ))
 
   keys <- c()
@@ -141,6 +140,9 @@ sub_tetrad2keys <- function(tetrad, scale) {
 ```{r}
 harmonics <- c(1, 3, 5, 7, 9, 11)
 middle_c <- 440 / (2 ^ (9 / 12))
+
+# We provide key names for three octaves to support 37-key synths /
+# up to 37-note scales
 key_names <- c(
   "C 3",
   "C#3",
@@ -165,14 +167,30 @@ key_names <- c(
   "G#4",
   "A 4",
   "A#4",
-  "B 4"
+  "B 4",
+  "C 5",
+  "C#5",
+  "D 5",
+  "D#5",
+  "E 5",
+  "F 5",
+  "F#5",
+  "G 5",
+  "G#5",
+  "A 5",
+  "A#5",
+  "B 5",
+  "C 6"
 )
-eikosany <- as.data.table(t(combn(harmonics, 3)))
+note_numbers <- 60:(60 + length(key_names) - 1)
+CHOOSE <- 3
+NORMALIZER <- as.bigq(15)
+
+eikosany <- as.data.table(t(combn(harmonics, CHOOSE)))
+scale_steps <- nrow(eikosany)
 eikosany <- eikosany[, .(
-  cps_label = paste(V1, V2, V3, sep = "*"), product = V1 * V2 * V3
-  )]
-eikosany <- eikosany[, .(
-  cps_label, ratio = octave_reduce(as.bigq(product) / big15)
+  cps_label = paste(V1, V2, V3, sep = "*"),
+  ratio = octave_reduce(as.bigq(V1 * V2 * V3) / NORMALIZER)
   )]
 eikosany <- eikosany[, .(
   cps_label,
@@ -182,13 +200,13 @@ eikosany <- eikosany[, .(
   )]
 setkey(eikosany, cents)
 eikosany <- eikosany[, .(
-  step = 0:19,
-  key = key_names[1:20],
+  step = 0:(scale_steps - 1),
+  key = key_names[1:scale_steps],
   ratio,
   cents,
   frequency,
   interval = cents - shift(cents),
-  midi_note_number = 60:79,
+  midi_note_number = note_numbers[1:scale_steps],
   cps_label
   )]
 eikosany$cents <- round(eikosany$cents, 2)
@@ -198,37 +216,37 @@ print(eikosany)
 ```
 
 ```{r}
-tetrads <- as.data.table(t(combn(harmonics, 4)))[, .(
-  tetrad_label = paste(V1, V2, V3, V4, sep = ":")
+chords <- as.data.table(t(combn(harmonics, 4)))[, .(
+  chord_label = paste(V1, V2, V3, V4, sep = ":")
   )]
-harmonic_tetrads <- tetrads[, .(
-  tetrad_label,
+harmonic_chords <- chords[, .(
+  chord_label,
   note_numbers = ":",
   keys = ":"
   )]
-for (it in 1:nrow(harmonic_tetrads)) {
-  harmonic_tetrads$keys[it] <-
-    tetrad2keys(
-      harmonic_tetrads$tetrad_label[it], harmonics, eikosany
+for (it in 1:nrow(harmonic_chords)) {
+  harmonic_chords$keys[it] <-
+    chord2keys(
+      harmonic_chords$chord_label[it], harmonics, eikosany
       )
-  harmonic_tetrads$note_numbers[it] <-
-    tetrad2note_numbers(
-      harmonic_tetrads$tetrad_label[it], harmonics, eikosany
+  harmonic_chords$note_numbers[it] <-
+    chord2note_numbers(
+      harmonic_chords$chord_label[it], harmonics, eikosany
       )
   }
 
-sub_harmonic_tetrads <- tetrads[, .(
-  tetrad_label,
+sub_harmonic_chords <- chords[, .(
+  chord_label,
   sub_note_numbers = ":",
   sub_keys = ":")]
-for (it in 1:nrow(sub_harmonic_tetrads)) {
-  sub_harmonic_tetrads$sub_keys[it] <-
-    sub_tetrad2keys(
-      sub_harmonic_tetrads$tetrad_label[it], eikosany
+for (it in 1:nrow(sub_harmonic_chords)) {
+  sub_harmonic_chords$sub_keys[it] <-
+    sub_chord2keys(
+      sub_harmonic_chords$chord_label[it], eikosany
       )
-  sub_harmonic_tetrads$sub_note_numbers[it] <-
-    sub_tetrad2note_numbers(
-      sub_harmonic_tetrads$tetrad_label[it], eikosany
+  sub_harmonic_chords$sub_note_numbers[it] <-
+    sub_chord2note_numbers(
+      sub_harmonic_chords$chord_label[it], eikosany
       )
   }
 
