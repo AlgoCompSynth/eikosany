@@ -223,14 +223,15 @@ eikosany <- eikosany[, .(
 eikosany$cents <- round(eikosany$cents, 2)
 eikosany$frequency <- round(eikosany$frequency, 2)
 eikosany$interval <- round(eikosany$interval, 2)
-print(eikosany)
+
 ```
 
 ```{r}
 CHORD_LENGTH <- 4
-chords <- as.data.table(t(combn(harmonics, CHORD_LENGTH)))[, .(
-  chord_label = paste(V1, V2, V3, V4, sep = ":")
-  )]
+chords <- as.data.table(t(combn(harmonics, CHORD_LENGTH)))
+chord_label <- apply(chords, 1, collapse_colon)
+chords$chord_label <- chord_label
+
 harmonic_chords <- chords[, .(
   chord_label,
   note_numbers = ":",
@@ -261,6 +262,8 @@ for (it in 1:nrow(sub_harmonic_chords)) {
       sub_harmonic_chords$chord_label[it], eikosany
       )
   }
+
+chord_table <- harmonic_chords[sub_harmonic_chords, on = .(chord_label)]
 
 ```
 
