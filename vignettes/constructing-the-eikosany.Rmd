@@ -143,7 +143,7 @@ middle_c <- 440 / (2 ^ (9 / 12))
 
 # We provide key names for three octaves to support 37-key synths /
 # up to 37-note scales
-key_names <- c(
+KEY_NAMES <- c(
   "C 3",
   "C#3",
   "D 3",
@@ -182,7 +182,7 @@ key_names <- c(
   "B 5",
   "C 6"
 )
-note_numbers <- 60:(60 + length(key_names) - 1)
+MIDI_NOTE_NUMBERS <- 60:(60 + length(KEY_NAMES) - 1)
 CHOOSE <- 3
 NORMALIZER <- as.bigq(15)
 
@@ -201,12 +201,12 @@ eikosany <- eikosany[, .(
 setkey(eikosany, cents)
 eikosany <- eikosany[, .(
   step = 0:(scale_steps - 1),
-  key = key_names[1:scale_steps],
+  key = KEY_NAMES[1:scale_steps],
   ratio,
   cents,
   frequency,
   interval = cents - shift(cents),
-  midi_note_number = note_numbers[1:scale_steps],
+  midi_note_number = MIDI_NOTE_NUMBERS[1:scale_steps],
   cps_label
   )]
 eikosany$cents <- round(eikosany$cents, 2)
@@ -216,7 +216,8 @@ print(eikosany)
 ```
 
 ```{r}
-chords <- as.data.table(t(combn(harmonics, 4)))[, .(
+CHORD_LENGTH <- 4
+chords <- as.data.table(t(combn(harmonics, CHORD_LENGTH)))[, .(
   chord_label = paste(V1, V2, V3, V4, sep = ":")
   )]
 harmonic_chords <- chords[, .(
