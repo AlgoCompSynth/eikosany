@@ -39,6 +39,7 @@ for the mathematics of harmonic spectra and just intonation.
 # libraries
 library(gmp)
 library(data.table)
+library(fractional)
 
 # ratio octave reduction
 BIG1 <- as.bigq(1)
@@ -135,6 +136,14 @@ sub_chord2keys <- function(chord, scale) {
   return(paste(keys, collapse = ":"))
 }
 
+collapse_star <- function(x) {
+  paste(x, collapse = "*")
+}
+
+collapse_colon <- function(x) {
+  paste(x, collapse = ":")
+}
+
 ```
 
 ```{r}
@@ -188,21 +197,23 @@ NORMALIZER <- as.bigq(15)
 
 eikosany <- as.data.table(t(combn(harmonics, CHOOSE)))
 scale_steps <- nrow(eikosany)
-eikosany <- eikosany[, .(
-  cps_label = paste(V1, V2, V3, sep = "*"),
-  ratio = octave_reduce(as.bigq(V1 * V2 * V3) / NORMALIZER)
-  )]
+
+cps_label <- apply(eikosany, 1, collapse_star)
+ratio <- as.numeric(octave_reduce(apply(eikosany, 1, prod) / NORMALIZER))
+eikosany$cps_label <- cps_label
+eikosany$ratio <- ratio
+
 eikosany <- eikosany[, .(
   cps_label,
-  ratio = as.character(ratio),
-  cents = ratio2cents(as.numeric(ratio)),
-  frequency = middle_c * as.numeric(ratio)
+  ratio,
+  cents = ratio2cents(ratio),
+  frequency = middle_c * ratio
   )]
 setkey(eikosany, cents)
 eikosany <- eikosany[, .(
   step = 0:(scale_steps - 1),
   key = KEY_NAMES[1:scale_steps],
-  ratio,
+  ratio = vfractional(ratio),
   cents,
   frequency,
   interval = cents - shift(cents),
