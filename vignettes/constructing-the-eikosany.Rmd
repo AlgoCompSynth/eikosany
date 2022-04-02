@@ -213,7 +213,7 @@ setkey(eikosany, cents)
 eikosany <- eikosany[, .(
   step = 0:(scale_steps - 1),
   key = KEY_NAMES[1:scale_steps],
-  ratio = vfractional(ratio),
+  ratio = fractional(ratio),
   cents,
   frequency,
   interval = cents - shift(cents),
@@ -223,6 +223,10 @@ eikosany <- eikosany[, .(
 eikosany$cents <- round(eikosany$cents, 2)
 eikosany$frequency <- round(eikosany$frequency, 2)
 eikosany$interval <- round(eikosany$interval, 2)
+
+interval_matrix <- fractional(outer(
+  numerical(eikosany$ratio), numerical(eikosany$ratio), "/"
+  ))
 
 ```
 
