@@ -209,6 +209,24 @@ keyboard_map$ratio[xlow:xhigh] <- eikosany$ratio
 keyboard_map$cents[xlow:xhigh] <- eikosany$cents
 keyboard_map$frequency[xlow:xhigh] <- eikosany$frequency
 
+for (i in (xlow - 1):1) {
+  keyboard_map$ratio[i] <- keyboard_map$ratio[i + scale_steps] / 2
+  keyboard_map$cents[i] <- keyboard_map$cents[i + scale_steps] - 1200
+  keyboard_map$frequency[i] <- keyboard_map$frequency[i + scale_steps] / 2
+  
+}
+for (i in (xhigh + 1):(max_note_number + 1)) {
+  keyboard_map$ratio[i] <- keyboard_map$ratio[i + scale_steps] * 2
+  keyboard_map$cents[i] <- keyboard_map$cents[i + scale_steps] + 1200
+  keyboard_map$frequency[i] <- keyboard_map$frequency[i + scale_steps] * 2
+  
+}
+
+keyboard_map[, .(ratio = fractional(ratio))]
+print(keyboard_map)
+
+
+
 
 stop()
 
