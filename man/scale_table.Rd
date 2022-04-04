@@ -32,7 +32,7 @@ a list of two items:
 \item \code{scale_table}: the scale table
 \item \code{interval_matrix}: the interval matrix
 }
-The scale table contains six columns:
+The scale table contains seven columns:
 \itemize{
 \item \code{cps_label}: the product that defines the note
 \item \code{ratio}: the ratio that defines the note
@@ -41,6 +41,7 @@ The scale table contains six columns:
 \item \code{interval}: the interval in cents of the note over the preceding
 note
 \item \code{midi_note_number}: the MIDI note number for the note
+\item \code{note_name}: the note name, where middle C is defined as "C  4".
 }
 The interval matrix is the matrix of all intervals between the notes,
 expressed as ratios. Column 1 has the ratios of all the notes to the
@@ -66,6 +67,18 @@ dekany_1_3_7_9_11_13 <-
   scale_table(dekany_harmonics, dekany_choose)
 print(dekany_1_3_7_9_11_13[["scale_table"]])
 print(dekany_1_3_7_9_11_13[["interval_matrix"]])
+
+# We might want to print out sheet music for a conventional keyboard
+# player, since the synthesizer is mapping MIDI note numbers to pitches.
+# We assume at least a 37-key synthesizer with middle C on the left.
+# so the largest CPS scale we can play is a 35-note "35-any", made from
+# seven harmonics taken three at a time.
+harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
+choose_35 <- 3
+any_35 <-
+  scale_table(harmonics_35, choose_35)
+print(any_35[["scale_table"]])
+print(any_35[["interval_matrix"]])
 
 }
 }
