@@ -178,6 +178,124 @@ scale_table <- function(
     ))
   }
 
-utils::globalVariables(
-  "midi_note_number"
-)
+#' @title Create Chord Table
+#' @name chord_table
+#' @description Creates a chord table
+#' @importFrom data.table data.table
+#' @importFrom utils combn
+#' @importFrom utils globalVariables
+#' @export chord_table
+#' @param harmonics a vector of the harmonics to use - defaults to the first
+#' six odd numbers, the harmonics that define the 1-3-5-7-9-11 eikosany.
+#' @param choose the number of harmonics to choose for each chord -
+#' defaults to 4, to compute tetrads for the eikosany.
+#' @param scale_table the scale table to use for note number and name lookup
+#' @return a list of four items:
+#' \itemize{
+#' \item `harmonic_note_numbers`: the harmonic chord expressed as
+#' colon-separated MIDI note numbers
+#' \item `harmonic_note_names`: the harmonic chord expressed as
+#' colon-separated note names
+#' \item `subharmonic_note_numbers`: the subharmonic chord expressed as
+#' colon-separated MIDI note numbers
+#' \item `subharmonic_note_names`: the subharmonic chord expressed as
+#' colon-separated note names
+#' }
+#' @examples
+#' \dontrun{
+#'
+#' # the defaults yield the 1-3-5-7-9-11 eikosany
+#' eikosany_scale <- scale_table()[["scale_table"]]
+#' print(eikosany_scale)
+#' eikosany_chords <- chord_table(scale_table = eikosany_scale)
+#' print(eikosany_chords)
+#' }
+
+chord_table <- function(
+  harmonics = c(1, 3, 5, 7, 9, 11),
+  choose = 4,
+  scale_table
+) {
+  chords <- combn(harmonics, choose)
+  chord_label <- apply(chords, 2, collapse_colon)
+  harmonic_note_numbers <- harmonic_note_names <-
+    subharmonic_note_numbers <- subharmonic_note_names <- c()
+
+  for (it in 1:length(chord_label)) {
+    result_list <-
+      convert_chords(chord_label[it], harmonics, scale_table
+    )
+    harmonic_note_numbers <-
+      c(harmonic_note_numbers, result_list[["harmonic_note_numbers"]])
+    harmonic_note_names <-
+      c(harmonic_note_names, result_list[["harmonic_note_names"]])
+    subharmonic_note_numbers <-
+      c(subharmonic_note_numbers, result_list[["subharmonic_note_numbers"]])
+    subharmonic_note_names <-
+      c(subharmonic_note_names, result_list[["subharmonic_note_names"]])
+  }
+
+  return(data.table::data.table(
+    chord_label,
+    harmonic_note_numbers,
+    harmonic_note_names,
+    subharmonic_note_numbers,
+    subharmonic_note_names
+  ))
+
+}
+
+convert_chords <- function(chord_label, harmonics, scale_table) {
+  chord <- as.numeric(unlist(strsplit(chord_label, ":")))
+  others <- setdiff(harmonics, chord)
+  harmonic_note_numbers <- subharmonic_note_numbers <- c()
+
+  for (i in chord) {
+    harmonic_note <- collapse_star(sort(union(i, others)))
+    harmonic_note_numbers <- c(
+      harmonic_note_numbers,
+      as.numeric(scale_table[
+        cps_label == harmonic_note, list(midi_note_number)
+      ])
+    )
+
+    subharmonic_note <- collapse_star(sort(setdiff(chord, i)))
+    subharmonic_note_numbers <- c(
+      subharmonic_note_numbers,
+      as.numeric(scale_table[
+        cps_label == subharmonic_note, list(midi_note_number)
+      ])
+    )
+  }
+
+  harmonic_note_names <- subharmonic_note_names <- c()
+
+  harmonic_note_numbers <- sort(harmonic_note_numbers)
+  for (hnn in harmonic_note_numbers) {
+    harmonic_note_names <- c(
+      harmonic_note_names,
+      as.character(scale_table[midi_note_number == hnn, list(note_name)])
+    )
+  }
+
+  subharmonic_note_numbers <- sort(subharmonic_note_numbers)
+  for (shnn in subharmonic_note_numbers) {
+    subharmonic_note_names <- c(
+      subharmonic_note_names,
+      as.character(scale_table[midi_note_number == shnn, list(note_name)])
+    )
+  }
+
+  return(list(
+    harmonic_note_numbers = collapse_colon(harmonic_note_numbers),
+    harmonic_note_names = collapse_colon(harmonic_note_names),
+    subharmonic_note_numbers = collapse_colon(subharmonic_note_numbers),
+    subharmonic_note_names = collapse_colon(subharmonic_note_names)
+  ))
+}
+
+utils::globalVariables(c(
+  "cps_label",
+  "midi_note_number",
+  "note_name"
+))
