@@ -1,0 +1,7 @@
+pandoc: 2.14.0.3
+pkgdown: 2.0.2
+pkgdown_sha: ~
+articles:
+  constructing-the-eikosany: constructing-the-eikosany.html
+last_built: 2022-04-04T06:00Z
+
