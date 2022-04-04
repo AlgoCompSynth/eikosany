@@ -1,0 +1,60 @@
+---
+title: "Constructing the Eikosany"
+output: rmarkdown::html_vignette
+bibliography: eikosany.bibtex
+vignette: >
+  %\VignetteIndexEntry{Constructing the Eikosany}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(eikosany)
+```
+
+## Motivation
+
+## Computing a combination product set scale
+
+```{r}
+
+# the defaults yield the 1-3-5-7-9-11 eikosany
+eikosany <- scale_table()
+print(eikosany[["scale_table"]])
+print(eikosany[["interval_matrix"]])
+
+# the 1-7-9-11-13 dekany
+dekany_harmonics <- c(1, 7, 9, 11, 13)
+dekany_choose <- 2
+dekany_1_3_7_9_11_13 <-
+  scale_table(dekany_harmonics, dekany_choose)
+print(dekany_1_3_7_9_11_13[["scale_table"]])
+print(dekany_1_3_7_9_11_13[["interval_matrix"]])
+```
+
+## Introduction
+The primary reference for this package is [@narushima2019microtonality]. Some
+definitions for context:
+
+- _Microtonality_: Technically, _microtonality_ refers to musical scales with
+more notes than the standard 12 notes of the Western equal-tempered scale.
+However, the definition has been broadened somewhat to include scales with 12
+or fewer notes, as long as they aren't identical to the Western  standard ones.
+- _Harmonic spectrum_: A note has a _harmonic spectrum_ if the spectrum
+consists of a fundamental frequency plus overtones that are integer multiples
+of the fundamental.
+- _Just intonation_: _Just intonation_ scales are designed to have intervals
+that are consonant when played on musical instruments whose spectrum is
+harmonic. The Eikosany is a just intonation scale. See [@sethares2013tuning]
+for the mathematics of harmonic spectra and just intonation.
+
+
+
+## References
