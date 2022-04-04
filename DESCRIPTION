@@ -18,7 +18,5 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports: 
-    sets,
-    DiagrammeR,
-    gmp,
+    fractional,
     data.table

@@ -45,27 +45,6 @@ library(fractional)
 BIG1 <- as.bigq(1)
 BIG2 <- as.bigq(2)
 
-octave_reduce <- function(x) {
-  w <- as.numeric(x)
-  
-  ix <- (w > 2)
-  while (any(ix)) {
-    w[ix] <- w[ix] / 2
-    ix <- (w > 2)
-  }
-  
-  ix <- (w < 1)
-  while (any(ix)) {
-    w[ix] <- w[ix] * 2
-    ix <- (w < 1)
-  }
-
-  return(w)
-}
-
-ratio2cents <- function(ratio) {
-  return(log2(ratio) * 1200)
-}
 
 label2key <- function(label, scale_table) {
   as.character(scale_table[cps_label == label, .(key)])
@@ -135,45 +114,24 @@ sub_chord2keys <- function(chord, scale) {
   
   return(paste(keys, collapse = ":"))
 }
-
-collapse_star <- function(x) {
-  paste(x, collapse = "*")
-}
-
-collapse_colon <- function(x) {
-  paste(x, collapse = ":")
-}
-
 ```
 
 ```{r}
-harmonics <- c(1, 3, 5, 7, 9, 11)
-choose <- 3
-normalizer <- 15
 middle_c_freq <- 440 / (2 ^ (9 / 12))
+middle_c_note_number <- 60
 
-eikosany <- as.data.table(t(combn(harmonics, choose)))
-scale_steps <- nrow(eikosany)
+eikosany_harmonics <- c(1, 3, 5, 7, 9, 11)
+eikosany_choose <- 3
+eikosany <- scale_table(
+  eikosany_harmonics, eikosany_choose, middle_c_freq, middle_c_note_number
+  )
 
-cps_label <- apply(eikosany, 1, collapse_star)
-ratio <- octave_reduce(apply(eikosany, 1, prod) / normalizer)
-cents <- ratio2cents(ratio)
-frequency <- middle_c_freq * ratio
-eikosany$cps_label <- cps_label
-eikosany$ratio <- ratio
-eikosany$cents <- cents
-eikosany$frequency <- frequency
-setkey(eikosany, frequency)
-eikosany <- eikosany[, .(
-  cps_label,
-  ratio,
-  cents,
-  frequency,
-  interval = cents - shift(cents)
-  )]
-interval_matrix <- fractional(outer(
-  numerical(eikosany$ratio), numerical(eikosany$ratio), "/"
-  ))
+dekany_harmonics <- c(1, 7, 9, 11, 13)
+dekany_choose <- 2
+dekany <- scale_table(
+  dekany_harmonics, dekany_choose, middle_c_freq, middle_c_note_number
+  )
+stop()
 
 ```
 
@@ -236,7 +194,7 @@ stop()
 ```{r}
 CHORD_LENGTH <- 4
 chords <- as.data.table(t(combn(harmonics, CHORD_LENGTH)))
-chord_label <- apply(chords, 1, collapse_colon)
+chord_label <- apply(chords, 1, .collapse_colon)
 chords$chord_label <- chord_label
 
 harmonic_chords <- chords[, .(
