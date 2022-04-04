@@ -28,8 +28,8 @@ undergraduate. Xenakis was one of the major figures in algorithmic
 composition.
 
 Reading the first edition of _Tuning, Timbre, Spectrum, Scale_
-[@sethares1998tuning] rekindled my appreciation for the music of Harry
-Partch. And so, armed with copies of @sethares1998tuning,
+[@sethares1998tuning] rekindled my appreciation for the microtonal music of
+Harry Partch. And so, armed with copies of @sethares1998tuning,
 _Formalized Music_ [@xenakis1992formalized], and _Genesis of a Music_
 [@partch1979genesis], I embarked on a path that led to
 _When Harry Met Iannis_ [@Borasky2021a].
