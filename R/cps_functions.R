@@ -27,7 +27,7 @@
 #' }
 #' The scale table contains seven columns:
 #' \itemize{
-#' \item `cps_label`: the product that defines the note
+#' \item `note_label`: the product that defines the note
 #' \item `ratio`: the ratio that defines the note
 #' \item `cents`: the ratio in cents (hundredths of a semitone)
 #' \item `frequency`: the frequency of the note in Hz
@@ -77,20 +77,20 @@ scale_table <- function(
   base_frequency = 440 / (2 ^ (9 / 12)),
   base_note_number = 60) {
     scale_table <- combn(harmonics, choose)
-    cps_label <- apply(scale_table, 2, .collapse_star)
+    note_label <- apply(scale_table, 2, .collapse_star)
     product <- apply(scale_table, 2, prod)
     normalizer <- min(product)
     ratio <- .octave_reduce(product / normalizer)
     cents <- .ratio2cents(ratio)
     frequency <- base_frequency * ratio
     scale_table <- data.table::data.table(
-      cps_label, ratio, cents, frequency
+      note_label, ratio, cents, frequency
     )
     setkey(scale_table, frequency)
     low_nn <- base_note_number
     high_nn <- base_note_number + nrow(scale_table) - 1
     scale_table <- scale_table[, list(
-      cps_label,
+      note_label,
       ratio,
       cents,
       frequency,
@@ -264,25 +264,25 @@ chord_table <- function(
 
   for (i in chord) {
 
-    # make a cps_label for the note
+    # make a note_label for the note
     harmonic_note <- .collapse_star(sort(union(i, others)))
 
     # look up its note number and collect
     harmonic_note_numbers <- c(
       harmonic_note_numbers,
       as.numeric(scale_table[
-        cps_label == harmonic_note, list(midi_note_number)
+        note_label == harmonic_note, list(midi_note_number)
       ])
     )
 
-    # make a cps_label for the note
+    # make a note_label for the note
     subharmonic_note <- .collapse_star(sort(setdiff(chord, i)))
 
     # look up its note number and collect
     subharmonic_note_numbers <- c(
       subharmonic_note_numbers,
       as.numeric(scale_table[
-        cps_label == subharmonic_note, list(midi_note_number)
+        note_label == subharmonic_note, list(midi_note_number)
       ])
     )
   }
@@ -319,7 +319,7 @@ chord_table <- function(
 }
 
 utils::globalVariables(c(
-  "cps_label",
+  "note_label",
   "midi_note_number",
   "note_name"
 ))

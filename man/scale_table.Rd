@@ -34,7 +34,7 @@ a list of two items:
 }
 The scale table contains seven columns:
 \itemize{
-\item \code{cps_label}: the product that defines the note
+\item \code{note_label}: the product that defines the note
 \item \code{ratio}: the ratio that defines the note
 \item \code{cents}: the ratio in cents (hundredths of a semitone)
 \item \code{frequency}: the frequency of the note in Hz
