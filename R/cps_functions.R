@@ -1,65 +1,3 @@
-collapse_star <- function(x) {
-  paste(x, collapse = "*")
-}
-
-collapse_colon <- function(x) {
-  paste(x, collapse = ":")
-}
-
-octave_reduce <- function(x) {
-  w <- as.numeric(x)
-
-  ix <- (w > 2)
-  while (any(ix)) {
-    w[ix] <- w[ix] / 2
-    ix <- (w > 2)
-  }
-
-  ix <- (w < 1)
-  while (any(ix)) {
-    w[ix] <- w[ix] * 2
-    ix <- (w < 1)
-  }
-
-  return(w)
-}
-
-ratio2cents <- function(ratio) {
-  return(log2(ratio) * 1200)
-}
-
-note_name_table <- function() {
-  min_note_number <- 0
-  max_note_number <- 127
-  note_name_table <- data.table::data.table(
-    midi_note_number = min_note_number:max_note_number
-  )
-  note_names <- c(
-    "C ",
-    "C#",
-    "D ",
-    "D#",
-    "E ",
-    "F ",
-    "F#",
-    "G ",
-    "G#",
-    "A ",
-    "A#",
-    "B "
-  )
-  note_name_table <- note_name_table[, list(
-    midi_note_number,
-    note_name = paste(
-      note_names[midi_note_number %% 12 + 1],
-      midi_note_number %/% 12 - 1,
-      sep = " "
-    )
-  )]
-
-  return(note_name_table)
-}
-
 #' @title Create Scale Table and Interval Matrix
 #' @name scale_table
 #' @description Creates a scale table and interval matrix from
@@ -139,11 +77,11 @@ scale_table <- function(
   base_frequency = 440 / (2 ^ (9 / 12)),
   base_note_number = 60) {
     scale_table <- combn(harmonics, choose)
-    cps_label <- apply(scale_table, 2, collapse_star)
+    cps_label <- apply(scale_table, 2, .collapse_star)
     product <- apply(scale_table, 2, prod)
     normalizer <- min(product)
-    ratio <- octave_reduce(product / normalizer)
-    cents <- ratio2cents(ratio)
+    ratio <- .octave_reduce(product / normalizer)
+    cents <- .ratio2cents(ratio)
     frequency <- base_frequency * ratio
     scale_table <- data.table::data.table(
       cps_label, ratio, cents, frequency
@@ -159,7 +97,7 @@ scale_table <- function(
       interval = cents - data.table::shift(cents),
       midi_note_number = low_nn:high_nn
     )]
-    note_names <- note_name_table()[data.table::between(
+    note_names <- .note_name_table()[data.table::between(
       midi_note_number,
       low_nn,
       high_nn,
@@ -217,13 +155,13 @@ chord_table <- function(
   scale_table
 ) {
   chords <- combn(harmonics, choose)
-  chord_label <- apply(chords, 2, collapse_colon)
+  chord_label <- apply(chords, 2, .collapse_colon)
   harmonic_note_numbers <- harmonic_note_names <-
     subharmonic_note_numbers <- subharmonic_note_names <- c()
 
   for (it in 1:length(chord_label)) {
     result_list <-
-      convert_chords(chord_label[it], harmonics, scale_table
+      .convert_chords(chord_label[it], harmonics, scale_table
     )
     harmonic_note_numbers <-
       c(harmonic_note_numbers, result_list[["harmonic_note_numbers"]])
@@ -245,13 +183,75 @@ chord_table <- function(
 
 }
 
-convert_chords <- function(chord_label, harmonics, scale_table) {
+.collapse_star <- function(x) {
+  paste(x, collapse = "*")
+}
+
+.collapse_colon <- function(x) {
+  paste(x, collapse = ":")
+}
+
+.octave_reduce <- function(x) {
+  w <- as.numeric(x)
+
+  ix <- (w > 2)
+  while (any(ix)) {
+    w[ix] <- w[ix] / 2
+    ix <- (w > 2)
+  }
+
+  ix <- (w < 1)
+  while (any(ix)) {
+    w[ix] <- w[ix] * 2
+    ix <- (w < 1)
+  }
+
+  return(w)
+}
+
+.ratio2cents <- function(ratio) {
+  return(log2(ratio) * 1200)
+}
+
+.note_name_table <- function() {
+  min_note_number <- 0
+  max_note_number <- 127
+  note_name_table <- data.table::data.table(
+    midi_note_number = min_note_number:max_note_number
+  )
+  note_names <- c(
+    "C ",
+    "C#",
+    "D ",
+    "D#",
+    "E ",
+    "F ",
+    "F#",
+    "G ",
+    "G#",
+    "A ",
+    "A#",
+    "B "
+  )
+  note_name_table <- note_name_table[, list(
+    midi_note_number,
+    note_name = paste(
+      note_names[midi_note_number %% 12 + 1],
+      midi_note_number %/% 12 - 1,
+      sep = " "
+    )
+  )]
+
+  return(note_name_table)
+}
+
+.convert_chords <- function(chord_label, harmonics, scale_table) {
   chord <- as.numeric(unlist(strsplit(chord_label, ":")))
   others <- setdiff(harmonics, chord)
   harmonic_note_numbers <- subharmonic_note_numbers <- c()
 
   for (i in chord) {
-    harmonic_note <- collapse_star(sort(union(i, others)))
+    harmonic_note <- .collapse_star(sort(union(i, others)))
     harmonic_note_numbers <- c(
       harmonic_note_numbers,
       as.numeric(scale_table[
@@ -259,7 +259,7 @@ convert_chords <- function(chord_label, harmonics, scale_table) {
       ])
     )
 
-    subharmonic_note <- collapse_star(sort(setdiff(chord, i)))
+    subharmonic_note <- .collapse_star(sort(setdiff(chord, i)))
     subharmonic_note_numbers <- c(
       subharmonic_note_numbers,
       as.numeric(scale_table[
@@ -287,10 +287,10 @@ convert_chords <- function(chord_label, harmonics, scale_table) {
   }
 
   return(list(
-    harmonic_note_numbers = collapse_colon(harmonic_note_numbers),
-    harmonic_note_names = collapse_colon(harmonic_note_names),
-    subharmonic_note_numbers = collapse_colon(subharmonic_note_numbers),
-    subharmonic_note_names = collapse_colon(subharmonic_note_names)
+    harmonic_note_numbers = .collapse_colon(harmonic_note_numbers),
+    harmonic_note_names = .collapse_colon(harmonic_note_names),
+    subharmonic_note_numbers = .collapse_colon(subharmonic_note_numbers),
+    subharmonic_note_names = .collapse_colon(subharmonic_note_names)
   ))
 }
 
