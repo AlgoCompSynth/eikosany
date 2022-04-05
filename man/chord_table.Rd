@@ -4,20 +4,21 @@
 \alias{chord_table}
 \title{Create Chord Table}
 \usage{
-chord_table(harmonics = c(1, 3, 5, 7, 9, 11), choose = 4, scale_table)
+chord_table(scale_table, harmonics = c(1, 3, 5, 7, 9, 11), choose = 4)
 }
 \arguments{
+\item{scale_table}{the scale table to use for note number and name lookup}
+
 \item{harmonics}{a vector of the harmonics to use - defaults to the first
 six odd numbers, the harmonics that define the 1-3-5-7-9-11 eikosany.}
 
 \item{choose}{the number of harmonics to choose for each chord -
 defaults to 4, to compute tetrads for the eikosany.}
-
-\item{scale_table}{the scale table to use for note number and name lookup}
 }
 \value{
-a list of four items:
+a data.table with five columns:
 \itemize{
+\item \code{chord_label}: the chord expressed as colon-separated harmonics
 \item \code{harmonic_note_numbers}: the harmonic chord expressed as
 colon-separated MIDI note numbers
 \item \code{harmonic_note_names}: the harmonic chord expressed as
@@ -37,7 +38,9 @@ Creates a chord table
 # the defaults yield the 1-3-5-7-9-11 eikosany
 eikosany_scale <- scale_table()[["scale_table"]]
 print(eikosany_scale)
-eikosany_chords <- chord_table(scale_table = eikosany_scale)
+
+# the defaults yield the tetrads of the 1-3-5-7-9-11 eikosany
+eikosany_chords <- chord_table(eikosany_scale)
 print(eikosany_chords)
 }
 }

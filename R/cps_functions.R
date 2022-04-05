@@ -123,13 +123,14 @@ scale_table <- function(
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
 #' @export chord_table
+#' @param scale_table the scale table to use for note number and name lookup
 #' @param harmonics a vector of the harmonics to use - defaults to the first
 #' six odd numbers, the harmonics that define the 1-3-5-7-9-11 eikosany.
 #' @param choose the number of harmonics to choose for each chord -
 #' defaults to 4, to compute tetrads for the eikosany.
-#' @param scale_table the scale table to use for note number and name lookup
-#' @return a list of four items:
+#' @return a data.table with five columns:
 #' \itemize{
+#' \item `chord_label`: the chord expressed as colon-separated harmonics
 #' \item `harmonic_note_numbers`: the harmonic chord expressed as
 #' colon-separated MIDI note numbers
 #' \item `harmonic_note_names`: the harmonic chord expressed as
@@ -145,21 +146,27 @@ scale_table <- function(
 #' # the defaults yield the 1-3-5-7-9-11 eikosany
 #' eikosany_scale <- scale_table()[["scale_table"]]
 #' print(eikosany_scale)
-#' eikosany_chords <- chord_table(scale_table = eikosany_scale)
+#'
+#' # the defaults yield the tetrads of the 1-3-5-7-9-11 eikosany
+#' eikosany_chords <- chord_table(eikosany_scale)
 #' print(eikosany_chords)
 #' }
 
 chord_table <- function(
+  scale_table,
   harmonics = c(1, 3, 5, 7, 9, 11),
-  choose = 4,
-  scale_table
+  choose = 4
 ) {
   chords <- combn(harmonics, choose)
+
+  # make the chord labels
   chord_label <- apply(chords, 2, .collapse_colon)
   harmonic_note_numbers <- harmonic_note_names <-
     subharmonic_note_numbers <- subharmonic_note_names <- c()
 
   for (it in 1:length(chord_label)) {
+
+    # convert the chord label to note number and note name chords
     result_list <-
       .convert_chords(chord_label[it], harmonics, scale_table
     )
@@ -246,12 +253,21 @@ chord_table <- function(
 }
 
 .convert_chords <- function(chord_label, harmonics, scale_table) {
+
+  # unpack the chord label
   chord <- as.numeric(unlist(strsplit(chord_label, ":")))
+
+  # harmonics not in the chord
   others <- setdiff(harmonics, chord)
   harmonic_note_numbers <- subharmonic_note_numbers <- c()
 
+
   for (i in chord) {
+
+    # make a cps_label for the note
     harmonic_note <- .collapse_star(sort(union(i, others)))
+
+    # look up its note number and collect
     harmonic_note_numbers <- c(
       harmonic_note_numbers,
       as.numeric(scale_table[
@@ -259,7 +275,10 @@ chord_table <- function(
       ])
     )
 
+    # make a cps_label for the note
     subharmonic_note <- .collapse_star(sort(setdiff(chord, i)))
+
+    # look up its note number and collect
     subharmonic_note_numbers <- c(
       subharmonic_note_numbers,
       as.numeric(scale_table[
@@ -272,6 +291,8 @@ chord_table <- function(
 
   harmonic_note_numbers <- sort(harmonic_note_numbers)
   for (hnn in harmonic_note_numbers) {
+
+    # look up note name and collect
     harmonic_note_names <- c(
       harmonic_note_names,
       as.character(scale_table[midi_note_number == hnn, list(note_name)])
@@ -280,12 +301,15 @@ chord_table <- function(
 
   subharmonic_note_numbers <- sort(subharmonic_note_numbers)
   for (shnn in subharmonic_note_numbers) {
+
+    # look up note name and collect
     subharmonic_note_names <- c(
       subharmonic_note_names,
       as.character(scale_table[midi_note_number == shnn, list(note_name)])
     )
   }
 
+  # create return list
   return(list(
     harmonic_note_numbers = .collapse_colon(harmonic_note_numbers),
     harmonic_note_names = .collapse_colon(harmonic_note_names),
