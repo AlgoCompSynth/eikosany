@@ -1,0 +1,86 @@
+---
+title: "eikosany - algorithmic composition with Erv Wilson's Combination Product Sets"
+output: github_document
+bibliography: vignettes/eikosany.bibtex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## What is this?
+
+`eikosany` is a collection of tools for algorithmic composition with Erv
+Wilson's Combination Product Sets [@narushima2019microtonality, chapter 6].
+It's meant to ***complement*** other microtonal composition tools, not
+replace any of them.
+
+## Other tools?
+
+- [Scala](https://www.huygens-fokker.org/scala/). Note: this is ***not*** the
+Scala mulit-paradigm programming language that runs on the Java Virtual Machine. This is a specialized tool for dealing with musical scales.
+- [Wilsonic](https://apps.apple.com/us/app/wilsonic/id848852071). This is a
+free app that runs on iOS devices. I don't have any iOS devices so I've
+never used this.
+- [ODDSound MTS-ESP](https://oddsound.com/mtsespsuite.phphttps://oddsound.com/mtsespsuite.php).
+This is a plugin for digital audio workstations (DAWs) that facilitates
+production of microtonal music. I own a copy and if you're making microtonal
+electronic music, you should too. The eikosany and other scales Erv Wilson
+developed all ship with MTS-ESP, so you don't really need my R package to
+compose with them.
+- [Sevish's Scale Workshop](https://sevish.com/scaleworkshop/guide.htm). This
+is a web-based tool for working with musical scales.
+
+## Why did you build it?
+
+I have two main motivations:
+
+1. There's an old saying that if you really want to learn something, teach a
+computer to do it. In the case of Erv Wilson's musical constructs, teasing
+the construction processes out of his and others' writings on the subject is
+a non-trivial task.
+
+    For example, much of Wilson's writing is in the form of multi-dimensional
+    graph structures drawn on flat paper. The graph theory operations that
+    generated them and musical ways to traverse them are not at all obvious.
+    One of my long-term goals is to write code to draw these using
+    DiagrammeR [@Iannone2022a].
+
+2. I own two synthesizers that can remap the keyboard and its associated MIDI
+note numbers to arbitrary pitches, an
+[ASM Hydrasynth Explorer](https://www.ashunsoundmachines.com/hydrasynth-explorer),
+and a
+[Korg Minilogue XD](https://www.korg.com/us/products/synthesizers/minilogue_xd/).
+But I'm not a keyboard player, and even if I were, the remapping process for
+the scales leaves only middle C where a musician would normally expect to
+find it. All the other notes are somewhere else.
+
+    So I need a translator for the music I want to write that doesn't
+    involve a lot of trial and error fumbling around on a synthesizer or
+    on-screen keyboard. And how to play chords isn't described anywhere in
+    any of the references on Wilson's work that I've found - it's unique to
+    custom-built instruments in most cases.
+
+## Road map
+
+I've got the basic scale and chord generation working. The next steps are
+
+1. Verify that the generated scales match all of the eikosany scales in
+Sevish's [Eikosany Pack](https://sevish.com/music-resources/). The eikosany
+already does, but it's easy to write a test harness to check them all.
+
+2. Add a MIDI file writing capability. There are some R packages that do this
+but I haven't been able to test them yet. The goal here is to be able to
+algorithmically create a MIDI file, load it into a DAW and hear what it
+sounds like on the synthesizer hardware. There are some [software
+synthesizers that allow MIDI pitch remapping (look for "Full-keyboard
+microtuning")](https://en.xen.wiki/w/List_of_microtonal_software_plugins), so
+if you want to try this, you don't need to buy a synthesizer.
+
+That's pretty much it for release 1.0. Once I have the capability to write
+MIDI files programmatically, I can think about long-term goals. As I noted
+above, one of them is to develop graph rendering and traversal tools for all
+of Wilson's constructs.
+
+## References
+
