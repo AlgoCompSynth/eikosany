@@ -1,5 +1,5 @@
 
-# eikosany - algorithmic composition with Erv Wilson’s Combination Product Sets
+# eikosany - Algorithmic Composition With Erv Wilson’s Combination Product Sets
 
 ## What is this?
 
