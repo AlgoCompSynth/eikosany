@@ -44,7 +44,7 @@ I have two main motivations:
     For example, much of Wilson’s writing is in the form of
     multi-dimensional graph structures drawn on flat paper. He did build
     physical three-dimensional models of some of them, but some can’t
-    even be rendered in three dimension.
+    even be rendered in three dimensions.
 
     The graph theory operations that generated them and musical ways to
     traverse them are not at all obvious. One of my long-term goals is
