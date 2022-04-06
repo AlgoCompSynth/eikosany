@@ -22,7 +22,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-dark"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">eikosany</a>
 
@@ -49,7 +49,14 @@
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/AlgoCompSynth/eikosany/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -64,14 +71,14 @@
       <img src="" class="logo" alt=""><h1>Constructing the Eikosany</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/AlgoCompSynth/eikosany/blob/HEAD/vignettes/constructing-the-eikosany.Rmd" class="external-link"><code>vignettes/constructing-the-eikosany.Rmd</code></a></small>
       <div class="d-none name"><code>constructing-the-eikosany.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">eikosany</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://algocompsynth.github.io/eikosany/" class="external-link">eikosany</a></span><span class="op">)</span></code></pre></div>
 <div class="section level2">
 <h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
 </h2>
@@ -83,34 +90,55 @@
 <p>The Hydrasynth ships with the tuning tables for many of Erv Wilson’s scales already in the firmware. For the Minilogue XD, the user can load up to six custom scales with a software librarian program. In either case, though, I’m not a keyboard player, and even if I was, the chords in the Wilson scales are not where they would be on a conventional keyboard; the synthesizer has remapped them. So I needed a tool to generate MIDI files to play the chords. And that’s what this package does.</p>
 </div>
 <div class="section level2">
-<h2 id="computing-a-combination-product-set-scale">Computing a combination product set scale<a class="anchor" aria-label="anchor" href="#computing-a-combination-product-set-scale"></a>
+<h2 id="computing-combination-product-set-scales">Computing Combination Product Set scales<a class="anchor" aria-label="anchor" href="#computing-combination-product-set-scales"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># the defaults yield the 1-3-5-7-9-11 eikosany</span>
 <span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scale_table.html">scale_table</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany</span><span class="op">[[</span><span class="st">"scale_table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;     cps_label    ratio      cents frequency  interval midi_note_number</span>
-<span class="co">#&gt;  1:     1*3*5 1.000000    0.00000  261.6256        NA               60</span>
-<span class="co">#&gt;  2:    5*9*11 1.031250   53.27294  269.8014  53.27294               61</span>
-<span class="co">#&gt;  3:     1*7*9 1.050000   84.46719  274.7068  31.19425               62</span>
-<span class="co">#&gt;  4:    1*3*11 1.100000  165.00423  287.7881  80.53704               63</span>
-<span class="co">#&gt;  5:     3*5*9 1.125000  203.91000  294.3288  38.90577               64</span>
-<span class="co">#&gt;  6:     1*5*7 1.166667  266.87091  305.2298  62.96090               65</span>
-<span class="co">#&gt;  7:    3*9*11 1.237500  368.91423  323.7616 102.04332               66</span>
-<span class="co">#&gt;  8:    1*7*11 1.283333  431.87513  335.7528  62.96090               67</span>
-<span class="co">#&gt;  9:     5*7*9 1.312500  470.78091  343.3836  38.90577               68</span>
-<span class="co">#&gt; 10:    3*5*11 1.375000  551.31794  359.7352  80.53704               69</span>
-<span class="co">#&gt; 11:     1*3*7 1.400000  582.51219  366.2758  31.19425               70</span>
-<span class="co">#&gt; 12:    7*9*11 1.443750  635.78514  377.7219  53.27294               71</span>
-<span class="co">#&gt; 13:     1*5*9 1.500000  701.95500  392.4383  66.16987               72</span>
-<span class="co">#&gt; 14:     3*7*9 1.575000  786.42219  412.0603  84.46719               73</span>
-<span class="co">#&gt; 15:    5*7*11 1.604167  818.18885  419.6910  31.76665               74</span>
-<span class="co">#&gt; 16:    1*9*11 1.650000  866.95923  431.6822  48.77038               75</span>
-<span class="co">#&gt; 17:     3*5*7 1.750000  968.82591  457.8447 101.86668               76</span>
-<span class="co">#&gt; 18:     1*3*9 1.800000 1017.59629  470.9260  48.77038               77</span>
-<span class="co">#&gt; 19:    1*5*11 1.833333 1049.36294  479.6469  31.76665               78</span>
-<span class="co">#&gt; 20:    3*7*11 1.925000 1133.83013  503.6292  84.46719               79</span>
+<span class="co">#&gt;     note_label    ratio      cents frequency  interval midi_note_number</span>
+<span class="co">#&gt;  1:      1*3*5 1.000000    0.00000  261.6256        NA               60</span>
+<span class="co">#&gt;  2:     5*9*11 1.031250   53.27294  269.8014  53.27294               61</span>
+<span class="co">#&gt;  3:      1*7*9 1.050000   84.46719  274.7068  31.19425               62</span>
+<span class="co">#&gt;  4:     1*3*11 1.100000  165.00423  287.7881  80.53704               63</span>
+<span class="co">#&gt;  5:      3*5*9 1.125000  203.91000  294.3288  38.90577               64</span>
+<span class="co">#&gt;  6:      1*5*7 1.166667  266.87091  305.2298  62.96090               65</span>
+<span class="co">#&gt;  7:     3*9*11 1.237500  368.91423  323.7616 102.04332               66</span>
+<span class="co">#&gt;  8:     1*7*11 1.283333  431.87513  335.7528  62.96090               67</span>
+<span class="co">#&gt;  9:      5*7*9 1.312500  470.78091  343.3836  38.90577               68</span>
+<span class="co">#&gt; 10:     3*5*11 1.375000  551.31794  359.7352  80.53704               69</span>
+<span class="co">#&gt; 11:      1*3*7 1.400000  582.51219  366.2758  31.19425               70</span>
+<span class="co">#&gt; 12:     7*9*11 1.443750  635.78514  377.7219  53.27294               71</span>
+<span class="co">#&gt; 13:      1*5*9 1.500000  701.95500  392.4383  66.16987               72</span>
+<span class="co">#&gt; 14:      3*7*9 1.575000  786.42219  412.0603  84.46719               73</span>
+<span class="co">#&gt; 15:     5*7*11 1.604167  818.18885  419.6910  31.76665               74</span>
+<span class="co">#&gt; 16:     1*9*11 1.650000  866.95923  431.6822  48.77038               75</span>
+<span class="co">#&gt; 17:      3*5*7 1.750000  968.82591  457.8447 101.86668               76</span>
+<span class="co">#&gt; 18:      1*3*9 1.800000 1017.59629  470.9260  48.77038               77</span>
+<span class="co">#&gt; 19:     1*5*11 1.833333 1049.36294  479.6469  31.76665               78</span>
+<span class="co">#&gt; 20:     3*7*11 1.925000 1133.83013  503.6292  84.46719               79</span>
+<span class="co">#&gt;     note_name</span>
+<span class="co">#&gt;  1:      C  4</span>
+<span class="co">#&gt;  2:      C# 4</span>
+<span class="co">#&gt;  3:      D  4</span>
+<span class="co">#&gt;  4:      D# 4</span>
+<span class="co">#&gt;  5:      E  4</span>
+<span class="co">#&gt;  6:      F  4</span>
+<span class="co">#&gt;  7:      F# 4</span>
+<span class="co">#&gt;  8:      G  4</span>
+<span class="co">#&gt;  9:      G# 4</span>
+<span class="co">#&gt; 10:      A  4</span>
+<span class="co">#&gt; 11:      A# 4</span>
+<span class="co">#&gt; 12:      B  4</span>
+<span class="co">#&gt; 13:      C  5</span>
+<span class="co">#&gt; 14:      C# 5</span>
+<span class="co">#&gt; 15:      D  5</span>
+<span class="co">#&gt; 16:      D# 5</span>
+<span class="co">#&gt; 17:      E  5</span>
+<span class="co">#&gt; 18:      F  5</span>
+<span class="co">#&gt; 19:      F# 5</span>
+<span class="co">#&gt; 20:      G  5</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany</span><span class="op">[[</span><span class="st">"interval_matrix"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;       [,1]    [,2]    [,3]    [,4]    [,5]    [,6]    [,7]    [,8]    [,9]   </span>
 <span class="co">#&gt;  [1,]       1   32/33   20/21   10/11     8/9     6/7   80/99   60/77   16/21</span>
@@ -182,17 +210,28 @@
 <span class="va">dekany_1_3_7_9_11_13</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/scale_table.html">scale_table</a></span><span class="op">(</span><span class="va">dekany_harmonics</span>, <span class="va">dekany_choose</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany_1_3_7_9_11_13</span><span class="op">[[</span><span class="st">"scale_table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;     cps_label    ratio      cents frequency  interval midi_note_number</span>
-<span class="co">#&gt;  1:       1*7 1.000000    0.00000  261.6256        NA               60</span>
-<span class="co">#&gt;  2:      9*13 1.044643   75.61176  273.3053  75.61176               61</span>
-<span class="co">#&gt;  3:       7*9 1.125000  203.91000  294.3288 128.29824               62</span>
-<span class="co">#&gt;  4:     11*13 1.276786  423.01970  334.0398 219.10970               63</span>
-<span class="co">#&gt;  5:       1*9 1.285714  435.08410  336.3757  12.06440               64</span>
-<span class="co">#&gt;  6:      7*11 1.375000  551.31794  359.7352 116.23385               65</span>
-<span class="co">#&gt;  7:      1*11 1.571429  782.49204  411.1259 231.17409               66</span>
-<span class="co">#&gt;  8:      7*13 1.625000  840.52766  425.1415  58.03563               67</span>
-<span class="co">#&gt;  9:      9*11 1.767857  986.40204  462.5166 145.87438               68</span>
-<span class="co">#&gt; 10:      1*13 1.857143 1071.70176  485.8760  85.29972               69</span>
+<span class="co">#&gt;     note_label    ratio      cents frequency  interval midi_note_number</span>
+<span class="co">#&gt;  1:        1*7 1.000000    0.00000  261.6256        NA               60</span>
+<span class="co">#&gt;  2:       9*13 1.044643   75.61176  273.3053  75.61176               61</span>
+<span class="co">#&gt;  3:        7*9 1.125000  203.91000  294.3288 128.29824               62</span>
+<span class="co">#&gt;  4:      11*13 1.276786  423.01970  334.0398 219.10970               63</span>
+<span class="co">#&gt;  5:        1*9 1.285714  435.08410  336.3757  12.06440               64</span>
+<span class="co">#&gt;  6:       7*11 1.375000  551.31794  359.7352 116.23385               65</span>
+<span class="co">#&gt;  7:       1*11 1.571429  782.49204  411.1259 231.17409               66</span>
+<span class="co">#&gt;  8:       7*13 1.625000  840.52766  425.1415  58.03563               67</span>
+<span class="co">#&gt;  9:       9*11 1.767857  986.40204  462.5166 145.87438               68</span>
+<span class="co">#&gt; 10:       1*13 1.857143 1071.70176  485.8760  85.29972               69</span>
+<span class="co">#&gt;     note_name</span>
+<span class="co">#&gt;  1:      C  4</span>
+<span class="co">#&gt;  2:      C# 4</span>
+<span class="co">#&gt;  3:      D  4</span>
+<span class="co">#&gt;  4:      D# 4</span>
+<span class="co">#&gt;  5:      E  4</span>
+<span class="co">#&gt;  6:      F  4</span>
+<span class="co">#&gt;  7:      F# 4</span>
+<span class="co">#&gt;  8:      G  4</span>
+<span class="co">#&gt;  9:      G# 4</span>
+<span class="co">#&gt; 10:      A  4</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany_1_3_7_9_11_13</span><span class="op">[[</span><span class="st">"interval_matrix"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;       [,1]    [,2]    [,3]    [,4]    [,5]    [,6]    [,7]    [,8]    [,9]   </span>
 <span class="co">#&gt;  [1,]       1 112/117     8/9 112/143     7/9    8/11    7/11    8/13   56/99</span>
@@ -215,7 +254,359 @@
 <span class="co">#&gt;  [7,]   11/13</span>
 <span class="co">#&gt;  [8,]     7/8</span>
 <span class="co">#&gt;  [9,]  99/104</span>
-<span class="co">#&gt; [10,]       1</span></code></pre></div>
+<span class="co">#&gt; [10,]       1</span>
+
+<span class="co"># We might want to print out sheet music for a conventional keyboard</span>
+<span class="co"># player, since the synthesizer is mapping MIDI note numbers to pitches.</span>
+<span class="co"># We assume at least a 37-key synthesizer with middle C on the left.</span>
+<span class="co"># so the largest CPS scale we can play is a 35-note "35-any", made from</span>
+<span class="co"># seven harmonics taken three at a time.</span>
+<span class="va">harmonics_35</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span>, <span class="fl">13</span><span class="op">)</span>
+<span class="va">choose_35</span> <span class="op">&lt;-</span> <span class="fl">3</span>
+<span class="va">any_35</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/scale_table.html">scale_table</a></span><span class="op">(</span><span class="va">harmonics_35</span>, <span class="va">choose_35</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">any_35</span><span class="op">[[</span><span class="st">"scale_table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#&gt;     note_label    ratio      cents frequency interval midi_note_number</span>
+<span class="co">#&gt;  1:      1*3*5 1.000000    0.00000  261.6256       NA               60</span>
+<span class="co">#&gt;  2:     5*9*11 1.031250   53.27294  269.8014 53.27294               61</span>
+<span class="co">#&gt;  3:    7*11*13 1.042708   72.40280  272.7992 19.12985               62</span>
+<span class="co">#&gt;  4:      1*7*9 1.050000   84.46719  274.7068 12.06440               63</span>
+<span class="co">#&gt;  5:     1*5*13 1.083333  138.57266  283.4277 54.10547               64</span>
+<span class="co">#&gt;  6:     1*3*11 1.100000  165.00423  287.7881 26.43157               65</span>
+<span class="co">#&gt;  7:      3*5*9 1.125000  203.91000  294.3288 38.90577               66</span>
+<span class="co">#&gt;  8:     3*7*13 1.137500  223.03985  297.5991 19.12985               67</span>
+<span class="co">#&gt;  9:      1*5*7 1.166667  266.87091  305.2298 43.83105               68</span>
+<span class="co">#&gt; 10:    1*11*13 1.191667  303.57689  311.7705 36.70598               69</span>
+<span class="co">#&gt; 11:     5*9*13 1.218750  342.48266  318.8562 38.90577               70</span>
+<span class="co">#&gt; 12:     3*9*11 1.237500  368.91423  323.7616 26.43157               71</span>
+<span class="co">#&gt; 13:     1*7*11 1.283333  431.87513  335.7528 62.96090               72</span>
+<span class="co">#&gt; 14:     1*3*13 1.300000  454.21395  340.1132 22.33881               73</span>
+<span class="co">#&gt; 15:      5*7*9 1.312500  470.78091  343.3836 16.56696               74</span>
+<span class="co">#&gt; 16:    9*11*13 1.340625  507.48689  350.7418 36.70598               75</span>
+<span class="co">#&gt; 17:     3*5*11 1.375000  551.31794  359.7352 43.83105               76</span>
+<span class="co">#&gt; 18:      1*3*7 1.400000  582.51219  366.2758 31.19425               77</span>
+<span class="co">#&gt; 19:     7*9*11 1.443750  635.78514  377.7219 53.27294               78</span>
+<span class="co">#&gt; 20:     3*9*13 1.462500  658.12395  382.6274 22.33881               79</span>
+<span class="co">#&gt; 21:    5*11*13 1.489583  689.89060  389.7131 31.76665               80</span>
+<span class="co">#&gt; 22:      1*5*9 1.500000  701.95500  392.4383 12.06440               81</span>
+<span class="co">#&gt; 23:     1*7*13 1.516667  721.08485  396.7988 19.12985               82</span>
+<span class="co">#&gt; 24:      3*7*9 1.575000  786.42219  412.0603 65.33734               83</span>
+<span class="co">#&gt; 25:     5*7*11 1.604167  818.18885  419.6910 31.76665               84</span>
+<span class="co">#&gt; 26:     3*5*13 1.625000  840.52766  425.1415 22.33881               85</span>
+<span class="co">#&gt; 27:     1*9*11 1.650000  866.95923  431.6822 26.43157               86</span>
+<span class="co">#&gt; 28:     7*9*13 1.706250  924.99486  446.3986 58.03563               87</span>
+<span class="co">#&gt; 29:      3*5*7 1.750000  968.82591  457.8447 43.83105               88</span>
+<span class="co">#&gt; 30:    3*11*13 1.787500 1005.53189  467.6557 36.70598               89</span>
+<span class="co">#&gt; 31:      1*3*9 1.800000 1017.59629  470.9260 12.06440               90</span>
+<span class="co">#&gt; 32:     1*5*11 1.833333 1049.36294  479.6469 31.76665               91</span>
+<span class="co">#&gt; 33:     5*7*13 1.895833 1107.39857  495.9985 58.03563               92</span>
+<span class="co">#&gt; 34:     3*7*11 1.925000 1133.83013  503.6292 26.43157               93</span>
+<span class="co">#&gt; 35:     1*9*13 1.950000 1156.16895  510.1699 22.33881               94</span>
+<span class="co">#&gt;     note_label    ratio      cents frequency interval midi_note_number</span>
+<span class="co">#&gt;     note_name</span>
+<span class="co">#&gt;  1:      C  4</span>
+<span class="co">#&gt;  2:      C# 4</span>
+<span class="co">#&gt;  3:      D  4</span>
+<span class="co">#&gt;  4:      D# 4</span>
+<span class="co">#&gt;  5:      E  4</span>
+<span class="co">#&gt;  6:      F  4</span>
+<span class="co">#&gt;  7:      F# 4</span>
+<span class="co">#&gt;  8:      G  4</span>
+<span class="co">#&gt;  9:      G# 4</span>
+<span class="co">#&gt; 10:      A  4</span>
+<span class="co">#&gt; 11:      A# 4</span>
+<span class="co">#&gt; 12:      B  4</span>
+<span class="co">#&gt; 13:      C  5</span>
+<span class="co">#&gt; 14:      C# 5</span>
+<span class="co">#&gt; 15:      D  5</span>
+<span class="co">#&gt; 16:      D# 5</span>
+<span class="co">#&gt; 17:      E  5</span>
+<span class="co">#&gt; 18:      F  5</span>
+<span class="co">#&gt; 19:      F# 5</span>
+<span class="co">#&gt; 20:      G  5</span>
+<span class="co">#&gt; 21:      G# 5</span>
+<span class="co">#&gt; 22:      A  5</span>
+<span class="co">#&gt; 23:      A# 5</span>
+<span class="co">#&gt; 24:      B  5</span>
+<span class="co">#&gt; 25:      C  6</span>
+<span class="co">#&gt; 26:      C# 6</span>
+<span class="co">#&gt; 27:      D  6</span>
+<span class="co">#&gt; 28:      D# 6</span>
+<span class="co">#&gt; 29:      E  6</span>
+<span class="co">#&gt; 30:      F  6</span>
+<span class="co">#&gt; 31:      F# 6</span>
+<span class="co">#&gt; 32:      G  6</span>
+<span class="co">#&gt; 33:      G# 6</span>
+<span class="co">#&gt; 34:      A  6</span>
+<span class="co">#&gt; 35:      A# 6</span>
+<span class="co">#&gt;     note_name</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">any_35</span><span class="op">[[</span><span class="st">"interval_matrix"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#&gt;       [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]     </span>
+<span class="co">#&gt;  [1,]         1     32/33  960/1001     20/21     12/13     10/11       8/9</span>
+<span class="co">#&gt;  [2,]     33/32         1     90/91     55/56    99/104     15/16     11/12</span>
+<span class="co">#&gt;  [3,]  1001/960     91/90         1   143/144     77/80     91/96 1001/1080</span>
+<span class="co">#&gt;  [4,]     21/20     56/55   144/143         1     63/65     21/22     14/15</span>
+<span class="co">#&gt;  [5,]     13/12    104/99     80/77     65/63         1     65/66     26/27</span>
+<span class="co">#&gt;  [6,]     11/10     16/15     96/91     22/21     66/65         1     44/45</span>
+<span class="co">#&gt;  [7,]       9/8     12/11 1080/1001     15/14     27/26     45/44         1</span>
+<span class="co">#&gt;  [8,]     91/80   182/165     12/11     13/12     21/20     91/88     91/90</span>
+<span class="co">#&gt;  [9,]       7/6    112/99   160/143      10/9     14/13     35/33     28/27</span>
+<span class="co">#&gt; [10,]   143/120     52/45       8/7   143/126     11/10     13/12   143/135</span>
+<span class="co">#&gt; [11,]     39/32     13/11     90/77     65/56       9/8   195/176     13/12</span>
+<span class="co">#&gt; [12,]     99/80       6/5    108/91     33/28   297/260       9/8     11/10</span>
+<span class="co">#&gt; [13,]     77/60     56/45     16/13      11/9     77/65       7/6   154/135</span>
+<span class="co">#&gt; [14,]     13/10   208/165     96/77     26/21       6/5     13/11     52/45</span>
+<span class="co">#&gt; [15,]     21/16     14/11   180/143       5/4     63/52    105/88       7/6</span>
+<span class="co">#&gt; [16,]   429/320     13/10       9/7   143/112     99/80     39/32   143/120</span>
+<span class="co">#&gt; [17,]      11/8       4/3    120/91     55/42     33/26       5/4      11/9</span>
+<span class="co">#&gt; [18,]       7/5   224/165   192/143       4/3     84/65     14/11     56/45</span>
+<span class="co">#&gt; [19,]   231/160       7/5     18/13      11/8   693/520     21/16     77/60</span>
+<span class="co">#&gt; [20,]    117/80     78/55    108/77     39/28     27/20    117/88     13/10</span>
+<span class="co">#&gt; [21,]    143/96      13/9      10/7   715/504      11/8     65/48   143/108</span>
+<span class="co">#&gt; [22,]       3/2     16/11 1440/1001      10/7     18/13     15/11       4/3</span>
+<span class="co">#&gt; [23,]     91/60   728/495     16/11      13/9       7/5     91/66   182/135</span>
+<span class="co">#&gt; [24,]     63/40     84/55   216/143       3/2   189/130     63/44       7/5</span>
+<span class="co">#&gt; [25,]     77/48      14/9     20/13     55/36     77/52     35/24     77/54</span>
+<span class="co">#&gt; [26,]      13/8     52/33    120/77     65/42       3/2     65/44      13/9</span>
+<span class="co">#&gt; [27,]     33/20       8/5    144/91      11/7     99/65       3/2     22/15</span>
+<span class="co">#&gt; [28,]   273/160     91/55     18/11      13/8     63/40   273/176     91/60</span>
+<span class="co">#&gt; [29,]       7/4     56/33   240/143       5/3     21/13     35/22      14/9</span>
+<span class="co">#&gt; [30,]    143/80     26/15      12/7    143/84     33/20      13/8    143/90</span>
+<span class="co">#&gt; [31,]       9/5     96/55 1728/1001      12/7    108/65     18/11       8/5</span>
+<span class="co">#&gt; [32,]      11/6      16/9    160/91    110/63     22/13       5/3     44/27</span>
+<span class="co">#&gt; [33,]     91/48    182/99     20/11     65/36       7/4   455/264     91/54</span>
+<span class="co">#&gt; [34,]     77/40     28/15     24/13      11/6   231/130       7/4     77/45</span>
+<span class="co">#&gt; [35,]     39/20    104/55    144/77      13/7       9/5     39/22     26/15</span>
+<span class="co">#&gt;       [,8]      [,9]      [,10]     [,11]     [,12]     [,13]     [,14]    </span>
+<span class="co">#&gt;  [1,]     80/91       6/7   120/143     32/39     80/99     60/77     10/13</span>
+<span class="co">#&gt;  [2,]   165/182    99/112     45/52     11/13       5/6     45/56   165/208</span>
+<span class="co">#&gt;  [3,]     11/12   143/160       7/8     77/90    91/108     13/16     77/96</span>
+<span class="co">#&gt;  [4,]     12/13      9/10   126/143     56/65     28/33      9/11     21/26</span>
+<span class="co">#&gt;  [5,]     20/21     13/14     10/11       8/9   260/297     65/77       5/6</span>
+<span class="co">#&gt;  [6,]     88/91     33/35     12/13   176/195       8/9       6/7     11/13</span>
+<span class="co">#&gt;  [7,]     90/91     27/28   135/143     12/13     10/11   135/154     45/52</span>
+<span class="co">#&gt;  [8,]         1     39/40     21/22     14/15     91/99     39/44       7/8</span>
+<span class="co">#&gt;  [9,]     40/39         1   140/143   112/117   280/297     10/11     35/39</span>
+<span class="co">#&gt; [10,]     22/21   143/140         1     44/45     26/27     13/14     11/12</span>
+<span class="co">#&gt; [11,]     15/14   117/112     45/44         1     65/66   585/616     15/16</span>
+<span class="co">#&gt; [12,]     99/91   297/280     27/26     66/65         1     27/28    99/104</span>
+<span class="co">#&gt; [13,]     44/39     11/10     14/13   616/585     28/27         1     77/78</span>
+<span class="co">#&gt; [14,]       8/7     39/35     12/11     16/15    104/99     78/77         1</span>
+<span class="co">#&gt; [15,]     15/13       9/8   315/286     14/13     35/33     45/44   105/104</span>
+<span class="co">#&gt; [16,]     33/28 1287/1120       9/8     11/10     13/12   117/112     33/32</span>
+<span class="co">#&gt; [17,]    110/91     33/28     15/13     44/39      10/9     15/14     55/52</span>
+<span class="co">#&gt; [18,]     16/13       6/5   168/143   224/195    112/99     12/11     14/13</span>
+<span class="co">#&gt; [19,]     33/26     99/80     63/52     77/65       7/6       9/8   231/208</span>
+<span class="co">#&gt; [20,]       9/7   351/280     27/22       6/5     13/11   351/308       9/8</span>
+<span class="co">#&gt; [21,]     55/42   143/112       5/4      11/9     65/54     65/56     55/48</span>
+<span class="co">#&gt; [22,]    120/91       9/7   180/143     16/13     40/33     90/77     15/13</span>
+<span class="co">#&gt; [23,]       4/3     13/10     14/11     56/45   364/297     13/11       7/6</span>
+<span class="co">#&gt; [24,]     18/13     27/20   189/143     84/65     14/11     27/22     63/52</span>
+<span class="co">#&gt; [25,]     55/39      11/8     35/26   154/117     35/27       5/4   385/312</span>
+<span class="co">#&gt; [26,]      10/7     39/28     15/11       4/3    130/99   195/154       5/4</span>
+<span class="co">#&gt; [27,]    132/91     99/70     18/13     88/65       4/3       9/7     33/26</span>
+<span class="co">#&gt; [28,]       3/2    117/80     63/44       7/5     91/66    117/88     21/16</span>
+<span class="co">#&gt; [29,]     20/13       3/2   210/143     56/39    140/99     15/11     35/26</span>
+<span class="co">#&gt; [30,]      11/7   429/280       3/2     22/15      13/9     39/28      11/8</span>
+<span class="co">#&gt; [31,]    144/91     54/35   216/143     96/65     16/11    108/77     18/13</span>
+<span class="co">#&gt; [32,]   440/273      11/7     20/13   176/117     40/27      10/7     55/39</span>
+<span class="co">#&gt; [33,]       5/3      13/8     35/22      14/9   455/297     65/44     35/24</span>
+<span class="co">#&gt; [34,]     22/13     33/20     21/13   308/195      14/9       3/2     77/52</span>
+<span class="co">#&gt; [35,]      12/7    117/70     18/11       8/5     52/33    117/77       3/2</span>
+<span class="co">#&gt;       [,15]     [,16]     [,17]     [,18]     [,19]     [,20]     [,21]    </span>
+<span class="co">#&gt;  [1,]     16/21   320/429      8/11       5/7   160/231    80/117    96/143</span>
+<span class="co">#&gt;  [2,]     11/14     10/13       3/4   165/224       5/7     55/78      9/13</span>
+<span class="co">#&gt;  [3,]   143/180       7/9    91/120   143/192     13/18    77/108      7/10</span>
+<span class="co">#&gt;  [4,]       4/5   112/143     42/55       3/4      8/11     28/39   504/715</span>
+<span class="co">#&gt;  [5,]     52/63     80/99     26/33     65/84   520/693     20/27      8/11</span>
+<span class="co">#&gt;  [6,]    88/105     32/39       4/5     11/14     16/21    88/117     48/65</span>
+<span class="co">#&gt;  [7,]       6/7   120/143      9/11     45/56     60/77     10/13   108/143</span>
+<span class="co">#&gt;  [8,]     13/15     28/33    91/110     13/16     26/33       7/9     42/55</span>
+<span class="co">#&gt;  [9,]       8/9 1120/1287     28/33       5/6     80/99   280/351   112/143</span>
+<span class="co">#&gt; [10,]   286/315       8/9     13/15   143/168     52/63     22/27       4/5</span>
+<span class="co">#&gt; [11,]     13/14     10/11     39/44   195/224     65/77       5/6      9/11</span>
+<span class="co">#&gt; [12,]     33/35     12/13      9/10    99/112       6/7     11/13     54/65</span>
+<span class="co">#&gt; [13,]     44/45   112/117     14/15     11/12       8/9   308/351     56/65</span>
+<span class="co">#&gt; [14,]   104/105     32/33     52/55     13/14   208/231       8/9     48/55</span>
+<span class="co">#&gt; [15,]         1   140/143     21/22     15/16     10/11     35/39   126/143</span>
+<span class="co">#&gt; [16,]   143/140         1     39/40   429/448     13/14     11/12      9/10</span>
+<span class="co">#&gt; [17,]     22/21     40/39         1     55/56     20/21   110/117     12/13</span>
+<span class="co">#&gt; [18,]     16/15   448/429     56/55         1     32/33   112/117   672/715</span>
+<span class="co">#&gt; [19,]     11/10     14/13     21/20     33/32         1     77/78     63/65</span>
+<span class="co">#&gt; [20,]     39/35     12/11   117/110   117/112     78/77         1     54/55</span>
+<span class="co">#&gt; [21,]   143/126      10/9     13/12   715/672     65/63     55/54         1</span>
+<span class="co">#&gt; [22,]       8/7   160/143     12/11     15/14     80/77     40/39   144/143</span>
+<span class="co">#&gt; [23,]     52/45    112/99   182/165     13/12    104/99     28/27     56/55</span>
+<span class="co">#&gt; [24,]       6/5   168/143     63/55       9/8     12/11     14/13   756/715</span>
+<span class="co">#&gt; [25,]      11/9   140/117       7/6     55/48      10/9   385/351     14/13</span>
+<span class="co">#&gt; [26,]     26/21     40/33     13/11     65/56   260/231      10/9     12/11</span>
+<span class="co">#&gt; [27,]     44/35     16/13       6/5     33/28       8/7     44/39     72/65</span>
+<span class="co">#&gt; [28,]     13/10     14/11   273/220     39/32     13/11       7/6     63/55</span>
+<span class="co">#&gt; [29,]       4/3   560/429     14/11       5/4     40/33   140/117   168/143</span>
+<span class="co">#&gt; [30,]   143/105       4/3     13/10   143/112     26/21      11/9       6/5</span>
+<span class="co">#&gt; [31,]     48/35   192/143     72/55       9/7     96/77     16/13   864/715</span>
+<span class="co">#&gt; [32,]     88/63   160/117       4/3     55/42     80/63   440/351     16/13</span>
+<span class="co">#&gt; [33,]      13/9    140/99     91/66     65/48    130/99     35/27     14/11</span>
+<span class="co">#&gt; [34,]     22/15     56/39       7/5      11/8       4/3   154/117     84/65</span>
+<span class="co">#&gt; [35,]     52/35     16/11     78/55     39/28    104/77       4/3     72/55</span>
+<span class="co">#&gt;       [,22]     [,23]     [,24]     [,25]     [,26]     [,27]     [,28]    </span>
+<span class="co">#&gt;  [1,]       2/3     60/91     40/63     48/77      8/13     20/33   160/273</span>
+<span class="co">#&gt;  [2,]     11/16   495/728     55/84      9/14     33/52       5/8     55/91</span>
+<span class="co">#&gt;  [3,]   529/761     11/16   143/216     13/20    77/120    91/144     11/18</span>
+<span class="co">#&gt;  [4,]      7/10      9/13       2/3     36/55     42/65      7/11      8/13</span>
+<span class="co">#&gt;  [5,]     13/18       5/7   130/189     52/77       2/3     65/99     40/63</span>
+<span class="co">#&gt;  [6,]     11/15     66/91     44/63     24/35     44/65       2/3   176/273</span>
+<span class="co">#&gt;  [7,]       3/4   135/182       5/7     54/77      9/13     15/22     60/91</span>
+<span class="co">#&gt;  [8,]    91/120       3/4     13/18     39/55      7/10    91/132       2/3</span>
+<span class="co">#&gt;  [9,]       7/9     10/13     20/27      8/11     28/39     70/99    80/117</span>
+<span class="co">#&gt; [10,]   143/180     11/14   143/189     26/35     11/15     13/18     44/63</span>
+<span class="co">#&gt; [11,]     13/16     45/56     65/84   117/154       3/4     65/88       5/7</span>
+<span class="co">#&gt; [12,]     33/40   297/364     11/14     27/35    99/130       3/4     66/91</span>
+<span class="co">#&gt; [13,]     77/90     11/13     22/27       4/5   154/195       7/9    88/117</span>
+<span class="co">#&gt; [14,]     13/15       6/7     52/63   312/385       4/5     26/33     16/21</span>
+<span class="co">#&gt; [15,]       7/8     45/52       5/6      9/11     21/26     35/44     10/13</span>
+<span class="co">#&gt; [16,]   143/160    99/112   143/168   117/140     33/40     13/16     11/14</span>
+<span class="co">#&gt; [17,]     11/12   165/182     55/63       6/7     11/13       5/6   220/273</span>
+<span class="co">#&gt; [18,]     14/15     12/13       8/9     48/55     56/65     28/33     32/39</span>
+<span class="co">#&gt; [19,]     77/80    99/104     11/12      9/10   231/260       7/8     11/13</span>
+<span class="co">#&gt; [20,]     39/40     27/28     13/14   351/385      9/10     39/44       6/7</span>
+<span class="co">#&gt; [21,]   143/144     55/56   715/756     13/14     11/12     65/72     55/63</span>
+<span class="co">#&gt; [22,]         1     90/91     20/21     72/77     12/13     10/11     80/91</span>
+<span class="co">#&gt; [23,]     91/90         1     26/27     52/55     14/15     91/99       8/9</span>
+<span class="co">#&gt; [24,]     21/20     27/26         1     54/55     63/65     21/22     12/13</span>
+<span class="co">#&gt; [25,]     77/72     55/52     55/54         1     77/78     35/36   110/117</span>
+<span class="co">#&gt; [26,]     13/12     15/14     65/63     78/77         1     65/66     20/21</span>
+<span class="co">#&gt; [27,]     11/10     99/91     22/21     36/35     66/65         1     88/91</span>
+<span class="co">#&gt; [28,]     91/80       9/8     13/12   117/110     21/20     91/88         1</span>
+<span class="co">#&gt; [29,]       7/6     15/13      10/9     12/11     14/13     35/33     40/39</span>
+<span class="co">#&gt; [30,]   143/120     33/28   143/126     39/35     11/10     13/12     22/21</span>
+<span class="co">#&gt; [31,]       6/5    108/91       8/7   432/385     72/65     12/11     96/91</span>
+<span class="co">#&gt; [32,]      11/9    110/91   220/189       8/7     44/39      10/9   880/819</span>
+<span class="co">#&gt; [33,]     91/72       5/4     65/54     13/11       7/6   455/396      10/9</span>
+<span class="co">#&gt; [34,]     77/60     33/26      11/9       6/5     77/65       7/6     44/39</span>
+<span class="co">#&gt; [35,]     13/10       9/7     26/21   468/385       6/5     13/11       8/7</span>
+<span class="co">#&gt;       [,29]     [,30]     [,31]     [,32]     [,33]     [,34]     [,35]    </span>
+<span class="co">#&gt;  [1,]       4/7    80/143       5/9      6/11     48/91     40/77     20/39</span>
+<span class="co">#&gt;  [2,]     33/56     15/26     55/96      9/16    99/182     15/28    55/104</span>
+<span class="co">#&gt;  [3,]   143/240      7/12  727/1255    91/160     11/20     13/24    77/144</span>
+<span class="co">#&gt;  [4,]       3/5    84/143      7/12    63/110     36/65      6/11      7/13</span>
+<span class="co">#&gt;  [5,]     13/21     20/33    65/108     13/22       4/7   130/231       5/9</span>
+<span class="co">#&gt;  [6,]     22/35      8/13     11/18       3/5   264/455       4/7     22/39</span>
+<span class="co">#&gt;  [7,]      9/14    90/143       5/8     27/44     54/91     45/77     15/26</span>
+<span class="co">#&gt;  [8,]     13/20      7/11    91/144   273/440       3/5     13/22      7/12</span>
+<span class="co">#&gt;  [9,]       2/3   280/429     35/54      7/11      8/13     20/33    70/117</span>
+<span class="co">#&gt; [10,]   143/210       2/3   143/216     13/20     22/35     13/21     11/18</span>
+<span class="co">#&gt; [11,]     39/56     15/22     65/96   117/176      9/14   195/308       5/8</span>
+<span class="co">#&gt; [12,]    99/140      9/13     11/16     27/40   297/455      9/14     33/52</span>
+<span class="co">#&gt; [13,]     11/15     28/39    77/108      7/10     44/65       2/3    77/117</span>
+<span class="co">#&gt; [14,]     26/35      8/11     13/18     39/55     24/35     52/77       2/3</span>
+<span class="co">#&gt; [15,]       3/4   105/143     35/48     63/88      9/13     15/22     35/52</span>
+<span class="co">#&gt; [16,]   429/560       3/4   143/192   117/160    99/140     39/56     11/16</span>
+<span class="co">#&gt; [17,]     11/14     10/13     55/72       3/4     66/91       5/7     55/78</span>
+<span class="co">#&gt; [18,]       4/5   112/143       7/9     42/55     48/65      8/11     28/39</span>
+<span class="co">#&gt; [19,]     33/40     21/26     77/96     63/80    99/130       3/4    77/104</span>
+<span class="co">#&gt; [20,]   117/140      9/11     13/16   351/440     27/35   117/154       3/4</span>
+<span class="co">#&gt; [21,]   143/168       5/6   715/864     13/16     11/14     65/84     55/72</span>
+<span class="co">#&gt; [22,]       6/7   120/143       5/6      9/11     72/91     60/77     10/13</span>
+<span class="co">#&gt; [23,]     13/15     28/33    91/108    91/110       4/5     26/33       7/9</span>
+<span class="co">#&gt; [24,]      9/10   126/143       7/8   189/220     54/65      9/11     21/26</span>
+<span class="co">#&gt; [25,]     11/12     35/39   385/432       7/8     11/13       5/6   385/468</span>
+<span class="co">#&gt; [26,]     13/14     10/11     65/72     39/44       6/7     65/77       5/6</span>
+<span class="co">#&gt; [27,]     33/35     12/13     11/12      9/10   396/455       6/7     11/13</span>
+<span class="co">#&gt; [28,]     39/40     21/22     91/96   819/880      9/10     39/44       7/8</span>
+<span class="co">#&gt; [29,]         1   140/143     35/36     21/22     12/13     10/11     35/39</span>
+<span class="co">#&gt; [30,]   143/140         1   143/144     39/40     33/35     13/14     11/12</span>
+<span class="co">#&gt; [31,]     36/35   144/143         1     54/55   432/455     72/77     12/13</span>
+<span class="co">#&gt; [32,]     22/21     40/39     55/54         1     88/91     20/21   110/117</span>
+<span class="co">#&gt; [33,]     13/12     35/33   455/432     91/88         1     65/66     35/36</span>
+<span class="co">#&gt; [34,]     11/10     14/13     77/72     21/20     66/65         1     77/78</span>
+<span class="co">#&gt; [35,]     39/35     12/11     13/12   117/110     36/35     78/77         1</span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="computing-chords---the-tetrads-of-the-1-3-5-7-9-22-eikosany">Computing chords - the tetrads of the 1-3-5-7-9-22 eikosany<a class="anchor" aria-label="anchor" href="#computing-chords---the-tetrads-of-the-1-3-5-7-9-22-eikosany"></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># the defaults yield the 1-3-5-7-9-11 eikosany</span>
+<span class="va">eikosany_scale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scale_table.html">scale_table</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"scale_table"</span><span class="op">]</span><span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_scale</span><span class="op">)</span>
+<span class="co">#&gt;     note_label    ratio      cents frequency  interval midi_note_number</span>
+<span class="co">#&gt;  1:      1*3*5 1.000000    0.00000  261.6256        NA               60</span>
+<span class="co">#&gt;  2:     5*9*11 1.031250   53.27294  269.8014  53.27294               61</span>
+<span class="co">#&gt;  3:      1*7*9 1.050000   84.46719  274.7068  31.19425               62</span>
+<span class="co">#&gt;  4:     1*3*11 1.100000  165.00423  287.7881  80.53704               63</span>
+<span class="co">#&gt;  5:      3*5*9 1.125000  203.91000  294.3288  38.90577               64</span>
+<span class="co">#&gt;  6:      1*5*7 1.166667  266.87091  305.2298  62.96090               65</span>
+<span class="co">#&gt;  7:     3*9*11 1.237500  368.91423  323.7616 102.04332               66</span>
+<span class="co">#&gt;  8:     1*7*11 1.283333  431.87513  335.7528  62.96090               67</span>
+<span class="co">#&gt;  9:      5*7*9 1.312500  470.78091  343.3836  38.90577               68</span>
+<span class="co">#&gt; 10:     3*5*11 1.375000  551.31794  359.7352  80.53704               69</span>
+<span class="co">#&gt; 11:      1*3*7 1.400000  582.51219  366.2758  31.19425               70</span>
+<span class="co">#&gt; 12:     7*9*11 1.443750  635.78514  377.7219  53.27294               71</span>
+<span class="co">#&gt; 13:      1*5*9 1.500000  701.95500  392.4383  66.16987               72</span>
+<span class="co">#&gt; 14:      3*7*9 1.575000  786.42219  412.0603  84.46719               73</span>
+<span class="co">#&gt; 15:     5*7*11 1.604167  818.18885  419.6910  31.76665               74</span>
+<span class="co">#&gt; 16:     1*9*11 1.650000  866.95923  431.6822  48.77038               75</span>
+<span class="co">#&gt; 17:      3*5*7 1.750000  968.82591  457.8447 101.86668               76</span>
+<span class="co">#&gt; 18:      1*3*9 1.800000 1017.59629  470.9260  48.77038               77</span>
+<span class="co">#&gt; 19:     1*5*11 1.833333 1049.36294  479.6469  31.76665               78</span>
+<span class="co">#&gt; 20:     3*7*11 1.925000 1133.83013  503.6292  84.46719               79</span>
+<span class="co">#&gt;     note_name</span>
+<span class="co">#&gt;  1:      C  4</span>
+<span class="co">#&gt;  2:      C# 4</span>
+<span class="co">#&gt;  3:      D  4</span>
+<span class="co">#&gt;  4:      D# 4</span>
+<span class="co">#&gt;  5:      E  4</span>
+<span class="co">#&gt;  6:      F  4</span>
+<span class="co">#&gt;  7:      F# 4</span>
+<span class="co">#&gt;  8:      G  4</span>
+<span class="co">#&gt;  9:      G# 4</span>
+<span class="co">#&gt; 10:      A  4</span>
+<span class="co">#&gt; 11:      A# 4</span>
+<span class="co">#&gt; 12:      B  4</span>
+<span class="co">#&gt; 13:      C  5</span>
+<span class="co">#&gt; 14:      C# 5</span>
+<span class="co">#&gt; 15:      D  5</span>
+<span class="co">#&gt; 16:      D# 5</span>
+<span class="co">#&gt; 17:      E  5</span>
+<span class="co">#&gt; 18:      F  5</span>
+<span class="co">#&gt; 19:      F# 5</span>
+<span class="co">#&gt; 20:      G  5</span>
+
+<span class="co"># the defaults yield the tetrads of the 1-3-5-7-9-11 eikosany</span>
+<span class="va">eikosany_chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chord_table.html">chord_table</a></span><span class="op">(</span><span class="va">eikosany_scale</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_chords</span><span class="op">)</span>
+<span class="co">#&gt;     chord_label harmonic_note_numbers harmonic_note_names</span>
+<span class="co">#&gt;  1:     1:3:5:7           61:66:71:75 C# 4:F# 4:B  4:D# 5</span>
+<span class="co">#&gt;  2:     1:3:5:9           67:71:74:79 G  4:B  4:D  5:G  5</span>
+<span class="co">#&gt;  3:    1:3:5:11           62:68:71:73 D  4:G# 4:B  4:C# 5</span>
+<span class="co">#&gt;  4:     1:3:7:9           61:69:74:78 C# 4:A  4:D  5:F# 5</span>
+<span class="co">#&gt;  5:    1:3:7:11           61:64:68:72 C# 4:E  4:G# 4:C  5</span>
+<span class="co">#&gt;  6:    1:3:9:11           65:68:74:76 F  4:G# 4:D  5:E  5</span>
+<span class="co">#&gt;  7:     1:5:7:9           63:66:69:79 D# 4:F# 4:A  4:G  5</span>
+<span class="co">#&gt;  8:    1:5:7:11           64:66:73:77 E  4:F# 4:C# 5:F  5</span>
+<span class="co">#&gt;  9:    1:5:9:11           70:73:76:79 A# 4:C# 5:E  5:G  5</span>
+<span class="co">#&gt; 10:    1:7:9:11           60:64:69:76 C  4:E  4:A  4:E  5</span>
+<span class="co">#&gt; 11:     3:5:7:9           63:67:75:78 D# 4:G  4:D# 5:F# 5</span>
+<span class="co">#&gt; 12:    3:5:7:11           62:72:75:77 D  4:C  5:D# 5:F  5</span>
+<span class="co">#&gt; 13:    3:5:9:11           62:65:67:70 D  4:F  4:G  4:A# 4</span>
+<span class="co">#&gt; 14:    3:7:9:11           60:65:72:78 C  4:F  4:C  5:F# 5</span>
+<span class="co">#&gt; 15:    5:7:9:11           60:63:70:77 C  4:D# 4:A# 4:F  5</span>
+<span class="co">#&gt;     subharmonic_note_numbers subharmonic_note_names</span>
+<span class="co">#&gt;  1:              60:65:70:76    C  4:F  4:A# 4:E  5</span>
+<span class="co">#&gt;  2:              60:64:72:77    C  4:E  4:C  5:F  5</span>
+<span class="co">#&gt;  3:              60:63:69:78    C  4:D# 4:A  4:F# 5</span>
+<span class="co">#&gt;  4:              62:70:73:77    D  4:A# 4:C# 5:F  5</span>
+<span class="co">#&gt;  5:              63:67:70:79    D# 4:G  4:A# 4:G  5</span>
+<span class="co">#&gt;  6:              63:66:75:77    D# 4:F# 4:D# 5:F  5</span>
+<span class="co">#&gt;  7:              62:65:68:72    D  4:F  4:G# 4:C  5</span>
+<span class="co">#&gt;  8:              65:67:74:78    F  4:G  4:D  5:F# 5</span>
+<span class="co">#&gt;  9:              61:72:75:78    C# 4:C  5:D# 5:F# 5</span>
+<span class="co">#&gt; 10:              62:67:71:75    D  4:G  4:B  4:D# 5</span>
+<span class="co">#&gt; 11:              64:68:73:76    E  4:G# 4:C# 5:E  5</span>
+<span class="co">#&gt; 12:              69:74:76:79    A  4:D  5:E  5:G  5</span>
+<span class="co">#&gt; 13:              61:64:66:69    C# 4:E  4:F# 4:A  4</span>
+<span class="co">#&gt; 14:              66:71:73:79    F# 4:B  4:C# 5:G  5</span>
+<span class="co">#&gt; 15:              61:68:71:74    C# 4:G# 4:B  4:D  5</span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

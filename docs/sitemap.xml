@@ -13,10 +13,19 @@
     <loc>/authors.html</loc>
   </url>
   <url>
+    <loc>/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>/CONTRIBUTING.html</loc>
+  </url>
+  <url>
     <loc>/index.html</loc>
   </url>
   <url>
     <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>/reference/chord_table.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>

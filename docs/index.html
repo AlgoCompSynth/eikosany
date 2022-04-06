@@ -28,7 +28,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-dark"><div class="container">
     
     <a class="navbar-brand me-2" href="index.html">eikosany</a>
 
@@ -55,19 +55,93 @@
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/AlgoCompSynth/eikosany/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9">
-Erv Wilson's Eiksosany is a microtonal musical scale with 20 notes.
-    The Eikosany is based on Wilson's concept of Combination Product Sets. This
-    package computes various structures useful for algorithmic composition
-    using the Eikosany.
-  </main><aside class="col-md-3"><div class="license">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="eikosany---algorithmic-composition-with-erv-wilsons-combination-product-sets">eikosany - algorithmic composition with Erv Wilson’s Combination Product Sets<a class="anchor" aria-label="anchor" href="#eikosany---algorithmic-composition-with-erv-wilsons-combination-product-sets"></a>
+</h1></div>
+<div class="section level2">
+<h2 id="what-is-this">What is this?<a class="anchor" aria-label="anchor" href="#what-is-this"></a>
+</h2>
+<p><code>eikosany</code> is an R package of tools for algorithmic composition with Erv Wilson’s Combination Product Sets (Narushima 2019, chap. 6). It’s meant to <strong><em>complement</em></strong> other microtonal composition tools, not replace any of them.</p>
+<p>About the name: the <em>eikosany</em> is a 20-note scale derived by Erv Wilson from the first six odd harmonics in the harmonic series - 1, 3, 5, 7, 9 and 11.</p>
+</div>
+<div class="section level2">
+<h2 id="other-tools">Other tools?<a class="anchor" aria-label="anchor" href="#other-tools"></a>
+</h2>
+<ul>
+<li>
+<a href="https://www.huygens-fokker.org/scala/" class="external-link">Scala</a>. Note: this is <strong><em>not</em></strong> the Scala multi-paradigm programming language that runs on the Java Virtual Machine. This is a specialized tool for working with musical scales.</li>
+<li>
+<a href="https://apps.apple.com/us/app/wilsonic/id848852071" class="external-link">Wilsonic</a>. This is a free app that runs on iOS devices. I don’t have any iOS devices so I’ve never used this.</li>
+<li>
+<a href="https://oddsound.com/mtsespsuite.phphttps://oddsound.com/mtsespsuite.php" class="external-link">ODDSound MTS-ESP</a>. This is a plugin for digital audio workstations (DAWs) that facilitates production of microtonal music. I own a copy and if you’re making microtonal electronic music, you should too. The eikosany and other scales Erv Wilson developed all ship with MTS-ESP, so you don’t really need my R package to compose with them.</li>
+<li>
+<a href="https://sevish.com/scaleworkshop/guide.htm" class="external-link">Sevish’s Scale Workshop</a>. This is a web-based tool for working with musical scales.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="why-did-you-build-it">Why did you build it?<a class="anchor" aria-label="anchor" href="#why-did-you-build-it"></a>
+</h2>
+<p>I have two main motivations:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>There’s an old saying that if you really want to learn something, teach a computer to do it. In the case of Erv Wilson’s musical constructs, teasing the construction processes out of his and others’ writings on the subject is a non-trivial task.</p>
+<p>For example, much of Wilson’s writing is in the form of multi-dimensional graph structures drawn on flat paper. He did build physical three-dimensional models of some of them, but some can’t even be rendered in three dimension.</p>
+<p>The graph theory operations that generated them and musical ways to traverse them are not at all obvious. One of my long-term goals is to write code to draw and traverse these, using DiagrammeR (Iannone 2022).</p>
+</li>
+<li>
+<p>I own two synthesizers that can remap the keyboard and its associated MIDI note numbers to arbitrary pitches, an <a href="https://www.ashunsoundmachines.com/hydrasynth-explorer" class="external-link">ASM Hydrasynth Explorer</a>, and a <a href="https://www.korg.com/us/products/synthesizers/minilogue_xd/" class="external-link">Korg Minilogue XD</a>. The Hydrasynth even has the eikosany and other Combination Product Sets built-in!</p>
+<p>But I’m not a keyboard player, and even if I were, the remapping process for the scales leaves only middle C where a musician would normally expect to find it. All the other notes are somewhere else.</p>
+<p>So I need a translator for the music I want to write that doesn’t involve a lot of trial and error fumbling around on a synthesizer or on-screen keyboard. In particular, the playing of chords on a remapped synthesizer isn’t described in any of the references on Wilson’s work that I’ve found.</p>
+<p>Music composed using Wilson’s musical structures is mostly played on instruments custom-built for them. There are keyboards designed for Wilson’s and other microtonal music; indeed, Wilson himself designed microtonal keyboards (Narushima 2019, chap. 2). But they’re quite expensive and, like the instruments, custom-built.</p>
+</li>
+</ol>
+</div>
+<div class="section level2">
+<h2 id="road-map">Road map<a class="anchor" aria-label="anchor" href="#road-map"></a>
+</h2>
+<p>I’ve got the basic scale and chord generation working. The next steps are</p>
+<ol style="list-style-type: decimal">
+<li><p>Verify that the generated scales match all of the Combination Product Set scales in Sevish’s <a href="https://sevish.com/music-resources/" class="external-link">Eikosany Pack</a>. The eikosany already does, but it’s easy to write a test harness to check them all.</p></li>
+<li><p>Add a MIDI file writing capability. There are some R packages that do this but I haven’t been able to test them yet. The goal here is to algorithmically create a MIDI file, load it into a DAW and hear what it sounds like on the synthesizer hardware. There are some <a href="https://en.xen.wiki/w/List_of_microtonal_software_plugins" class="external-link">software synthesizers that allow MIDI pitch remapping (look for “Full-keyboard microtuning”)</a>, so if you want to try this, you don’t need to buy a synthesizer.</p></li>
+</ol>
+<p>That’s pretty much it for release 1.0. Once I have the capability to write MIDI files programmatically, I can think about long-term goals. As I noted above, one of them is to develop graph rendering and traversal tools for all of Wilson’s constructs.</p>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Iannone2022a" class="csl-entry">
+Iannone, Richard. 2022. <em>DiagrammeR: Graph/Network Visualization</em>. <a href="https://CRAN.R-project.org/package=DiagrammeR" class="external-link uri">https://CRAN.R-project.org/package=DiagrammeR</a>.
+</div>
+<div id="ref-narushima2019microtonality" class="csl-entry">
+Narushima, T. 2019. <em>Microtonality and the Tuning Systems of Erv Wilson</em>. Routledge Studies in Music Theory. Taylor &amp; Francis Limited. <a href="https://books.google.com/books?id=TCBdzAEACAAJ" class="external-link uri">https://books.google.com/books?id=TCBdzAEACAAJ</a>.
+</div>
+</div>
+</div>
+</div>
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/AlgoCompSynth/eikosany/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/AlgoCompSynth/eikosany/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
@@ -76,6 +150,13 @@ Erv Wilson's Eiksosany is a microtonal musical scale with 20 notes.
 </ul>
 </div>
 
+<div class="community">
+<h2 data-toc-skip>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
+</ul>
+</div>
 
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
