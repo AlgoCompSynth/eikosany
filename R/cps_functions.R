@@ -11,10 +11,10 @@
 #' @importFrom utils globalVariables
 #' @export scale_table
 #' @param harmonics a vector of the harmonics to use - defaults to the first
-#' six odd numbers, the harmonics that define the 1-3-5-7-9-11 eikosany.
+#' six odd numbers, the harmonics that define the 1-3-5-7-9-11 Eikosany.
 #' @param choose the number of harmonics to choose for each combination -
 #' defaults to 3, the number of harmonics for each combination in the
-#' eikosany.
+#' Eikosany.
 #' @param base_frequency the base frequency in Hz - defaults to
 #' `440 / (2 ^ (9 / 12))`, the frequency of middle C on a 12-tone equal
 #' tempered keyboard when A = 440 Hz.
@@ -43,12 +43,12 @@
 #' @examples
 #' \dontrun{
 #'
-#' # the defaults yield the 1-3-5-7-9-11 eikosany
+#' # the defaults yield the 1-3-5-7-9-11 Eikosany
 #' eikosany <- scale_table()
 #' print(eikosany[["scale_table"]])
 #' print(eikosany[["interval_matrix"]])
 #'
-#' # the 1-7-9-11-13 dekany
+#' # the 1-7-9-11-13 Dekany
 #' dekany_harmonics <- c(1, 7, 9, 11, 13)
 #' dekany_choose <- 2
 #' dekany_1_3_7_9_11_13 <-
@@ -143,11 +143,11 @@ scale_table <- function(
 #' @examples
 #' \dontrun{
 #'
-#' # the defaults yield the 1-3-5-7-9-11 eikosany
+#' # the defaults yield the 1-3-5-7-9-11 Eikosany
 #' eikosany_scale <- scale_table()[["scale_table"]]
 #' print(eikosany_scale)
 #'
-#' # the defaults yield the tetrads of the 1-3-5-7-9-11 eikosany
+#' # the defaults yield the tetrads of the 1-3-5-7-9-11 Eikosany
 #' eikosany_chords <- chord_table(eikosany_scale)
 #' print(eikosany_chords)
 #' }

@@ -35,11 +35,11 @@ Creates a chord table
 \examples{
 \dontrun{
 
-# the defaults yield the 1-3-5-7-9-11 eikosany
+# the defaults yield the 1-3-5-7-9-11 Eikosany
 eikosany_scale <- scale_table()[["scale_table"]]
 print(eikosany_scale)
 
-# the defaults yield the tetrads of the 1-3-5-7-9-11 eikosany
+# the defaults yield the tetrads of the 1-3-5-7-9-11 Eikosany
 eikosany_chords <- chord_table(eikosany_scale)
 print(eikosany_chords)
 }

@@ -8,7 +8,7 @@ Wilson’s Combination Product Sets (Narushima 2019, chap. 6). It’s meant
 to ***complement*** other microtonal composition tools, not replace any
 of them.
 
-About the name: the *eikosany* is a 20-note scale derived by Erv Wilson
+About the name: the *Eikosany* is a 20-note scale derived by Erv Wilson
 from the first six odd harmonics in the harmonic series - 1, 3, 5, 7, 9
 and 11.
 
@@ -26,7 +26,7 @@ and 11.
     This is a plugin for digital audio workstations (DAWs) that
     facilitates production of microtonal music. I own a copy and if
     you’re making microtonal electronic music, you should too. The
-    eikosany and other scales Erv Wilson developed all ship with
+    Eikosany and other scales Erv Wilson developed all ship with
     MTS-ESP, so you don’t really need my R package to compose with them.
 -   [Sevish’s Scale
     Workshop](https://sevish.com/scaleworkshop/guide.htm). This is a
@@ -57,7 +57,7 @@ I have two main motivations:
     Explorer](https://www.ashunsoundmachines.com/hydrasynth-explorer),
     and a [Korg Minilogue
     XD](https://www.korg.com/us/products/synthesizers/minilogue_xd/).
-    The Hydrasynth even has the eikosany and other Combination Product
+    The Hydrasynth even has the Eikosany and other Combination Product
     Sets built-in!
 
     But I’m not a keyboard player, and even if I were, the remapping
@@ -83,7 +83,7 @@ are
 
 1.  Verify that the generated scales match all of the Combination
     Product Set scales in Sevish’s [Eikosany
-    Pack](https://sevish.com/music-resources/). The eikosany already
+    Pack](https://sevish.com/music-resources/). The Eikosany already
     does, but it’s easy to write a test harness to check them all.
 
 2.  Add a MIDI file writing capability. There are some R packages that

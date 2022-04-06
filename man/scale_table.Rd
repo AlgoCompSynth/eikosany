@@ -13,11 +13,11 @@ scale_table(
 }
 \arguments{
 \item{harmonics}{a vector of the harmonics to use - defaults to the first
-six odd numbers, the harmonics that define the 1-3-5-7-9-11 eikosany.}
+six odd numbers, the harmonics that define the 1-3-5-7-9-11 Eikosany.}
 
 \item{choose}{the number of harmonics to choose for each combination -
 defaults to 3, the number of harmonics for each combination in the
-eikosany.}
+Eikosany.}
 
 \item{base_frequency}{the base frequency in Hz - defaults to
 \code{440 / (2 ^ (9 / 12))}, the frequency of middle C on a 12-tone equal
@@ -55,12 +55,12 @@ a combination product set definition
 \examples{
 \dontrun{
 
-# the defaults yield the 1-3-5-7-9-11 eikosany
+# the defaults yield the 1-3-5-7-9-11 Eikosany
 eikosany <- scale_table()
 print(eikosany[["scale_table"]])
 print(eikosany[["interval_matrix"]])
 
-# the 1-7-9-11-13 dekany
+# the 1-7-9-11-13 Dekany
 dekany_harmonics <- c(1, 7, 9, 11, 13)
 dekany_choose <- 2
 dekany_1_3_7_9_11_13 <-
