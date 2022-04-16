@@ -32,12 +32,17 @@ a list of two items:
 \item \code{scale_table}: the scale table
 \item \code{interval_matrix}: the interval matrix
 }
-The scale table contains seven columns:
+The scale table contains ten columns:
 \itemize{
 \item \code{note_label}: the product that defines the note
-\item \code{ratio}: the ratio that defines the note
+\item \code{ratio}: the ratio that defines the note, as a number between 1 and
+2
+\item \code{ratio_frac}: the ratio as a vulgar fraction (character)
 \item \code{cents}: the ratio in cents (hundredths of a semitone)
 \item \code{frequency}: the frequency of the note in Hz
+\item \code{base_12EDO}: for synthesizers that can be retuned via pitch bend,
+the base note name from 12EDO aka 12 tone equal temperament
+\item \code{offset_cents}: the offset in cents from the base 12EDO pitch
 \item \code{interval}: the interval in cents of the note over the preceding
 note
 \item \code{midi_note_number}: the MIDI note number for the note

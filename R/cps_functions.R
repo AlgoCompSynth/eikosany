@@ -7,6 +7,7 @@
 #' @importFrom data.table setkey
 #' @importFrom data.table shift
 #' @importFrom fractional fractional
+#' @importFrom fractional numerical
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
 #' @export scale_table
@@ -25,12 +26,17 @@
 #' \item `scale_table`: the scale table
 #' \item `interval_matrix`: the interval matrix
 #' }
-#' The scale table contains seven columns:
+#' The scale table contains ten columns:
 #' \itemize{
 #' \item `note_label`: the product that defines the note
-#' \item `ratio`: the ratio that defines the note
+#' \item `ratio`: the ratio that defines the note, as a number between 1 and
+#' 2
+#' \item `ratio_frac`: the ratio as a vulgar fraction (character)
 #' \item `cents`: the ratio in cents (hundredths of a semitone)
 #' \item `frequency`: the frequency of the note in Hz
+#' \item `base_12EDO`: for synthesizers that can be retuned via pitch bend,
+#' the base note name from 12EDO aka 12 tone equal temperament
+#' \item `offset_cents`: the offset in cents from the base 12EDO pitch
 #' \item `interval`: the interval in cents of the note over the preceding
 #' note
 #' \item `midi_note_number`: the MIDI note number for the note
@@ -81,10 +87,18 @@ scale_table <- function(
     product <- apply(scale_table, 2, prod)
     normalizer <- min(product)
     ratio <- .octave_reduce(product / normalizer)
+    ratio_frac <- as.character(fractional::fractional(ratio))
     cents <- .ratio2cents(ratio)
     frequency <- base_frequency * ratio
+    pbo <- .pitch_bend_offsets(cents)
     scale_table <- data.table::data.table(
-      note_label, ratio, cents, frequency
+      note_label,
+      ratio,
+      ratio_frac,
+      cents,
+      frequency,
+      base_12EDO = pbo[["base_12EDO"]],
+      offset_cents = pbo[["offset_cents"]]
     )
     setkey(scale_table, frequency)
     low_nn <- base_note_number
@@ -92,8 +106,11 @@ scale_table <- function(
     scale_table <- scale_table[, list(
       note_label,
       ratio,
+      ratio_frac,
       cents,
       frequency,
+      base_12EDO,
+      offset_cents,
       interval = cents - data.table::shift(cents),
       midi_note_number = low_nn:high_nn
     )]
@@ -252,6 +269,32 @@ chord_table <- function(
   return(note_name_table)
 }
 
+.pitch_bend_offsets <- function(cents) {
+  note_names <- c(
+    "C ",
+    "C#",
+    "D ",
+    "D#",
+    "E ",
+    "F ",
+    "F#",
+    "G ",
+    "G#",
+    "A ",
+    "A#",
+    "B ",
+    "C'"
+  )
+
+  base <- cents %/% 100
+  offset_cents <- cents %% 100
+  index <- offset_cents > 50
+  base[index] <- base[index] + 1
+  offset_cents[index] <- offset_cents[index] - 100
+  base_12EDO <- note_names[base + 1]
+  return(list(base_12EDO = base_12EDO, offset_cents = offset_cents))
+}
+
 .convert_chords <- function(chord_label, harmonics, scale_table) {
 
   # unpack the chord label
@@ -319,7 +362,9 @@ chord_table <- function(
 }
 
 utils::globalVariables(c(
+  "base_12EDO",
   "note_label",
   "midi_note_number",
-  "note_name"
+  "note_name",
+  "offset_cents"
 ))
