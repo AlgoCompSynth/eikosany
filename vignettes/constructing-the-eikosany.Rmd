@@ -75,10 +75,10 @@ print(eikosany[["interval_matrix"]])
 # the 1-7-9-11-13 Dekany
 dekany_harmonics <- c(1, 7, 9, 11, 13)
 dekany_choose <- 2
-dekany_1_3_7_9_11_13 <-
+dekany_1_7_9_11_13 <-
   scale_table(dekany_harmonics, dekany_choose)
-print(dekany_1_3_7_9_11_13[["scale_table"]])
-print(dekany_1_3_7_9_11_13[["interval_matrix"]])
+print(dekany_1_7_9_11_13[["scale_table"]])
+print(dekany_1_7_9_11_13[["interval_matrix"]])
 
 # We might want to print out sheet music for a conventional keyboard
 # player, since the synthesizer is mapping MIDI note numbers to pitches.
