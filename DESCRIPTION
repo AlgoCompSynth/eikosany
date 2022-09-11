@@ -23,4 +23,10 @@ Suggests:
 VignetteBuilder: knitr
 Imports: 
     fractional,
-    data.table
+    data.table,
+    tuneR,
+    DiagrammeR,
+    forcats,
+    pyramidi (>= 0.1)
+Remotes:  
+    UrsWilke/pyramidi
