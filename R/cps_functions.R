@@ -208,7 +208,7 @@ chord_table <- function(
 }
 
 .collapse_star <- function(x) {
-  paste(x, collapse = "*")
+  paste(x, collapse = "×")
 }
 
 .collapse_colon <- function(x) {
