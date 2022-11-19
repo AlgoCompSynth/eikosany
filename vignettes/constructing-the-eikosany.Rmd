@@ -49,19 +49,9 @@ Narushima's _Microtonality and the Tuning Systems of Erv Wilson_
 work and is the basis for the code in this package.
 
 The 20th anniversary of Xenakis' passing and of _When Harry Met Iannis_
-occured in my second year of virtual isolation because of COVID-19. During
-2021, I acquired two synthesizers that are capable of mapping the keyboards
-to arbitrary microtonal scales: an
-[Ashun Sound Machines Hydrasynth Desktop](https://www.ashunsoundmachines.com/hydrasynth-desk), and a
-[Korg Minilogue XD](https://www.korg.com/us/products/synthesizers/minilogue_xd/).
-
-The Hydrasynth ships with the tuning tables for many of Erv Wilson's scales
-already in the firmware. For the Minilogue XD, the user can load up to six
-custom scales with a software librarian program. In either case, though, I'm
-not a keyboard player, and even if I was, the chords in the Wilson scales
-are not where they would be on a conventional keyboard; the synthesizer has
-remapped them. So I needed a tool to generate MIDI files to play the chords.
-And that's what this package does.
+occured in my second year of virtual isolation because of COVID-19. And this
+year marks the 100th anniversary of Xenakis' birth. So I am developing this
+package to explore Wilson's works algorithmically.
 
 ## Computing Combination Product Set scales
 
