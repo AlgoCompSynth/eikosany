@@ -2,3 +2,15 @@ url: ~
 template:
   bootstrap: 5
   bootswatch: cyborg
+  includes:
+    after_navbar: <a style="text-align:center" rel="me" href="https://ravenation.club/@AlgoCompSynth"> -- by @AlgoCompSynth@ravenation.club on Mastodon</a>
+home:
+  sidebar:
+    structure: [links, license, community, citation, authors, dev]
+  links:
+  - text: AlgoCompSynth Blog
+    href: https://www.algocompsynth.com
+  - text: M. Edward (Ed) Borasky on LinkedIn
+    href: https://www.linkedin.com/in/znmeb/
+  - text: AlgoCompSynth on Mastodon
+    href: https://ravenation.club/@AlgoCompSynth
