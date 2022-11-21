@@ -2,8 +2,6 @@ url: ~
 template:
   bootstrap: 5
   bootswatch: cyborg
-  includes:
-    after_navbar: <a rel="me" href="https://ravenation.club/@AlgoCompSynth"> by @AlgoCompSynth@ravenation.club on Mastodon</a>
 home:
   sidebar:
     structure: [links, license, community, citation, authors, dev]
