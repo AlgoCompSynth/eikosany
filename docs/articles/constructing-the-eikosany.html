@@ -80,48 +80,6 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://algocompsynth.github.io/eikosany/" class="external-link">eikosany</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
-</h2>
-<p>On February 4, 2001, composer Iannis Xenakis passed away. I’ve been a
-fan of experimental music, especially <em>musique concrète</em>,
-algorithmically composed music, microtonal music, and other
-<em>avant-garde</em> genres since I was an undergraduate. Xenakis was
-one of the major figures in algorithmic composition.</p>
-<p>Reading the first edition of <em>Tuning, Timbre, Spectrum, Scale</em>
-<span class="citation">(Sethares 1998)</span> rekindled my appreciation
-for the microtonal music of Harry Partch. And so, armed with copies of
-<span class="citation">Sethares (1998)</span>, <em>Formalized Music</em>
-<span class="citation">(Xenakis 1992)</span>, and <em>Genesis of a
-Music</em> <span class="citation">(Partch 1979)</span>, I embarked on a
-path that led to <em>When Harry Met Iannis</em> <span class="citation">(Borasky 2021)</span>.</p>
-<p><em>When Harry Met Iannis</em> was premiered at a microtonal music
-festival in El Paso, Texas in late October, 2001. The <a href="https://algocompsynth.bandcamp.com/album/when-harry-met-iannis" class="external-link">Bandcamp
-version</a> is essentially identical to that version; the source code is
-on GitHub at <a href="https://github.com/AlgoCompSynth/when-harry-met-iannis" class="external-link uri">https://github.com/AlgoCompSynth/when-harry-met-iannis</a>.</p>
-<p>At the festival, I met a number of composers who were working in
-microtonal and just intonation, and one name kept coming up: Erv Wilson.
-Wilson was a theoretician who developed keyboards, scales and tuning
-systems that several composers were using at the time, and are still
-using today. Terumi Narushima’s <em>Microtonality and the Tuning Systems
-of Erv Wilson</em> <span class="citation">(Narushima 2019)</span> is a
-comprehensive documentation of Wilson’s work and is the basis for the
-code in this package.</p>
-<p>The 20th anniversary of Xenakis’ passing and of <em>When Harry Met
-Iannis</em> occured in my second year of virtual isolation because of
-COVID-19. During 2021, I acquired two synthesizers that are capable of
-mapping the keyboards to arbitrary microtonal scales: an <a href="https://www.ashunsoundmachines.com/hydrasynth-desk" class="external-link">Ashun Sound
-Machines Hydrasynth Desktop</a>, and a <a href="https://www.korg.com/us/products/synthesizers/minilogue_xd/" class="external-link">Korg
-Minilogue XD</a>.</p>
-<p>The Hydrasynth ships with the tuning tables for many of Erv Wilson’s
-scales already in the firmware. For the Minilogue XD, the user can load
-up to six custom scales with a software librarian program. In either
-case, though, I’m not a keyboard player, and even if I was, the chords
-in the Wilson scales are not where they would be on a conventional
-keyboard; the synthesizer has remapped them. So I needed a tool to
-generate MIDI files to play the chords. And that’s what this package
-does.</p>
-</div>
-<div class="section level2">
 <h2 id="computing-combination-product-set-scales">Computing Combination Product Set scales<a class="anchor" aria-label="anchor" href="#computing-combination-product-set-scales"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -1716,31 +1674,9 @@ does.</p>
 </tbody>
 </table>
 </div>
-<div class="section level2 unnumbered">
-<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Borasky2021a" class="csl-entry">
-Borasky, M. Edward (Ed). 2021. <span>“When Harry Met Iannis.”</span> <a href="https://algocompsynth.bandcamp.com/album/when-harry-met-iannis" class="external-link">https://algocompsynth.bandcamp.com/album/when-harry-met-iannis</a>.
-</div>
-<div id="ref-narushima2019microtonality" class="csl-entry">
-Narushima, T. 2019. <em>Microtonality and the Tuning Systems of Erv
-Wilson</em>. Routledge Studies in Music Theory. Taylor &amp; Francis
-Limited. <a href="https://books.google.com/books?id=TCBdzAEACAAJ" class="external-link">https://books.google.com/books?id=TCBdzAEACAAJ</a>.
-</div>
-<div id="ref-partch1979genesis" class="csl-entry">
-Partch, H. 1979. <em>Genesis of a Music: An Account of a Creative Work,
-Its Roots, and Its Fulfillments, Second Edition</em>. Hachette Books. <a href="https://books.google.com/books?id=8JVQAQAACAAJ" class="external-link">https://books.google.com/books?id=8JVQAQAACAAJ</a>.
-</div>
-<div id="ref-sethares1998tuning" class="csl-entry">
-Sethares, W. A. 1998. <em>Tuning, Timbre, Spectrum, Scale</em>. Springer
-London. <a href="https://books.google.com/books?id=T8XvAAAAMAAJ" class="external-link">https://books.google.com/books?id=T8XvAAAAMAAJ</a>.
-</div>
-<div id="ref-xenakis1992formalized" class="csl-entry">
-Xenakis, I. 1992. <em>Formalized Music: Thought and Mathematics in
-Composition</em>. Harmonologia Series. Pendragon Press. <a href="https://books.google.com/books?id=y6lL3I0vmMwC" class="external-link">https://books.google.com/books?id=y6lL3I0vmMwC</a>.
-</div>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
