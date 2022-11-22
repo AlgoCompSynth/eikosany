@@ -43,11 +43,11 @@ algorithmically composed music, microtonal music, and other
 *avant-garde* genres since I was an undergraduate. Xenakis was one of
 the major figures in algorithmic composition.
 
-Reading the first edition of *Tuning, Timbre, Spectrum, Scale *(Sethares
-1998) rekindled my appreciation for the microtonal music of Harry
-Partch. And so, armed with copies of Sethares (1998), *Formalized Music*
-(Xenakis 1992), and *Genesis of a Music* (Partch 1979), I embarked on a
-path that led to *When Harry Met Iannis* (Borasky 2021).
+Reading the first edition of *Tuning, Timbre, Spectrum, Scale* [^1]
+rekindled my appreciation for the microtonal music of Harry Partch. And
+so, armed with copies of Sethares (1998), *Formalized Music* [^2], and
+*Genesis of a Music* [^3], I embarked on a path that led to *When Harry
+Met Iannis* [^4].
 
 *When Harry Met Iannis* was premiered at a microtonal music festival in
 El Paso, Texas in late October, 2001. The [Bandcamp
@@ -60,8 +60,8 @@ microtonal and just intonation, and one name kept coming up: Erv Wilson.
 Wilson was a theoretician who developed keyboards, scales and tuning
 systems that several composers were using at the time, and are still
 using today. Terumi Narushima’s *Microtonality and the Tuning Systems of
-Erv Wilson* (Narushima 2019) is a comprehensive documentation of
-Wilson’s work and is the basis for the code in this package.
+Erv Wilson* [^5] is a comprehensive documentation of Wilson’s work and
+is the basis for the code in this package.
 
 ## Motivation
 
@@ -174,3 +174,13 @@ Composition*. Harmonologia Series. Pendragon Press.
 </div>
 
 </div>
+
+[^1]: Sethares (1998)
+
+[^2]: Xenakis (1992)
+
+[^3]: Partch (1979)
+
+[^4]: Borasky (2021)
+
+[^5]: Narushima (2019)
