@@ -19,50 +19,6 @@ knitr::opts_chunk$set(
 library(eikosany)
 ```
 
-## Motivation
-
-On February 4, 2001, composer Iannis Xenakis passed away. I've been a fan of
-experimental music, especially _musique concrète_, algorithmically composed
-music, microtonal music, and other _avant-garde_ genres since I was an
-undergraduate. Xenakis was one of the major figures in algorithmic
-composition.
-
-Reading the first edition of _Tuning, Timbre, Spectrum, Scale_
-[@sethares1998tuning] rekindled my appreciation for the microtonal music of
-Harry Partch. And so, armed with copies of @sethares1998tuning,
-_Formalized Music_ [@xenakis1992formalized], and _Genesis of a Music_
-[@partch1979genesis], I embarked on a path that led to
-_When Harry Met Iannis_ [@Borasky2021a].
-
-_When Harry Met Iannis_ was premiered at a microtonal music festival in El
-Paso, Texas in late October, 2001. The
-[Bandcamp version](https://algocompsynth.bandcamp.com/album/when-harry-met-iannis)
-is essentially identical to that version; the source code is on GitHub at
-<https://github.com/AlgoCompSynth/when-harry-met-iannis>.
-
-At the festival, I met a number of composers who were working in microtonal
-and just intonation, and one name kept coming up: Erv Wilson. Wilson was a
-theoretician who developed keyboards, scales and tuning systems that
-several composers were using at the time, and are still using today. Terumi
-Narushima's _Microtonality and the Tuning Systems of Erv Wilson_
-[@narushima2019microtonality] is a comprehensive documentation of Wilson's
-work and is the basis for the code in this package.
-
-The 20th anniversary of Xenakis' passing and of _When Harry Met Iannis_
-occured in my second year of virtual isolation because of COVID-19. During
-2021, I acquired two synthesizers that are capable of mapping the keyboards
-to arbitrary microtonal scales: an
-[Ashun Sound Machines Hydrasynth Desktop](https://www.ashunsoundmachines.com/hydrasynth-desk), and a
-[Korg Minilogue XD](https://www.korg.com/us/products/synthesizers/minilogue_xd/).
-
-The Hydrasynth ships with the tuning tables for many of Erv Wilson's scales
-already in the firmware. For the Minilogue XD, the user can load up to six
-custom scales with a software librarian program. In either case, though, I'm
-not a keyboard player, and even if I was, the chords in the Wilson scales
-are not where they would be on a conventional keyboard; the synthesizer has
-remapped them. So I needed a tool to generate MIDI files to play the chords.
-And that's what this package does.
-
 ## Computing Combination Product Set scales
 
 ```{r}
