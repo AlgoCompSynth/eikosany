@@ -3,6 +3,8 @@
 export(chord_table)
 export(interval_matrix)
 export(scale_table)
+importFrom(data.table,".I")
+importFrom(data.table,":=")
 importFrom(data.table,data.table)
 importFrom(data.table,setkey)
 importFrom(fractional,fractional)

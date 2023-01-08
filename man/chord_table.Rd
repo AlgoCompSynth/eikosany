@@ -19,14 +19,10 @@ defaults to 4, to compute tetrads for the eikosany.}
 a data.table with five columns:
 \itemize{
 \item \code{chord_label}: the chord expressed as colon-separated harmonics
-\item \code{harmonic_note_numbers}: the harmonic chord expressed as
-colon-separated MIDI note numbers
-\item \code{harmonic_note_names}: the harmonic chord expressed as
-colon-separated note names
-\item \code{subharmonic_note_numbers}: the subharmonic chord expressed as
-colon-separated MIDI note numbers
-\item \code{subharmonic_note_names}: the subharmonic chord expressed as
-colon-separated note names
+\item \code{harmonic_scale_degrees}: the harmonic chord expressed as
+colon-separated scale degrees
+\item \code{subharmonic_scale_degrees}: the subharmonic chord expressed as
+colon-separated scale degrees
 }
 }
 \description{

@@ -35,6 +35,8 @@
 #' @description Creates a scale table from a combination product set definition
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
+#' @importFrom data.table ":="
+#' @importFrom data.table ".I"
 #' @importFrom fractional fractional
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
@@ -46,11 +48,12 @@
 #' Eikosany.
 #' @return a `data.table` with ten columns:
 #' \itemize{
-#' \item `note_label`: the product that defines the note
+#' \item `product`: the product of harmonics that defines the note (character)
 #' \item `ratio`: the ratio that defines the note, as a number between 1 and
 #' 2
 #' \item `ratio_frac`: the ratio as a vulgar fraction (character)
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
+#' \item `degree`: scale degree from zero to (number of notes) - 1
 #' }
 #' @examples
 #' \dontrun{
@@ -75,21 +78,22 @@
 #' }
 
 scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
-  scale_table <- combn(harmonics, choose)
-  note_label <- apply(scale_table, 2, .collapse_product)
-  product <- apply(scale_table, 2, prod)
-  normalizer <- min(product)
-  ratio <- .octave_reduce(product / normalizer)
+  result_table <- combn(harmonics, choose)
+  product <- apply(result_table, 2, .collapse_product)
+  num_product <- apply(result_table, 2, prod)
+  normalizer <- min(num_product)
+  ratio <- .octave_reduce(num_product / normalizer)
   ratio_frac <- as.character(fractional::fractional(ratio))
   ratio_cents <- .ratio2cents(ratio)
-  scale_table <- data.table::data.table(
-    note_label,
+  result_table <- data.table::data.table(
+    product,
     ratio,
     ratio_frac,
     ratio_cents
   )
-  data.table::setkey(scale_table, ratio)
-  return(scale_table)
+  data.table::setkey(result_table, ratio)
+  result_table <- result_table[, "degree" := .I - 1]
+  return(result_table)
 }
 
 #' @title Create Interval Matrix
@@ -130,14 +134,10 @@ interval_matrix <- function(scale_table) {
 #' @return a data.table with five columns:
 #' \itemize{
 #' \item `chord_label`: the chord expressed as colon-separated harmonics
-#' \item `harmonic_note_numbers`: the harmonic chord expressed as
-#' colon-separated MIDI note numbers
-#' \item `harmonic_note_names`: the harmonic chord expressed as
-#' colon-separated note names
-#' \item `subharmonic_note_numbers`: the subharmonic chord expressed as
-#' colon-separated MIDI note numbers
-#' \item `subharmonic_note_names`: the subharmonic chord expressed as
-#' colon-separated note names
+#' \item `harmonic_scale_degrees`: the harmonic chord expressed as
+#' colon-separated scale degrees
+#' \item `subharmonic_scale_degrees`: the subharmonic chord expressed as
+#' colon-separated scale degrees
 #' }
 #' @examples
 #' \dontrun{

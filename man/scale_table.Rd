@@ -17,11 +17,12 @@ Eikosany.}
 \value{
 a \code{data.table} with ten columns:
 \itemize{
-\item \code{note_label}: the product that defines the note
+\item \code{product}: the product of harmonics that defines the note (character)
 \item \code{ratio}: the ratio that defines the note, as a number between 1 and
 2
 \item \code{ratio_frac}: the ratio as a vulgar fraction (character)
 \item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
+\item \code{degree}: scale degree from zero to (number of notes) - 1
 }
 }
 \description{
