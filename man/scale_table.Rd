@@ -2,14 +2,9 @@
 % Please edit documentation in R/cps_functions.R
 \name{scale_table}
 \alias{scale_table}
-\title{Create Scale Table and Interval Matrix}
+\title{Create Scale Table}
 \usage{
-scale_table(
-  harmonics = c(1, 3, 5, 7, 9, 11),
-  choose = 3,
-  base_frequency = 440/(2^(9/12)),
-  base_note_number = 60
-)
+scale_table(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3)
 }
 \arguments{
 \item{harmonics}{a vector of the harmonics to use - defaults to the first
@@ -18,72 +13,39 @@ six odd numbers, the harmonics that define the 1-3-5-7-9-11 Eikosany.}
 \item{choose}{the number of harmonics to choose for each combination -
 defaults to 3, the number of harmonics for each combination in the
 Eikosany.}
-
-\item{base_frequency}{the base frequency in Hz - defaults to
-\code{440 / (2 ^ (9 / 12))}, the frequency of middle C on a 12-tone equal
-tempered keyboard when A = 440 Hz.}
-
-\item{base_note_number}{the MIDI note number corresponding to the
-base frequency - defaults to 60, the MIDI note number of middle C.}
 }
 \value{
-a list of two items:
-\itemize{
-\item \code{scale_table}: the scale table
-\item \code{interval_matrix}: the interval matrix
-}
-The scale table contains ten columns:
+a \code{data.table} with ten columns:
 \itemize{
 \item \code{note_label}: the product that defines the note
 \item \code{ratio}: the ratio that defines the note, as a number between 1 and
 2
 \item \code{ratio_frac}: the ratio as a vulgar fraction (character)
-\item \code{cents}: the ratio in cents (hundredths of a semitone)
-\item \code{frequency}: the frequency of the note in Hz
-\item \code{base_12EDO}: for synthesizers that can be retuned via pitch bend,
-the base note name from 12EDO aka 12 tone equal temperament
-\item \code{offset_cents}: the offset in cents from the base 12EDO pitch
-\item \code{interval}: the interval in cents of the note over the preceding
-note
-\item \code{midi_note_number}: the MIDI note number for the note
-\item \code{note_name}: the note name, where middle C is defined as "C  4".
+\item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
 }
-The interval matrix is the matrix of all intervals between the notes,
-expressed as ratios. Column 1 has the ratios of all the notes to the
-first one, column 2 has the ratios of all the notes to the second one,
-etc.
 }
 \description{
-Creates a scale table and interval matrix from
-a combination product set definition
+Creates a scale table from a combination product set definition
 }
 \examples{
 \dontrun{
 
 # the defaults yield the 1-3-5-7-9-11 Eikosany
-eikosany <- scale_table()
-print(eikosany[["scale_table"]])
-print(eikosany[["interval_matrix"]])
+print(eikosany <- scale_table())
 
 # the 1-7-9-11-13 Dekany
 dekany_harmonics <- c(1, 7, 9, 11, 13)
 dekany_choose <- 2
-dekany_1_7_9_11_13 <-
-  scale_table(dekany_harmonics, dekany_choose)
-print(dekany_1_7_9_11_13[["scale_table"]])
-print(dekany_1_7_9_11_13[["interval_matrix"]])
+print(dekany_1_7_9_11_13 <- scale_table(dekany_harmonics, dekany_choose))
 
 # We might want to print out sheet music for a conventional keyboard
 # player, since the synthesizer is mapping MIDI note numbers to pitches.
-# We assume at least a 37-key synthesizer with middle C on the left.
+# We assume at least a 37-key synthesizer with middle C on the left,
 # so the largest CPS scale we can play is a 35-note "35-any", made from
 # seven harmonics taken three at a time.
 harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 choose_35 <- 3
-any_35 <-
-  scale_table(harmonics_35, choose_35)
-print(any_35[["scale_table"]])
-print(any_35[["interval_matrix"]])
+print(any_35 <- scale_table(harmonics_35, choose_35))
 
 }
 }
