@@ -33,12 +33,9 @@
 #' @title Create Scale Table
 #' @name scale_table
 #' @description Creates a scale table from a combination product set definition
-#' @importFrom data.table between
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
-#' @importFrom data.table shift
 #' @importFrom fractional fractional
-#' @importFrom fractional numerical
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
 #' @export scale_table
@@ -91,8 +88,31 @@ scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
     ratio_frac,
     ratio_cents
   )
-  setkey(scale_table, ratio)
+  data.table::setkey(scale_table, ratio)
   return(scale_table)
+}
+
+#' @title Create Interval Matrix
+#' @name interval_matrix
+#' @description Creates an interval matrix from a scale table
+#' @importFrom fractional fractional
+#' @export interval_matrix
+#' @param scale_table a scale table from the `scale_table` function
+#' @return an interval matrix
+#' @examples
+#' \dontrun{
+#'
+#' # the defaults yield the 1-3-5-7-9-11 Eikosany
+#' print(eikosany_interval_matrix <-interval_matrix(scale_table()))
+#' }
+
+
+interval_matrix <- function(scale_table) {
+  fractional::fractional(outer(
+    scale_table$ratio,
+    scale_table$ratio,
+    "/"
+  ))
 }
 
 #' @title Create Chord Table
