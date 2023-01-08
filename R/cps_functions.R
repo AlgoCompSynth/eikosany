@@ -1,11 +1,43 @@
 # helper functions
 
+.matrix2label <- function(matrix, separator) {
+  apply(matrix, MARGIN = 1, FUN = paste, collapse = separator)
+}
+
+.label2matrix <- function(label, separator) {
+  matrix(
+    unlist(lapply(strsplit(label, separator), as.numeric)),
+    byrow = TRUE,
+    nrow = length(label)
+  )
+}
+
+.label2harmonics <- function(label, separator) {
+  unique(sort(unlist(lapply(strsplit(label, separator), as.numeric))))
+}
+
 .collapse_product <- function(x) {
   paste(x, collapse = "x")
 }
 
-.collapse_colon <- function(x) {
+.unpack_product <- function(product_label) {
+  matrix(
+    unlist(lapply(strsplit(product_label, "x"), as.numeric)),
+    byrow = TRUE,
+    nrow = length(product_label)
+  )
+}
+
+.collapse_chord <- function(x) {
   paste(x, collapse = ":")
+}
+
+.unpack_chord <- function(chord_label) {
+  matrix(
+    unlist(lapply(strsplit(chord_label, ":"), as.numeric)),
+    byrow = TRUE,
+    nrow = length(chord_label)
+  )
 }
 
 .octave_reduce <- function(x) {
@@ -78,9 +110,9 @@
 #' }
 
 scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
-  result_table <- combn(harmonics, choose)
-  product <- apply(result_table, 2, .collapse_product)
-  num_product <- apply(result_table, 2, prod)
+  result_table <- t(combn(harmonics, choose))
+  product <- .matrix2label(result_table, "x")
+  num_product <- apply(result_table, 1, prod)
   normalizer <- min(num_product)
   ratio <- .octave_reduce(num_product / normalizer)
   ratio_frac <- as.character(fractional::fractional(ratio))
@@ -159,7 +191,7 @@ chord_table <- function(
   chords <- combn(harmonics, choose)
 
   # make the chord labels
-  chord_label <- apply(chords, 2, .collapse_colon)
+  chord_label <- apply(chords, 2, .collapse_chord)
   harmonic_note_numbers <- harmonic_note_names <-
     subharmonic_note_numbers <- subharmonic_note_names <- c()
 
@@ -305,10 +337,10 @@ chord_table <- function(
 
   # create return list
   return(list(
-    harmonic_note_numbers = .collapse_colon(harmonic_note_numbers),
-    harmonic_note_names = .collapse_colon(harmonic_note_names),
-    subharmonic_note_numbers = .collapse_colon(subharmonic_note_numbers),
-    subharmonic_note_names = .collapse_colon(subharmonic_note_names)
+    harmonic_note_numbers = .collapse_chord(harmonic_note_numbers),
+    harmonic_note_names = .collapse_chord(harmonic_note_names),
+    subharmonic_note_numbers = .collapse_chord(subharmonic_note_numbers),
+    subharmonic_note_names = .collapse_chord(subharmonic_note_names)
   ))
 }
 
