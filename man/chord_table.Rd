@@ -12,13 +12,11 @@ chord_table(scale_table, choose)
 \item{choose}{the number of harmonics to choose for each chord}
 }
 \value{
-a data.table with three columns:
+a data.table with two columns:
 \itemize{
-\item \code{chord_label}: the chord expressed as colon-separated harmonics
-\item \code{harmonic_scale_degrees}: the harmonic chord expressed as
-colon-separated scale degrees
-\item \code{subharmonic_scale_degrees}: the subharmonic chord expressed as
-colon-separated scale degrees
+\item \code{chord}: the chord expressed as colon-separated harmonics. A
+subharmonic chord is prefixed with a "~".
+\item \code{degrees}: the chord expressed as colon-separated scale degrees
 }
 }
 \description{
@@ -28,11 +26,11 @@ Creates a chord table
 \dontrun{
 
 # the defaults yield the 1-3-5-7-9-11 Eikosany
-eikosany_scale <- scale_table()[["scale_table"]]
+eikosany_scale <- scale_table()
 print(eikosany_scale)
 
-# the defaults yield the tetrads of the 1-3-5-7-9-11 Eikosany
-eikosany_chords <- chord_table(eikosany_scale)
+# compute the tetrads of the 1-3-5-7-9-11 Eikosany
+eikosany_chords <- chord_table(eikosany_scale, 4)
 print(eikosany_chords)
 }
 }

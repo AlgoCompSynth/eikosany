@@ -22,28 +22,15 @@
   unique(sort(unlist(lapply(strsplit(label, separator), as.numeric))))
 }
 
-.collapse_product <- function(x) {
-  paste(x, collapse = "x")
-}
-
-.unpack_product <- function(product_label) {
-  matrix(
-    unlist(lapply(strsplit(product_label, "x"), as.numeric)),
-    byrow = TRUE,
-    nrow = length(product_label)
-  )
-}
-
-.collapse_chord <- function(x) {
-  paste(x, collapse = ":")
-}
-
-.unpack_chord <- function(chord_label) {
-  matrix(
-    unlist(lapply(strsplit(chord_label, ":"), as.numeric)),
-    byrow = TRUE,
-    nrow = length(chord_label)
-  )
+.matrix2degree <- function(note_matrix, scale_table) {
+  note_label <- .matrix2label(note_matrix, .note_sep)
+  note_index <- data.table::data.table(product = note_label)
+  degree_table <- scale_table[
+    note_index,
+    list(product, degree),
+    on = "product"
+  ]
+  return(degree_table)
 }
 
 .octave_reduce <- function(x) {
@@ -66,48 +53,6 @@
 
 .ratio2cents <- function(ratio) {
   return(log2(ratio) * 1200)
-}
-
-.convert_chords <- function(chord, harmonics, scale_table) {
-
-  # harmonics not in the chord
-  others <- setdiff(harmonics, chord)
-  harmonic_scale_degrees <- subharmonic_scale_degrees <- c()
-
-
-  for (i in chord) {
-
-    # make a note_label for the note
-    harmonic_note <- .collapse_product(sort(union(i, others)))
-
-    # look up its scale degree and collect
-    harmonic_scale_degrees <- c(
-      harmonic_scale_degrees,
-      as.numeric(scale_table[
-        product == harmonic_note, list("degree")
-      ])
-    )
-
-    # make a note_label for the note
-    subharmonic_note <- .collapse_product(sort(setdiff(chord, i)))
-
-    # look up its scale degree and collect
-    subharmonic_scale_degrees <- c(
-      subharmonic_scale_degrees,
-      as.numeric(scale_table[
-        product == subharmonic_note, list(degree)
-      ])
-    )
-  }
-
-  harmonic_scale_degrees <- sort(harmonic_scale_degrees)
-  subharmonic_scale_degrees <- sort(subharmonic_scale_degrees)
-
-  # create return list
-  return(list(
-    harmonic_scale_degrees = .collapse_chord(harmonic_scale_degrees),
-    subharmonic_scale_degrees = .collapse_chord(subharmonic_scale_degrees)
-  ))
 }
 
 #' @title Create Scale Table
@@ -208,66 +153,71 @@ interval_matrix <- function(scale_table) {
 #' @export chord_table
 #' @param scale_table the scale table to use for note number and name lookup
 #' @param choose the number of harmonics to choose for each chord
-#' @return a data.table with three columns:
+#' @return a data.table with two columns:
 #' \itemize{
-#' \item `chord_label`: the chord expressed as colon-separated harmonics
-#' \item `harmonic_scale_degrees`: the harmonic chord expressed as
-#' colon-separated scale degrees
-#' \item `subharmonic_scale_degrees`: the subharmonic chord expressed as
-#' colon-separated scale degrees
+#' \item `chord`: the chord expressed as colon-separated harmonics. A
+#' subharmonic chord is prefixed with a "~".
+#' \item `degrees`: the chord expressed as colon-separated scale degrees
 #' }
 #' @examples
 #' \dontrun{
 #'
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' eikosany_scale <- scale_table()[["scale_table"]]
+#' eikosany_scale <- scale_table()
 #' print(eikosany_scale)
 #'
-#' # the defaults yield the tetrads of the 1-3-5-7-9-11 Eikosany
-#' eikosany_chords <- chord_table(eikosany_scale)
+#' # compute the tetrads of the 1-3-5-7-9-11 Eikosany
+#' eikosany_chords <- chord_table(eikosany_scale, 4)
 #' print(eikosany_chords)
 #' }
 
 chord_table <- function(scale_table, choose) {
   harmonics <- .label2harmonics(scale_table$product, .note_sep)
-  print("harmonics")
-  print(harmonics)
   chords <- t(combn(harmonics, choose))
-  print("chords")
-  print(chords)
   others <- t(
     apply(chords, MARGIN = 1, FUN = function(x) setdiff(harmonics, x)
   ))
-  print("others")
-  print(others)
-
-  # make the chord labels
-  #chord_label <- .matrix2label(chords, separator = ":")
 
   # allocate result matrices
   harm_matrix <- subharm_matrix <- chords
 
   for (icol in 1:ncol(chords)) {
 
-    # harmonic note matrix
+    # note as a column matrix
     col_matrix <- matrix(chords[, icol])
-    print("col_matrix")
-    print(col_matrix)
+
+    # harmonic note matrix
     harm_note_matrix <- cbind(col_matrix, others)
-    print("harm_note_matrix")
-    print(harm_note_matrix)
     harm_note_matrix <- t(apply(harm_note_matrix, MARGIN = 1, FUN = sort))
-    print("harm_note_matrix")
-    print(harm_note_matrix)
-    stop("test")
+
+    # harmonic note degree
+    harm_note_degree <- .matrix2degree(harm_note_matrix, scale_table)
+    harm_matrix[, icol] <- harm_note_degree$degree
+
+    # subharmonic note matrix
+    subharm_note_matrix <- t(apply(
+      harm_note_matrix, MARGIN = 1, FUN = function(x) setdiff(harmonics, x)
+    ))
+    subharm_note_matrix <- t(apply(subharm_note_matrix, MARGIN = 1, FUN = sort))
+
+    # subharmonic note degree
+    subharm_note_degree <- .matrix2degree(subharm_note_matrix, scale_table)
+    subharm_matrix[, icol] <- subharm_note_degree$degree
 
   }
-  stop("testing")
+
+  harm_matrix <- t(apply(harm_matrix, MARGIN = 1, FUN = sort))
+  subharm_matrix <- t(apply(subharm_matrix, MARGIN = 1, FUN = sort))
+
+  # make labels
+  chord_label <- .matrix2label(chords, .chord_sep)
+  subchord_label <- paste("/", chord_label, sep = "")
+  harm_label <- .matrix2label(harm_matrix, .chord_sep)
+  subharm_label <- .matrix2label(subharm_matrix, .chord_sep)
 
   return(data.table::data.table(
-    chord_label,
-    harmonic_scale_degrees,
-    subharmonic_scale_degrees
+    chord = c(chord_label, subchord_label),
+    degrees = c(harm_label, subharm_label)
   ))
 
 }
@@ -329,11 +279,12 @@ chord_table <- function(scale_table, choose) {
   return(list(base_12EDO = base_12EDO, offset_cents = offset_cents))
 }
 
-
 utils::globalVariables(c(
   "base_12EDO",
+  "degree",
   "note_label",
   "midi_note_number",
   "note_name",
-  "offset_cents"
+  "offset_cents",
+  "product"
 ))
