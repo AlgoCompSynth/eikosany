@@ -219,72 +219,9 @@ chord_table <- function(scale_table, choose) {
     chord = c(chord_label, subchord_label),
     degrees = c(harm_label, subharm_label)
   ))
-
-}
-.note_name_table <- function() {
-  min_note_number <- 0
-  max_note_number <- 127
-  note_name_table <- data.table::data.table(
-    midi_note_number = min_note_number:max_note_number
-  )
-  note_names <- c(
-    "C ",
-    "C#",
-    "D ",
-    "D#",
-    "E ",
-    "F ",
-    "F#",
-    "G ",
-    "G#",
-    "A ",
-    "A#",
-    "B "
-  )
-  note_name_table <- note_name_table[, list(
-    midi_note_number,
-    note_name = paste(
-      note_names[midi_note_number %% 12 + 1],
-      midi_note_number %/% 12 - 1,
-      sep = " "
-    )
-  )]
-
-  return(note_name_table)
-}
-
-.pitch_bend_offsets <- function(cents) {
-  note_names <- c(
-    "C ",
-    "C#",
-    "D ",
-    "D#",
-    "E ",
-    "F ",
-    "F#",
-    "G ",
-    "G#",
-    "A ",
-    "A#",
-    "B ",
-    "C'"
-  )
-
-  base <- cents %/% 100
-  offset_cents <- cents %% 100
-  index <- offset_cents > 50
-  base[index] <- base[index] + 1
-  offset_cents[index] <- offset_cents[index] - 100
-  base_12EDO <- note_names[base + 1]
-  return(list(base_12EDO = base_12EDO, offset_cents = offset_cents))
 }
 
 utils::globalVariables(c(
-  "base_12EDO",
   "degree",
-  "note_label",
-  "midi_note_number",
-  "note_name",
-  "offset_cents",
   "product"
 ))
