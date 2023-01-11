@@ -3,11 +3,16 @@
 # separator for notes (products)
 .note_sep <- "x"
 
-# separator for chords
+# separators for chords
 .chord_sep <- ":"
+.subchord_sep <- ":/"
 
 .matrix2label <- function(matrix, separator) {
-  apply(matrix, MARGIN = 1, FUN = paste, collapse = separator)
+  label <- apply(matrix, MARGIN = 1, FUN = paste, collapse = separator)
+  if (separator == .subchord_sep) {
+    label <- paste("/", label, sep = "")
+  }
+  return(label)
 }
 
 .label2matrix <- function(label, separator) {
@@ -211,7 +216,7 @@ chord_table <- function(scale_table, choose) {
 
   # make labels
   chord_label <- .matrix2label(chords, .chord_sep)
-  subchord_label <- paste("/", chord_label, sep = "")
+  subchord_label <- .matrix2label(chords, .subchord_sep)
   harm_label <- .matrix2label(harm_matrix, .chord_sep)
   subharm_label <- .matrix2label(subharm_matrix, .chord_sep)
 

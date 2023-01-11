@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
 library(eikosany)
 ```
 
+See @narushima2019microtonality for the details
+
 ## scale_table examples
 ```{r}
 
