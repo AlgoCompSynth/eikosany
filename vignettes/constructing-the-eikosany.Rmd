@@ -19,7 +19,8 @@ knitr::opts_chunk$set(
 library(eikosany)
 ```
 
-See @narushima2019microtonality for the details
+See @narushima2019microtonality for the details. For now we are just running
+the examples.
 
 ## scale_table examples
 ```{r}
@@ -55,6 +56,13 @@ print(dekany_1_7_9_11_13_interval_matrix <-interval_matrix(dekany_1_7_9_11_13))
 
 # compute the tetrads of the 1-3-5-7-9-11 Eikosany
 print(eikosany_chords <- chord_table(eikosany, 4))
+
+```
+
+## Keyboard map examples
+```{r}
+print(base_map_c4 <- base_keyboard_map())
+print(base_map_c3 <- base_keyboard_map(middle_c_octave = 3))
 
 ```
 

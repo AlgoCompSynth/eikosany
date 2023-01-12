@@ -79,8 +79,8 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://algocompsynth.github.io/eikosany/" class="external-link">eikosany</a></span><span class="op">)</span></span></code></pre></div>
-<p>See <span class="citation">Narushima (2019)</span> for the
-details</p>
+<p>See <span class="citation">Narushima (2019)</span> for the details.
+For now we are just running the examples.</p>
 <div class="section level2">
 <h2 id="scale_table-examples">scale_table examples<a class="anchor" aria-label="anchor" href="#scale_table-examples"></a>
 </h2>
@@ -241,6 +241,37 @@ details</p>
 <span><span class="co">#&gt; 29: /3:/7:/9:/11  6:11:13:19</span></span>
 <span><span class="co">#&gt; 30: /5:/7:/9:/11   1:8:11:14</span></span>
 <span><span class="co">#&gt;            chord     degrees</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="keyboard-map-examples">Keyboard map examples<a class="anchor" aria-label="anchor" href="#keyboard-map-examples"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">base_map_c4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/base_keyboard_map.html">base_keyboard_map</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      note_number degree_12edo octave_12edo note_name   freq_12edo cents_12edo</span></span>
+<span><span class="co">#&gt;   1:           0            0           -1        C      8.175799           0</span></span>
+<span><span class="co">#&gt;   2:           1            1           -1        C#     8.661957         100</span></span>
+<span><span class="co">#&gt;   3:           2            2           -1        D      9.177024         200</span></span>
+<span><span class="co">#&gt;   4:           3            3           -1        D#     9.722718         300</span></span>
+<span><span class="co">#&gt;   5:           4            4           -1        E     10.300861         400</span></span>
+<span><span class="co">#&gt;  ---                                                                         </span></span>
+<span><span class="co">#&gt; 124:         123            3            9        D#  9956.063479       12300</span></span>
+<span><span class="co">#&gt; 125:         124            4            9        E  10548.081821       12400</span></span>
+<span><span class="co">#&gt; 126:         125            5            9        F  11175.303406       12500</span></span>
+<span><span class="co">#&gt; 127:         126            6            9        F# 11839.821527       12600</span></span>
+<span><span class="co">#&gt; 128:         127            7            9        G  12543.853951       12700</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">base_map_c3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/base_keyboard_map.html">base_keyboard_map</a></span><span class="op">(</span>middle_c_octave <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      note_number degree_12edo octave_12edo note_name   freq_12edo cents_12edo</span></span>
+<span><span class="co">#&gt;   1:           0            0           -2        C      8.175799           0</span></span>
+<span><span class="co">#&gt;   2:           1            1           -2        C#     8.661957         100</span></span>
+<span><span class="co">#&gt;   3:           2            2           -2        D      9.177024         200</span></span>
+<span><span class="co">#&gt;   4:           3            3           -2        D#     9.722718         300</span></span>
+<span><span class="co">#&gt;   5:           4            4           -2        E     10.300861         400</span></span>
+<span><span class="co">#&gt;  ---                                                                         </span></span>
+<span><span class="co">#&gt; 124:         123            3            8        D#  9956.063479       12300</span></span>
+<span><span class="co">#&gt; 125:         124            4            8        E  10548.081821       12400</span></span>
+<span><span class="co">#&gt; 126:         125            5            8        F  11175.303406       12500</span></span>
+<span><span class="co">#&gt; 127:         126            6            8        F# 11839.821527       12600</span></span>
+<span><span class="co">#&gt; 128:         127            7            8        G  12543.853951       12700</span></span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

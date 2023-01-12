@@ -60,6 +60,35 @@
   return(log2(ratio) * 1200)
 }
 
+.midi_range <- seq(0, 127, 1)
+
+.note2octave <- function(note_number, degrees, middle_c_octave) {
+  offset = 5 - middle_c_octave
+  octave <- note_number %/% degrees - offset
+}
+
+.note2degree <- function(note_number, degrees) {
+  degree <- note_number %% degrees
+}
+
+.note_name_table <- data.table::data.table(
+  degree_12edo = seq(0, 11, 1),
+  note_name = c(
+    "C ",
+    "C#",
+    "D ",
+    "D#",
+    "E ",
+    "F ",
+    "F#",
+    "G ",
+    "G#",
+    "A ",
+    "A#",
+    "B "
+  )
+)
+
 #' @title Create Scale Table
 #' @name scale_table
 #' @description Creates a scale table from a combination product set definition
@@ -226,7 +255,58 @@ chord_table <- function(scale_table, choose) {
   ))
 }
 
+#' @title Create Base Keyboard Map
+#' @name base_keyboard_map
+#' @description Creates a base keyboard map
+#' @importFrom data.table data.table
+#' @importFrom data.table setkey
+#' @importFrom data.table ":="
+#' @export base_keyboard_map
+#' @param middle_c_octave octave number for middle C. The default is 4, but
+#' other software can use 3 or some other number
+#' @return the base keyboard map - what a synth tuned to 12 EDO should have.
+#' This is a data.table with three columns:
+#' \itemize{
+#' \item `note_number`: the MIDI note number from 0 through 127
+#' \item `note_name`: the note name (character)
+#' \item `octave`: octave number. This has an offset defined by parameter
+#' `octave_offset`.
+#' \item `frequency`: frequency in Hz. By convention, A440 is MIDI note number
+#' 69, so this can be computed as 440.0 * 2 ^ ((note_number - 69) / 12)
+#' \item `cents`: cents above the default for MIDI note 0. By convention, this
+#' is zero for note number 0.
+#' }
+#' @examples
+#' \dontrun{
+#'
+#' keyboard_map_c4 <- base_keyboard_map()
+#' print(keyboard_map_c4)
+#' keyboard_map_c3 <- base_keyboard_map(middle_c_octave = 3)
+#' print(keyboard_map_c3)
+#' }
+
+base_keyboard_map <- function(middle_c_octave = 4) {
+  keyboard_map <- data.table::data.table(note_number = .midi_range)
+  keyboard_map <- keyboard_map[, `:=`(
+    degree_12edo = .note2degree(note_number, 12),
+    octave_12edo = .note2octave(note_number, 12, middle_c_octave)
+  )]
+  keyboard_map <-
+    keyboard_map[.note_name_table, on = "degree_12edo"]
+  data.table::setkey(keyboard_map, note_number)
+  keyboard_map <- keyboard_map[, `:=`(
+    freq_12edo = 440.0 * 2 ^ ((note_number - 69) / 12)
+  )]
+  keyboard_map <- keyboard_map[, `:=`(
+    cents_12edo = .ratio2cents(freq_12edo / freq_12edo[1])
+  )]
+}
+
 utils::globalVariables(c(
+  "cents_12edo",
   "degree",
+  "freq_12edo",
+  "note_name",
+  "note_number",
   "product"
 ))
