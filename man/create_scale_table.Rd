@@ -23,6 +23,8 @@ a \code{data.table} with ten columns:
 \item \code{ratio_frac}: the ratio as a vulgar fraction (character)
 \item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
 \item \code{degree}: scale degree from zero to (number of notes) - 1
+\item \code{base_12EDO}: note name for nearest 12EDO note
+\item \code{offset_cents}: offset in cents from \code{base_12EDO}
 }
 }
 \description{

@@ -89,6 +89,32 @@
   )
 )
 
+.pitch_bend_offsets <- function(cents) {
+  note_names <- c(
+    "C ",
+    "C#",
+    "D ",
+    "D#",
+    "E ",
+    "F ",
+    "F#",
+    "G ",
+    "G#",
+    "A ",
+    "A#",
+    "B ",
+    "C'"
+  )
+
+  base <- cents %/% 100
+  offset_cents <- cents %% 100
+  index <- offset_cents > 50
+  base[index] <- base[index] + 1
+  offset_cents[index] <- offset_cents[index] - 100
+  base_12EDO <- note_names[base + 1]
+  return(list(base_12EDO = base_12EDO, offset_cents = offset_cents))
+}
+
 #' @title Create Scale Table
 #' @name create_scale_table
 #' @description Creates a scale table from a combination product set definition
@@ -113,6 +139,8 @@
 #' \item `ratio_frac`: the ratio as a vulgar fraction (character)
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `degree`: scale degree from zero to (number of notes) - 1
+#' \item `base_12EDO`: note name for nearest 12EDO note
+#' \item `offset_cents`: offset in cents from `base_12EDO`
 #' }
 #' @examples
 #' \dontrun{
@@ -152,6 +180,9 @@ create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
   )
   data.table::setkey(result_table, ratio)
   result_table <- result_table[, "degree" := .I - 1]
+  pitch_bend_offsets <- .pitch_bend_offsets(result_table$ratio_cents)
+  result_table$base_12EDO <- pitch_bend_offsets$base_12EDO
+  result_table$offset_cents <- pitch_bend_offsets$offset_cents
   return(result_table)
 }
 
