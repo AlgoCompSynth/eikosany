@@ -17,7 +17,7 @@ Eikosany.}
 \value{
 a \code{data.table} with ten columns:
 \itemize{
-\item \code{product}: the product of harmonics that defines the note (character)
+\item \code{note_name}: the product of harmonics that defines the note (character)
 \item \code{ratio}: the ratio that defines the note, as a number between 1 and
 2
 \item \code{ratio_frac}: the ratio as a vulgar fraction (character)

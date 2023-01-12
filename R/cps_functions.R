@@ -29,11 +29,11 @@
 
 .matrix2degree <- function(note_matrix, scale_table) {
   note_label <- .matrix2label(note_matrix, .note_sep)
-  note_index <- data.table::data.table(product = note_label)
+  note_index <- data.table::data.table(note_name = note_label)
   degree_table <- scale_table[
     note_index,
-    list(product, degree),
-    on = "product"
+    list(note_name, degree),
+    on = "note_name"
   ]
   return(degree_table)
 }
@@ -133,7 +133,7 @@
 #' Eikosany.
 #' @return a `data.table` with ten columns:
 #' \itemize{
-#' \item `product`: the product of harmonics that defines the note (character)
+#' \item `note_name`: the product of harmonics that defines the note (character)
 #' \item `ratio`: the ratio that defines the note, as a number between 1 and
 #' 2
 #' \item `ratio_frac`: the ratio as a vulgar fraction (character)
@@ -166,14 +166,14 @@
 
 create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
   result_table <- t(combn(harmonics, choose))
-  product <- .matrix2label(result_table, .note_sep)
+  note_name <- .matrix2label(result_table, .note_sep)
   num_product <- apply(result_table, 1, prod)
   normalizer <- min(num_product)
   ratio <- .octave_reduce(num_product / normalizer)
   ratio_frac <- as.character(fractional::fractional(ratio))
   ratio_cents <- .ratio2cents(ratio)
   result_table <- data.table::data.table(
-    product,
+    note_name,
     ratio,
     ratio_frac,
     ratio_cents
@@ -237,7 +237,7 @@ create_interval_matrix <- function(scale_table) {
 #' }
 
 create_chord_table <- function(scale_table, choose) {
-  harmonics <- .label2harmonics(scale_table$product, .note_sep)
+  harmonics <- .label2harmonics(scale_table$note_name, .note_sep)
   chords <- t(combn(harmonics, choose))
   others <- t(
     apply(chords, MARGIN = 1, FUN = function(x) setdiff(harmonics, x)
