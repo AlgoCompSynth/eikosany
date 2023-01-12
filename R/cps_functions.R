@@ -90,7 +90,7 @@
 )
 
 #' @title Create Scale Table
-#' @name scale_table
+#' @name create_scale_table
 #' @description Creates a scale table from a combination product set definition
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
@@ -99,7 +99,7 @@
 #' @importFrom fractional fractional
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
-#' @export scale_table
+#' @export create_scale_table
 #' @param harmonics a vector of the harmonics to use - defaults to the first
 #' six odd numbers, the harmonics that define the 1-3-5-7-9-11 Eikosany.
 #' @param choose the number of harmonics to choose for each combination -
@@ -118,12 +118,12 @@
 #' \dontrun{
 #'
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' print(eikosany <- scale_table())
+#' print(eikosany <- create_scale_table())
 #'
 #' # the 1-7-9-11-13 Dekany
 #' dekany_harmonics <- c(1, 7, 9, 11, 13)
 #' dekany_choose <- 2
-#' print(dekany_1_7_9_11_13 <- scale_table(dekany_harmonics, dekany_choose))
+#' print(dekany_1_7_9_11_13 <- create_scale_table(dekany_harmonics, dekany_choose))
 #'
 #' # We might want to print out sheet music for a conventional keyboard
 #' # player, since the synthesizer is mapping MIDI note numbers to pitches.
@@ -132,11 +132,11 @@
 #' # seven harmonics taken three at a time.
 #' harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 #' choose_35 <- 3
-#' print(any_35 <- scale_table(harmonics_35, choose_35))
+#' print(any_35 <- create_scale_table(harmonics_35, choose_35))
 #'
 #' }
 
-scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
+create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
   result_table <- t(combn(harmonics, choose))
   product <- .matrix2label(result_table, .note_sep)
   num_product <- apply(result_table, 1, prod)
@@ -156,21 +156,21 @@ scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
 }
 
 #' @title Create Interval Matrix
-#' @name interval_matrix
+#' @name create_interval_matrix
 #' @description Creates an interval matrix from a scale table
 #' @importFrom fractional fractional
-#' @export interval_matrix
-#' @param scale_table a scale table from the `scale_table` function
+#' @export create_interval_matrix
+#' @param scale_table a scale table from the `create_scale_table` function
 #' @return an interval matrix
 #' @examples
 #' \dontrun{
 #'
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' print(eikosany_interval_matrix <-interval_matrix(scale_table()))
+#' print(eikosany_interval_matrix <-create_interval_matrix(create_scale_table()))
 #' }
 
 
-interval_matrix <- function(scale_table) {
+create_interval_matrix <- function(scale_table) {
   fractional::fractional(outer(
     scale_table$ratio,
     scale_table$ratio,
@@ -179,12 +179,12 @@ interval_matrix <- function(scale_table) {
 }
 
 #' @title Create Chord Table
-#' @name chord_table
+#' @name create_chord_table
 #' @description Creates a chord table
 #' @importFrom data.table data.table
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
-#' @export chord_table
+#' @export create_chord_table
 #' @param scale_table the scale table to use for note number and name lookup
 #' @param choose the number of harmonics to choose for each chord
 #' @return a data.table with two columns:
@@ -197,15 +197,15 @@ interval_matrix <- function(scale_table) {
 #' \dontrun{
 #'
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' eikosany_scale <- scale_table()
+#' eikosany_scale <- create_scale_table()
 #' print(eikosany_scale)
 #'
 #' # compute the tetrads of the 1-3-5-7-9-11 Eikosany
-#' eikosany_chords <- chord_table(eikosany_scale, 4)
+#' eikosany_chords <- create_chord_table(eikosany_scale, 4)
 #' print(eikosany_chords)
 #' }
 
-chord_table <- function(scale_table, choose) {
+create_chord_table <- function(scale_table, choose) {
   harmonics <- .label2harmonics(scale_table$product, .note_sep)
   chords <- t(combn(harmonics, choose))
   others <- t(
@@ -256,12 +256,12 @@ chord_table <- function(scale_table, choose) {
 }
 
 #' @title Create Base Keyboard Map
-#' @name base_keyboard_map
+#' @name create_base_keyboard_map
 #' @description Creates a base keyboard map
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
 #' @importFrom data.table ":="
-#' @export base_keyboard_map
+#' @export create_base_keyboard_map
 #' @param middle_c_octave octave number for middle C. The default is 4, but
 #' other software can use 3 or some other number
 #' @return the base keyboard map - what a synth tuned to 12 EDO should have.
@@ -279,13 +279,13 @@ chord_table <- function(scale_table, choose) {
 #' @examples
 #' \dontrun{
 #'
-#' keyboard_map_c4 <- base_keyboard_map()
+#' keyboard_map_c4 <- create_base_keyboard_map()
 #' print(keyboard_map_c4)
-#' keyboard_map_c3 <- base_keyboard_map(middle_c_octave = 3)
+#' keyboard_map_c3 <- create_base_keyboard_map(middle_c_octave = 3)
 #' print(keyboard_map_c3)
 #' }
 
-base_keyboard_map <- function(middle_c_octave = 4) {
+create_base_keyboard_map <- function(middle_c_octave = 4) {
   keyboard_map <- data.table::data.table(note_number = .midi_range)
   keyboard_map <- keyboard_map[, `:=`(
     degree_12edo = .note2degree(note_number, 12),
