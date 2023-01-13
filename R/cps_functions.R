@@ -57,7 +57,43 @@
 }
 
 .ratio2cents <- function(ratio) {
-  return(log2(ratio) * 1200)
+  return(log2(ratio) * 1200.0)
+}
+
+.cents2ratio <- function(cents) {
+  return(2.0 ^ (cents / 1200.0))
+}
+
+.edo12_scale_table <- function() {
+  note_name = c(
+    "C ",
+    "C#",
+    "D ",
+    "D#",
+    "E ",
+    "F ",
+    "F#",
+    "G ",
+    "G#",
+    "A ",
+    "A#",
+    "B "
+  )
+  base_12EDO <- note_name
+  offset_cents <- vector(mode = "numeric", length = 12)
+  degree <- seq(0, 11, 1)
+  ratio_cents <- 100.0 * degree
+  ratio <- .cents2ratio(ratio_cents)
+  ratio_frac <- as.character(fractional::fractional(ratio))
+  return(data.table::data.table(
+    note_name,
+    ratio,
+    ratio_frac,
+    ratio_cents,
+    degree,
+    base_12EDO,
+    offset_cents
+  ))
 }
 
 .midi_range <- seq(0, 127, 1)
@@ -90,28 +126,13 @@
 )
 
 .pitch_bend_offsets <- function(cents) {
-  note_names <- c(
-    "C ",
-    "C#",
-    "D ",
-    "D#",
-    "E ",
-    "F ",
-    "F#",
-    "G ",
-    "G#",
-    "A ",
-    "A#",
-    "B ",
-    "C'"
-  )
-
-  base <- cents %/% 100
+  note_names <- .edo12_scale_table()$note_name
+  index_name <- cents %/% 100
   offset_cents <- cents %% 100
-  index <- offset_cents > 50
-  base[index] <- base[index] + 1
-  offset_cents[index] <- offset_cents[index] - 100
-  base_12EDO <- note_names[base + 1]
+  index_degree <- offset_cents > 50
+  index_name[index_degree] <- index_name[index_degree] + 1
+  offset_cents[index_degree] <- offset_cents[index_degree] - 100
+  base_12EDO <- note_names[index_degree + 1]
   return(list(base_12EDO = base_12EDO, offset_cents = offset_cents))
 }
 
