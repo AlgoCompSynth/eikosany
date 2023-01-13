@@ -107,23 +107,25 @@
   degree <- note_number %% degrees
 }
 
-.note_name_table <- data.table::data.table(
-  degree_12edo = seq(0, 11, 1),
-  note_name = c(
-    "C ",
-    "C#",
-    "D ",
-    "D#",
-    "E ",
-    "F ",
-    "F#",
-    "G ",
-    "G#",
-    "A ",
-    "A#",
-    "B "
-  )
-)
+.note_name_table <- function() {
+  return(.edo12_scale_table()[, list(degree_12edo = degree, note_name)])
+}
+#   degree_12edo = seq(0, 11, 1),
+#   note_name = c(
+#     "C ",
+#     "C#",
+#     "D ",
+#     "D#",
+#     "E ",
+#     "F ",
+#     "F#",
+#     "G ",
+#     "G#",
+#     "A ",
+#     "A#",
+#     "B "
+#   )
+# )
 
 .pitch_bend_offsets <- function(cents) {
   note_names <- .edo12_scale_table()$note_name
@@ -344,7 +346,7 @@ create_base_keyboard_map <- function(middle_c_octave = 4) {
     octave_12edo = .note2octave(note_number, 12, middle_c_octave)
   )]
   keyboard_map <-
-    keyboard_map[.note_name_table, on = "degree_12edo"]
+    keyboard_map[.note_name_table(), on = "degree_12edo"]
   data.table::setkey(keyboard_map, note_number)
   keyboard_map <- keyboard_map[, `:=`(
     freq_12edo = 440.0 * 2 ^ ((note_number - 69) / 12)
