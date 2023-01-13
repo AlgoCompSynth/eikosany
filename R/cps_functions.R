@@ -110,22 +110,6 @@
 .note_name_table <- function() {
   return(.edo12_scale_table()[, list(degree_12edo = degree, note_name)])
 }
-#   degree_12edo = seq(0, 11, 1),
-#   note_name = c(
-#     "C ",
-#     "C#",
-#     "D ",
-#     "D#",
-#     "E ",
-#     "F ",
-#     "F#",
-#     "G ",
-#     "G#",
-#     "A ",
-#     "A#",
-#     "B "
-#   )
-# )
 
 .pitch_bend_offsets <- function(cents) {
   note_names <- .edo12_scale_table()$note_name
@@ -136,6 +120,36 @@
   offset_cents[index_degree] <- offset_cents[index_degree] - 100
   base_12EDO <- note_names[index_degree + 1]
   return(list(base_12EDO = base_12EDO, offset_cents = offset_cents))
+}
+
+.note_number_12edo2freq <- function(note_number) {
+  440.0 * 2 ^ ((note_number - 69) / 12)
+}
+
+.scale2map <- function(scale_table, middle_c_octave = 4) {
+  note_number <- .midi_range
+  note_numbers <- length(note_number)
+
+  degrees <- nrow(scale_table)
+  degree <- note_number %% degrees
+  octave <- note_number %/% degrees
+
+  note_name <- vector(mode = "character", length = note_numbers)
+  note_name[note_number + 1] <- scale_table$note_name[degree + 1]
+  cents <- scale_table$ratio_cents[degree + 1] + octave * 1200
+  freq <- .cents2ratio(cents) * .note_number_12edo2freq(0)
+
+  offset = 5 - middle_c_octave
+  octave <- octave - offset
+  result <- data.table::data.table(
+    note_number,
+    degree,
+    octave,
+    note_name,
+    freq,
+    cents
+  )
+  data.table::setkey(result, note_number)
 }
 
 #' @title Create Scale Table
