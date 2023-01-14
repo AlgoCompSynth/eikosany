@@ -23,4 +23,7 @@ Suggests:
 VignetteBuilder: knitr
 Imports: 
     fractional,
-    data.table
+    data.table,
+    pichor (>= 0.0.0.9020)
+Remotes:  
+    mikldk/pichor
