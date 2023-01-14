@@ -16,13 +16,13 @@ function is 4, but other software can use 3 or even some other number}
 \value{
 the keyboard map. This is a data.table with six columns:
 \itemize{
-\item \code{note_number}: the MIDI note number from 0 through 127
+\item \code{note_number}: the MIDI note number from \code{.NN_MIN} through \code{.NN_MAX}
 \item \code{note_name}: the note name
 \item \code{octave}: the octave number of the note
 \item \code{degree}: the scale degree of the note
 \item \code{freq}: the frequency in Hz
-\item \code{cents}: cents above default MIDI note 0, which is a C of frequency
-8.17579891564371 Hz when A 440 is mapped onto MIDI note 69 in 12EDO.
+\item \code{cents}: cents above default MIDI note \code{.NN_MIN}, which has frequency
+\code{.FREQ_MIN}.
 }
 }
 \description{
@@ -30,9 +30,10 @@ Creates a keyboard map
 }
 \details{
 The function is currently hard-coded to compute the map so that
-middle C with frequency 261.625565300599 Hz is mapped to MIDI note number 60
-and scale degree 0. This is the same as it is on 12EDO with A440 on note 69.
-This note is 6000 cents above MIDI note number 0.
+middle C with frequency \code{.FREQ_MIDDLE_C}is mapped to MIDI note number
+\code{.NN_MIDDLE_C} and scale degree 0. With the current constants this is the
+same as it is on 12EDO with A440 on note 69. This note is 6000 cents above
+MIDI note number 0.
 }
 \examples{
 \dontrun{

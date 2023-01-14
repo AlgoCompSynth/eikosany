@@ -1,9 +1,36 @@
 # helper functions and constants
-.NOTE_0_FREQ <- 8.17579891564371
-.NOTE_0_CENTS <- 0
-.MIDDLE_C_FREQ <- 261.625565300599
-.MIDDLE_C_NOTE_NUMBER <- 60
-.MIDDLE_C_CENTS <- 6000
+
+# convert MIDI note number to EDO frequency
+.EDO_DEGREES = 12
+.REF_FREQ = 440
+.REF_NN = 69
+.nn2freq <- function(note_number) {
+  .REF_FREQ * 2 ^ ((note_number - .REF_NN) / .EDO_DEGREES)
+}
+
+.NN_MIN <- 0; .CENTS_MIN <- 0; .FREQ_MIN <- .nn2freq(.NN_MIN)
+.NN_MAX <- 127; .CENTS_MAX <- 100 * .NN_MAX; .FREQ_MAX <- .nn2freq(.NN_MAX)
+.NN_RANGE <- seq(.NN_MIN, .NN_MAX, 1)
+
+.NN_MIDDLE_C <- 60; .CENTS_MIDDLE_C <- 100 * .NN_MIDDLE_C
+.FREQ_MIDDLE_C <- .nn2freq(.NN_MIDDLE_C)
+
+.NAMES_12EDO <- c(
+  "C ",
+  "C#",
+  "D ",
+  "D#",
+  "E ",
+  "F ",
+  "F#",
+  "G ",
+  "G#",
+  "A ",
+  "A#",
+  "B "
+)
+.DEGREES_12EDO <- seq(0, 11)
+.CENTS_12EDO <- 100 * .DEGREES_12EDO
 
 # separator for notes (products)
 .NOTE_SEP <- "x"
@@ -62,49 +89,15 @@
 }
 
 .ratio2cents <- function(ratio) {
-  return(log2(ratio) * 1200.0)
+  return(log2(ratio) * 1200)
 }
 
 .cents2ratio <- function(cents) {
-  return(2.0 ^ (cents / 1200.0))
+  return(2 ^ (cents / 1200))
 }
-
-.edo12_scale_table <- function() {
-  note_name = c(
-    "C ",
-    "C#",
-    "D ",
-    "D#",
-    "E ",
-    "F ",
-    "F#",
-    "G ",
-    "G#",
-    "A ",
-    "A#",
-    "B "
-  )
-  base_12EDO <- note_name
-  offset_cents <- vector(mode = "numeric", length = 12)
-  degree <- seq(0, 11, 1)
-  ratio_cents <- 100.0 * degree
-  ratio <- .cents2ratio(ratio_cents)
-  ratio_frac <- as.character(fractional::fractional(ratio))
-  return(data.table::data.table(
-    note_name,
-    ratio,
-    ratio_frac,
-    ratio_cents,
-    degree,
-    base_12EDO,
-    offset_cents
-  ))
-}
-
-.MIDI_RANGE <- seq(0, 127, 1)
 
 .pitch_bend_offsets <- function(cents) {
-  note_names <- .edo12_scale_table()$note_name
+  note_names <- .NAMES_12EDO
   index_name <- cents %/% 100
   offset_cents <- cents %% 100
   index_degree <- offset_cents > 50
@@ -112,10 +105,6 @@
   offset_cents[index_degree] <- offset_cents[index_degree] - 100
   base_12EDO <- note_names[index_degree + 1]
   return(list(base_12EDO = base_12EDO, offset_cents = offset_cents))
-}
-
-.note_number_12edo2freq <- function(note_number) {
-  440.0 * 2 ^ ((note_number - 69) / 12)
 }
 
 #' @title Create Scale Table
@@ -220,21 +209,8 @@ create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
 #' }
 
 create_12edo_scale_table <- function() {
-  base_12EDO <- note_name <- c(
-    "C ",
-    "C#",
-    "D ",
-    "D#",
-    "E ",
-    "F ",
-    "F#",
-    "G ",
-    "G#",
-    "A ",
-    "A#",
-    "B "
-  )
-  degree <- seq(0, 11)
+  base_12EDO <- note_name <- .NAMES_12EDO
+  degree <- .DEGREES_12EDO
   ratio_cents <- degree * 100
   ratio <- .cents2ratio(ratio_cents)
   ratio_frac <- as.character(fractional::fractional(ratio))
@@ -265,7 +241,6 @@ create_12edo_scale_table <- function() {
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
 #' print(eikosany_interval_matrix <-create_interval_matrix(create_scale_table()))
 #' }
-
 
 create_interval_matrix <- function(scale_table) {
   fractional::fractional(outer(
@@ -365,18 +340,19 @@ create_chord_table <- function(scale_table, choose) {
 #' function is 4, but other software can use 3 or even some other number
 #' @return the keyboard map. This is a data.table with six columns:
 #' \itemize{
-#' \item `note_number`: the MIDI note number from 0 through 127
+#' \item `note_number`: the MIDI note number from `.NN_MIN` through `.NN_MAX`
 #' \item `note_name`: the note name
 #' \item `octave`: the octave number of the note
 #' \item `degree`: the scale degree of the note
 #' \item `freq`: the frequency in Hz
-#' \item `cents`: cents above default MIDI note 0, which is a C of frequency
-#' 8.17579891564371 Hz when A 440 is mapped onto MIDI note 69 in 12EDO.
+#' \item `cents`: cents above default MIDI note `.NN_MIN`, which has frequency
+#' `.FREQ_MIN`.
 #' }
 #' @details The function is currently hard-coded to compute the map so that
-#' middle C with frequency 261.625565300599 Hz is mapped to MIDI note number 60
-#' and scale degree 0. This is the same as it is on 12EDO with A440 on note 69.
-#' This note is 6000 cents above MIDI note number 0.
+#' middle C with frequency `.FREQ_MIDDLE_C`is mapped to MIDI note number
+#' `.NN_MIDDLE_C` and scale degree 0. With the current constants this is the
+#' same as it is on 12EDO with A440 on note 69. This note is 6000 cents above
+#' MIDI note number 0.
 #' @examples
 #' \dontrun{
 #'
@@ -392,24 +368,33 @@ create_chord_table <- function(scale_table, choose) {
 create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
 
   # create note number vector
-  note_number <- .MIDI_RANGE
+  note_number <- .NN_RANGE
   note_numbers <- length(note_number)
 
   # create indices
   degrees <- nrow(scale_table)
-  octave <- (note_number - .MIDDLE_C_NOTE_NUMBER) %/% degrees
-  degree <- (note_number - .MIDDLE_C_NOTE_NUMBER) %% degrees
+  octave <- (note_number - .NN_MIDDLE_C) %/% degrees
+  degree <- (note_number - .NN_MIDDLE_C) %% degrees
 
   # note names
   note_name <- vector(mode = "character", length = note_numbers)
   note_name[note_number + 1] <- scale_table$note_name[degree + 1]
 
   # cents and frequencies
-  cents <- scale_table$ratio_cents[degree + 1] + octave * 1200 + .MIDDLE_C_CENTS
-  freq <- .cents2ratio(cents) * .NOTE_0_FREQ
+  cents <-
+    scale_table$ratio_cents[degree + 1] + octave * 1200 + .CENTS_MIDDLE_C
+  freq <- .cents2ratio(cents) * .FREQ_MIN
 
   # fix octave number
   octave <- octave + middle_c_octave
+
+  # replace out of range values
+  index_low <- cents < .CENTS_MIN
+  cents[index_low] <- .CENTS_MIN
+  freq[index_low] <- .FREQ_MIN
+  index_high <- cents > .CENTS_MAX
+  cents[index_high] <- .CENTS_MAX
+  freq[index_high] <- .FREQ_MAX
 
   # build and return the map
   keyboard_map <- data.table::data.table(
@@ -421,6 +406,7 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
     cents
   )
   data.table::setkey(keyboard_map, note_number)
+
   return(keyboard_map)
 
 }
