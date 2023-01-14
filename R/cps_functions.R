@@ -1,15 +1,20 @@
-# helper functions
+# helper functions and constants
+.NOTE_0_FREQ <- 8.17579891564371
+.NOTE_0_CENTS <- 0
+.MIDDLE_C_FREQ <- 261.625565300599
+.MIDDLE_C_NOTE_NUMBER <- 60
+.MIDDLE_C_CENTS <- 6000
 
 # separator for notes (products)
-.note_sep <- "x"
+.NOTE_SEP <- "x"
 
 # separators for chords
-.chord_sep <- ":"
-.subchord_sep <- ":/"
+..CHORD_SEP <- ":"
+.SUBCHORD_SEP <- ":/"
 
 .matrix2label <- function(matrix, separator) {
   label <- apply(matrix, MARGIN = 1, FUN = paste, collapse = separator)
-  if (separator == .subchord_sep) {
+  if (separator == .SUBCHORD_SEP) {
     label <- paste("/", label, sep = "")
   }
   return(label)
@@ -28,7 +33,7 @@
 }
 
 .matrix2degree <- function(note_matrix, scale_table) {
-  note_label <- .matrix2label(note_matrix, .note_sep)
+  note_label <- .matrix2label(note_matrix, .NOTE_SEP)
   note_index <- data.table::data.table(note_name = note_label)
   degree_table <- scale_table[
     note_index,
@@ -96,20 +101,7 @@
   ))
 }
 
-.midi_range <- seq(0, 127, 1)
-
-.note2octave <- function(note_number, degrees, middle_c_octave) {
-  offset = 5 - middle_c_octave
-  octave <- note_number %/% degrees - offset
-}
-
-.note2degree <- function(note_number, degrees) {
-  degree <- note_number %% degrees
-}
-
-.note_name_table <- function() {
-  return(.edo12_scale_table()[, list(degree_12edo = degree, note_name)])
-}
+.MIDI_RANGE <- seq(0, 127, 1)
 
 .pitch_bend_offsets <- function(cents) {
   note_names <- .edo12_scale_table()$note_name
@@ -124,32 +116,6 @@
 
 .note_number_12edo2freq <- function(note_number) {
   440.0 * 2 ^ ((note_number - 69) / 12)
-}
-
-.scale2map <- function(scale_table, middle_c_octave = 4) {
-  note_number <- .midi_range
-  note_numbers <- length(note_number)
-
-  degrees <- nrow(scale_table)
-  degree <- note_number %% degrees
-  octave <- note_number %/% degrees
-
-  note_name <- vector(mode = "character", length = note_numbers)
-  note_name[note_number + 1] <- scale_table$note_name[degree + 1]
-  cents <- scale_table$ratio_cents[degree + 1] + octave * 1200
-  freq <- .cents2ratio(cents) * .note_number_12edo2freq(0)
-
-  offset = 5 - middle_c_octave
-  octave <- octave - offset
-  result <- data.table::data.table(
-    note_number,
-    degree,
-    octave,
-    note_name,
-    freq,
-    cents
-  )
-  data.table::setkey(result, note_number)
 }
 
 #' @title Create Scale Table
@@ -203,7 +169,7 @@
 
 create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
   result_table <- t(combn(harmonics, choose))
-  note_name <- .matrix2label(result_table, .note_sep)
+  note_name <- .matrix2label(result_table, .NOTE_SEP)
   num_product <- apply(result_table, 1, prod)
   normalizer <- min(num_product)
   ratio <- .octave_reduce(num_product / normalizer)
@@ -221,6 +187,69 @@ create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
   result_table$base_12EDO <- pitch_bend_offsets$base_12EDO
   result_table$offset_cents <- pitch_bend_offsets$offset_cents
   return(result_table)
+}
+
+#' @title Create 12EDO Scale Table
+#' @name create_12edo_scale_table
+#' @description Creates a scale table for 12EDO
+#' @importFrom data.table data.table
+#' @importFrom data.table setkey
+#' @importFrom data.table ":="
+#' @importFrom data.table ".I"
+#' @importFrom fractional fractional
+#' @importFrom utils combn
+#' @importFrom utils globalVariables
+#' @export create_12edo_scale_table
+#' @return a `data.table` with ten columns:
+#' \itemize{
+#' \item `note_name`: the note name (character)
+#' \item `ratio`: the ratio that defines the note, as a number between 1 and
+#' 2
+#' \item `ratio_frac`: the ratio as a vulgar fraction (character). The ratios
+#' for 12EDO are irrational, so this is an approximation.
+#' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
+#' \item `degree`: scale degree from zero to (number of notes) - 1
+#' \item `base_12EDO`: note name for nearest 12EDO note
+#' \item `offset_cents`: offset in cents from `base_12EDO`
+#' }
+#' @examples
+#' \dontrun{
+#'
+#' print(vanilla <- create_12edo_scale_table())
+#'
+#' }
+
+create_12edo_scale_table <- function() {
+  base_12EDO <- note_name <- c(
+    "C ",
+    "C#",
+    "D ",
+    "D#",
+    "E ",
+    "F ",
+    "F#",
+    "G ",
+    "G#",
+    "A ",
+    "A#",
+    "B "
+  )
+  degree <- seq(0, 11)
+  ratio_cents <- degree * 100
+  ratio <- .cents2ratio(ratio_cents)
+  ratio_frac <- as.character(fractional::fractional(ratio))
+  offset <- vector(mode = "numeric", length = 12); offset <- offset - offset
+  scale_table <- data.table::data.table(
+    note_name,
+    ratio,
+    ratio_frac,
+    ratio_cents,
+    degree,
+    base_12EDO,
+    offset
+  )
+  data.table::setkey(scale_table, ratio)
+  return(scale_table)
 }
 
 #' @title Create Interval Matrix
@@ -274,7 +303,7 @@ create_interval_matrix <- function(scale_table) {
 #' }
 
 create_chord_table <- function(scale_table, choose) {
-  harmonics <- .label2harmonics(scale_table$note_name, .note_sep)
+  harmonics <- .label2harmonics(scale_table$note_name, .NOTE_SEP)
   chords <- t(combn(harmonics, choose))
   others <- t(
     apply(chords, MARGIN = 1, FUN = function(x) setdiff(harmonics, x)
@@ -312,10 +341,10 @@ create_chord_table <- function(scale_table, choose) {
   subharm_matrix <- t(apply(subharm_matrix, MARGIN = 1, FUN = sort))
 
   # make labels
-  chord_label <- .matrix2label(chords, .chord_sep)
-  subchord_label <- .matrix2label(chords, .subchord_sep)
-  harm_label <- .matrix2label(harm_matrix, .chord_sep)
-  subharm_label <- .matrix2label(subharm_matrix, .chord_sep)
+  chord_label <- .matrix2label(chords, ..CHORD_SEP)
+  subchord_label <- .matrix2label(chords, .SUBCHORD_SEP)
+  harm_label <- .matrix2label(harm_matrix, ..CHORD_SEP)
+  subharm_label <- .matrix2label(subharm_matrix, ..CHORD_SEP)
 
   return(data.table::data.table(
     chord = c(chord_label, subchord_label),
@@ -323,51 +352,77 @@ create_chord_table <- function(scale_table, choose) {
   ))
 }
 
-#' @title Create Base Keyboard Map
-#' @name create_base_keyboard_map
-#' @description Creates a base keyboard map
+#' @title Create Keyboard Map
+#' @name create_keyboard_map
+#' @description Creates a keyboard map
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
 #' @importFrom data.table ":="
-#' @export create_base_keyboard_map
-#' @param middle_c_octave octave number for middle C. The default is 4, but
-#' other software can use 3 or some other number
-#' @return the base keyboard map - what a synth tuned to 12 EDO should have.
-#' This is a data.table with three columns:
+#' @export create_keyboard_map
+#' @param scale_table an output of `create_scale_table`
+#' @param middle_c_octave octave number for middle C. There are varying
+#' conventions for the octave number for middle C. The default for this
+#' function is 4, but other software can use 3 or even some other number
+#' @return the keyboard map. This is a data.table with six columns:
 #' \itemize{
 #' \item `note_number`: the MIDI note number from 0 through 127
-#' \item `note_name`: the note name (character)
-#' \item `octave`: octave number. This has an offset defined by parameter
-#' `octave_offset`.
-#' \item `frequency`: frequency in Hz. By convention, A440 is MIDI note number
-#' 69, so this can be computed as 440.0 * 2 ^ ((note_number - 69) / 12)
-#' \item `cents`: cents above the default for MIDI note 0. By convention, this
-#' is zero for note number 0.
+#' \item `note_name`: the note name
+#' \item `octave`: the octave number of the note
+#' \item `degree`: the scale degree of the note
+#' \item `freq`: the frequency in Hz
+#' \item `cents`: cents above default MIDI note 0, which is a C of frequency
+#' 8.17579891564371 Hz when A 440 is mapped onto MIDI note 69 in 12EDO.
 #' }
+#' @details The function is currently hard-coded to compute the map so that
+#' middle C with frequency 261.625565300599 Hz is mapped to MIDI note number 60
+#' and scale degree 0. This is the same as it is on 12EDO with A440 on note 69.
+#' This note is 6000 cents above MIDI note number 0.
 #' @examples
 #' \dontrun{
 #'
-#' keyboard_map_c4 <- create_base_keyboard_map()
+#' hexany_harmonics <- c(1, 3, 5, 7)
+#' hexany_choose = 2
+#' hexany <- create_scale_table(hexany_harmonics, hexany_choose)
+#' keyboard_map_c4 <- create_keyboard_map(hexany)
 #' print(keyboard_map_c4)
-#' keyboard_map_c3 <- create_base_keyboard_map(middle_c_octave = 3)
+#' keyboard_map_c3 <- create_keyboard_map(hexany, middle_c_octave = 3)
 #' print(keyboard_map_c3)
 #' }
 
-create_base_keyboard_map <- function(middle_c_octave = 4) {
-  keyboard_map <- data.table::data.table(note_number = .midi_range)
-  keyboard_map <- keyboard_map[, `:=`(
-    degree_12edo = .note2degree(note_number, 12),
-    octave_12edo = .note2octave(note_number, 12, middle_c_octave)
-  )]
-  keyboard_map <-
-    keyboard_map[.note_name_table(), on = "degree_12edo"]
+create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
+
+  # create note number vector
+  note_number <- .MIDI_RANGE
+  note_numbers <- length(note_number)
+
+  # create indices
+  degrees <- nrow(scale_table)
+  octave <- (note_number - .MIDDLE_C_NOTE_NUMBER) %/% degrees
+  degree <- (note_number - .MIDDLE_C_NOTE_NUMBER) %% degrees
+
+  # note names
+  note_name <- vector(mode = "character", length = note_numbers)
+  note_name[note_number + 1] <- scale_table$note_name[degree + 1]
+
+  # cents and frequencies
+  cents <- scale_table$ratio_cents[degree + 1] + octave * 1200 + .MIDDLE_C_CENTS
+  freq <- .cents2ratio(cents) * .NOTE_0_FREQ
+
+  # fix octave number
+  octave <- octave + middle_c_octave
+
+  # build and return the map
+  keyboard_map <- data.table::data.table(
+    note_number,
+    note_name,
+    octave,
+    degree,
+    freq,
+    cents
+  )
   data.table::setkey(keyboard_map, note_number)
-  keyboard_map <- keyboard_map[, `:=`(
-    freq_12edo = 440.0 * 2 ^ ((note_number - 69) / 12)
-  )]
-  keyboard_map <- keyboard_map[, `:=`(
-    cents_12edo = .ratio2cents(freq_12edo / freq_12edo[1])
-  )]
+  return(keyboard_map)
+
 }
 
 utils::globalVariables(c(

@@ -61,8 +61,8 @@ print(eikosany_chords <- create_chord_table(eikosany, 4))
 
 ## Keyboard map examples
 ```{r}
-print(base_map_c4 <- create_base_keyboard_map())
-print(base_map_c3 <- create_base_keyboard_map(middle_c_octave = 3))
+print(eikosany_map_c4 <- create_keyboard_map(eikosany))
+print(eikosany_map_c3 <- create_keyboard_map(eikosany, middle_c_octave = 3))
 
 ```
 
