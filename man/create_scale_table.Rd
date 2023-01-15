@@ -23,8 +23,8 @@ a \code{data.table} with ten columns:
 \item \code{ratio_frac}: the ratio as a vulgar fraction (character)
 \item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
 \item \code{degree}: scale degree from zero to (number of notes) - 1
-\item \code{base_12EDO}: note name for nearest 12EDO note
-\item \code{offset_cents}: offset in cents from \code{base_12EDO}
+\item \code{key_12EDO}: note name for closest 12EDO note
+\item \code{offset_cents}: offset in cents from \code{key_12EDO}
 }
 }
 \description{
@@ -36,10 +36,15 @@ Creates a scale table from a combination product set definition
 # the defaults yield the 1-3-5-7-9-11 Eikosany
 print(eikosany <- create_scale_table())
 
-# the 1-7-9-11-13 Dekany
+# the 1-3-5-7 Hexany
+hexany_harmonics <- c(1, 3, 5, 7)
+hexany_choose = 2
+print(hexany <- create_scale_table(hexany_harmonics, hexany_choose))
+
+# the 1-7-9-11-13 2)5 Dekany
 dekany_harmonics <- c(1, 7, 9, 11, 13)
 dekany_choose <- 2
-print(dekany_1_7_9_11_13 <- create_scale_table(dekany_harmonics, dekany_choose))
+print(dekany <- create_scale_table(dekany_harmonics, dekany_choose))
 
 # We might want to print out sheet music for a conventional keyboard
 # player, since the synthesizer is mapping MIDI note numbers to pitches.

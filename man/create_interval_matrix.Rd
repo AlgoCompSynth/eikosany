@@ -18,7 +18,10 @@ Creates an interval matrix from a scale table
 \examples{
 \dontrun{
 
-# the defaults yield the 1-3-5-7-9-11 Eikosany
-print(eikosany_interval_matrix <-create_interval_matrix(create_scale_table()))
+# the 1-3-5-7 Hexany
+hexany_harmonics <- c(1, 3, 5, 7)
+hexany_choose = 2
+hexany <- create_scale_table(hexany_harmonics, hexany_choose)
+print(hexany_interval_matrix <-create_interval_matrix(hexany))
 }
 }

@@ -98,13 +98,13 @@
 
 .pitch_bend_offsets <- function(cents) {
   note_names <- .NAMES_12EDO
-  index_name <- cents %/% 100
+  index2name <- cents %/% 100
   offset_cents <- cents %% 100
   index_degree <- offset_cents > 50
-  index_name[index_degree] <- index_name[index_degree] + 1
+  index2name[index_degree] <- index2name[index_degree] + 1
   offset_cents[index_degree] <- offset_cents[index_degree] - 100
-  base_12EDO <- note_names[index_degree + 1]
-  return(list(base_12EDO = base_12EDO, offset_cents = offset_cents))
+  key_12EDO <- note_names[index2name + 1]
+  return(list(key_12EDO = key_12EDO, offset_cents = offset_cents))
 }
 
 #' @title Create Scale Table
@@ -131,8 +131,8 @@
 #' \item `ratio_frac`: the ratio as a vulgar fraction (character)
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `base_12EDO`: note name for nearest 12EDO note
-#' \item `offset_cents`: offset in cents from `base_12EDO`
+#' \item `key_12EDO`: note name for closest 12EDO note
+#' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #' @examples
 #' \dontrun{
@@ -140,10 +140,15 @@
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
 #' print(eikosany <- create_scale_table())
 #'
-#' # the 1-7-9-11-13 Dekany
+#' # the 1-3-5-7 Hexany
+#' hexany_harmonics <- c(1, 3, 5, 7)
+#' hexany_choose = 2
+#' print(hexany <- create_scale_table(hexany_harmonics, hexany_choose))
+#'
+#' # the 1-7-9-11-13 2)5 Dekany
 #' dekany_harmonics <- c(1, 7, 9, 11, 13)
 #' dekany_choose <- 2
-#' print(dekany_1_7_9_11_13 <- create_scale_table(dekany_harmonics, dekany_choose))
+#' print(dekany <- create_scale_table(dekany_harmonics, dekany_choose))
 #'
 #' # We might want to print out sheet music for a conventional keyboard
 #' # player, since the synthesizer is mapping MIDI note numbers to pitches.
@@ -173,7 +178,7 @@ create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
   data.table::setkey(result_table, ratio)
   result_table <- result_table[, "degree" := .I - 1]
   pitch_bend_offsets <- .pitch_bend_offsets(result_table$ratio_cents)
-  result_table$base_12EDO <- pitch_bend_offsets$base_12EDO
+  result_table$key_12EDO <- pitch_bend_offsets$key_12EDO
   result_table$offset_cents <- pitch_bend_offsets$offset_cents
   return(result_table)
 }
@@ -238,8 +243,11 @@ create_12edo_scale_table <- function() {
 #' @examples
 #' \dontrun{
 #'
-#' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' print(eikosany_interval_matrix <-create_interval_matrix(create_scale_table()))
+#' # the 1-3-5-7 Hexany
+#' hexany_harmonics <- c(1, 3, 5, 7)
+#' hexany_choose = 2
+#' hexany <- create_scale_table(hexany_harmonics, hexany_choose)
+#' print(hexany_interval_matrix <-create_interval_matrix(hexany))
 #' }
 
 create_interval_matrix <- function(scale_table) {
@@ -268,13 +276,10 @@ create_interval_matrix <- function(scale_table) {
 #' @examples
 #' \dontrun{
 #'
-#' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' eikosany_scale <- create_scale_table()
-#' print(eikosany_scale)
 #'
 #' # compute the tetrads of the 1-3-5-7-9-11 Eikosany
-#' eikosany_chords <- create_chord_table(eikosany_scale, 4)
-#' print(eikosany_chords)
+#' eikosany <- create_scale_table()
+#' print(eikosany_chords <- create_chord_table(eikosany, 4))
 #' }
 
 create_chord_table <- function(scale_table, choose) {
@@ -359,10 +364,18 @@ create_chord_table <- function(scale_table, choose) {
 #' hexany_harmonics <- c(1, 3, 5, 7)
 #' hexany_choose = 2
 #' hexany <- create_scale_table(hexany_harmonics, hexany_choose)
-#' keyboard_map_c4 <- create_keyboard_map(hexany)
-#' print(keyboard_map_c4)
-#' keyboard_map_c3 <- create_keyboard_map(hexany, middle_c_octave = 3)
-#' print(keyboard_map_c3)
+#' print(hexany_keyboard_map <- create_keyboard_map(hexany))
+#' dekany_harmonics <- c(1, 7, 9, 11, 13)
+#' dekany_choose <- 2
+#' dekany <- create_scale_table(dekany_harmonics, dekany_choose)
+#' print(dekany_keyboard_map <- create_keyboard_map(dekany))
+#' print(
+#'   vanilla_keyboard_map <- create_keyboard_map(create_12edo_scale_table())
+#' )
+#' print(
+#'   eikosany_keyboard_map_c3 <-
+#'     create_keyboard_map(create_scale_table(), middle_c_octave = 3)
+#' )
 #' }
 
 create_keyboard_map <- function(scale_table, middle_c_octave = 4) {

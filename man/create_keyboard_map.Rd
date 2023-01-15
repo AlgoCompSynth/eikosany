@@ -41,9 +41,17 @@ MIDI note number 0.
 hexany_harmonics <- c(1, 3, 5, 7)
 hexany_choose = 2
 hexany <- create_scale_table(hexany_harmonics, hexany_choose)
-keyboard_map_c4 <- create_keyboard_map(hexany)
-print(keyboard_map_c4)
-keyboard_map_c3 <- create_keyboard_map(hexany, middle_c_octave = 3)
-print(keyboard_map_c3)
+print(hexany_keyboard_map <- create_keyboard_map(hexany))
+dekany_harmonics <- c(1, 7, 9, 11, 13)
+dekany_choose <- 2
+dekany <- create_scale_table(dekany_harmonics, dekany_choose)
+print(dekany_keyboard_map <- create_keyboard_map(dekany))
+print(
+  vanilla_keyboard_map <- create_keyboard_map(create_12edo_scale_table())
+)
+print(
+  eikosany_keyboard_map_c3 <-
+    create_keyboard_map(create_scale_table(), middle_c_octave = 3)
+)
 }
 }

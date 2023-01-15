@@ -82,49 +82,77 @@
 <p>See <span class="citation">Narushima (2019)</span> for the details.
 For now we are just running the examples.</p>
 <div class="section level2">
-<h2 id="scale_table-examples">scale_table examples<a class="anchor" aria-label="anchor" href="#scale_table-examples"></a>
+<h2 id="create_scale_table-examples">create_scale_table examples<a class="anchor" aria-label="anchor" href="#create_scale_table-examples"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co"># the defaults yield the 1-3-5-7-9-11 Eikosany</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scale_table.html">scale_table</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     product    ratio ratio_frac ratio_cents degree</span></span>
-<span><span class="co">#&gt;  1:   1x3x5 1.000000          1     0.00000      0</span></span>
-<span><span class="co">#&gt;  2:  5x9x11 1.031250      33/32    53.27294      1</span></span>
-<span><span class="co">#&gt;  3:   1x7x9 1.050000      21/20    84.46719      2</span></span>
-<span><span class="co">#&gt;  4:  1x3x11 1.100000      11/10   165.00423      3</span></span>
-<span><span class="co">#&gt;  5:   3x5x9 1.125000        9/8   203.91000      4</span></span>
-<span><span class="co">#&gt;  6:   1x5x7 1.166667        7/6   266.87091      5</span></span>
-<span><span class="co">#&gt;  7:  3x9x11 1.237500      99/80   368.91423      6</span></span>
-<span><span class="co">#&gt;  8:  1x7x11 1.283333      77/60   431.87513      7</span></span>
-<span><span class="co">#&gt;  9:   5x7x9 1.312500      21/16   470.78091      8</span></span>
-<span><span class="co">#&gt; 10:  3x5x11 1.375000       11/8   551.31794      9</span></span>
-<span><span class="co">#&gt; 11:   1x3x7 1.400000        7/5   582.51219     10</span></span>
-<span><span class="co">#&gt; 12:  7x9x11 1.443750    231/160   635.78514     11</span></span>
-<span><span class="co">#&gt; 13:   1x5x9 1.500000        3/2   701.95500     12</span></span>
-<span><span class="co">#&gt; 14:   3x7x9 1.575000      63/40   786.42219     13</span></span>
-<span><span class="co">#&gt; 15:  5x7x11 1.604167      77/48   818.18885     14</span></span>
-<span><span class="co">#&gt; 16:  1x9x11 1.650000      33/20   866.95923     15</span></span>
-<span><span class="co">#&gt; 17:   3x5x7 1.750000        7/4   968.82591     16</span></span>
-<span><span class="co">#&gt; 18:   1x3x9 1.800000        9/5  1017.59629     17</span></span>
-<span><span class="co">#&gt; 19:  1x5x11 1.833333       11/6  1049.36294     18</span></span>
-<span><span class="co">#&gt; 20:  3x7x11 1.925000      77/40  1133.83013     19</span></span>
+<span><span class="co"># 12EDO scale table</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vanilla</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_12edo_scale_table.html">create_12edo_scale_table</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents degree base_12EDO offset</span></span>
+<span><span class="co">#&gt;  1:        C  1.000000          1           0      0         C       0</span></span>
+<span><span class="co">#&gt;  2:        C# 1.059463  1461/1379         100      1         C#      0</span></span>
+<span><span class="co">#&gt;  3:        D  1.122462  1714/1527         200      2         D       0</span></span>
+<span><span class="co">#&gt;  4:        D# 1.189207  1785/1501         300      3         D#      0</span></span>
+<span><span class="co">#&gt;  5:        E  1.259921    635/504         400      4         E       0</span></span>
+<span><span class="co">#&gt;  6:        F  1.334840  3249/2434         500      5         F       0</span></span>
+<span><span class="co">#&gt;  7:        F# 1.414214   1393/985         600      6         F#      0</span></span>
+<span><span class="co">#&gt;  8:        G  1.498307  2213/1477         700      7         G       0</span></span>
+<span><span class="co">#&gt;  9:        G# 1.587401   1008/635         800      8         G#      0</span></span>
+<span><span class="co">#&gt; 10:        A  1.681793  3002/1785         900      9         A       0</span></span>
+<span><span class="co">#&gt; 11:        A# 1.781797   1527/857        1000     10         A#      0</span></span>
+<span><span class="co">#&gt; 12:        B  1.887749  2943/1559        1100     11         B       0</span></span>
 <span></span>
-<span><span class="co"># the 1-7-9-11-13 Dekany</span></span>
+<span><span class="co"># the defaults yield the 1-3-5-7-9-11 Eikosany</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents degree key_12EDO offset_cents</span></span>
+<span><span class="co">#&gt;  1:     1x3x5 1.000000          1     0.00000      0        C      0.000000</span></span>
+<span><span class="co">#&gt;  2:    5x9x11 1.031250      33/32    53.27294      1        C#   -46.727057</span></span>
+<span><span class="co">#&gt;  3:     1x7x9 1.050000      21/20    84.46719      2        C#   -15.532807</span></span>
+<span><span class="co">#&gt;  4:    1x3x11 1.100000      11/10   165.00423      3        D    -34.995772</span></span>
+<span><span class="co">#&gt;  5:     3x5x9 1.125000        9/8   203.91000      4        D      3.910002</span></span>
+<span><span class="co">#&gt;  6:     1x5x7 1.166667        7/6   266.87091      5        D#   -33.129094</span></span>
+<span><span class="co">#&gt;  7:    3x9x11 1.237500      99/80   368.91423      6        E    -31.085770</span></span>
+<span><span class="co">#&gt;  8:    1x7x11 1.283333      77/60   431.87513      7        E     31.875134</span></span>
+<span><span class="co">#&gt;  9:     5x7x9 1.312500      21/16   470.78091      8        F    -29.219093</span></span>
+<span><span class="co">#&gt; 10:    3x5x11 1.375000       11/8   551.31794      9        F#   -48.682058</span></span>
+<span><span class="co">#&gt; 11:     1x3x7 1.400000        7/5   582.51219     10        F#   -17.487807</span></span>
+<span><span class="co">#&gt; 12:    7x9x11 1.443750    231/160   635.78514     11        F#    35.785136</span></span>
+<span><span class="co">#&gt; 13:     1x5x9 1.500000        3/2   701.95500     12        G      1.955001</span></span>
+<span><span class="co">#&gt; 14:     3x7x9 1.575000      63/40   786.42219     13        G#   -13.577806</span></span>
+<span><span class="co">#&gt; 15:    5x7x11 1.604167      77/48   818.18885     14        G#    18.188848</span></span>
+<span><span class="co">#&gt; 16:    1x9x11 1.650000      33/20   866.95923     15        A    -33.040771</span></span>
+<span><span class="co">#&gt; 17:     3x5x7 1.750000        7/4   968.82591     16        A#   -31.174094</span></span>
+<span><span class="co">#&gt; 18:     1x3x9 1.800000        9/5  1017.59629     17        A#    17.596288</span></span>
+<span><span class="co">#&gt; 19:    1x5x11 1.833333       11/6  1049.36294     18        A#    49.362941</span></span>
+<span><span class="co">#&gt; 20:    3x7x11 1.925000      77/40  1133.83013     19        B     33.830135</span></span>
+<span></span>
+<span><span class="co"># the 1-3-5-7 Hexany</span></span>
+<span><span class="va">hexany_harmonics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span><span class="op">)</span></span>
+<span><span class="va">hexany_choose</span> <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="va">hexany_harmonics</span>, <span class="va">hexany_choose</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    note_name    ratio ratio_frac ratio_cents degree key_12EDO offset_cents</span></span>
+<span><span class="co">#&gt; 1:       1x3 1.000000          1      0.0000      0        C       0.00000</span></span>
+<span><span class="co">#&gt; 2:       1x7 1.166667        7/6    266.8709      1        D#    -33.12909</span></span>
+<span><span class="co">#&gt; 3:       3x5 1.250000        5/4    386.3137      2        E     -13.68629</span></span>
+<span><span class="co">#&gt; 4:       5x7 1.458333      35/24    653.1846      3        G     -46.81538</span></span>
+<span><span class="co">#&gt; 5:       1x5 1.666667        5/3    884.3587      4        A     -15.64129</span></span>
+<span><span class="co">#&gt; 6:       3x7 1.750000        7/4    968.8259      5        A#    -31.17409</span></span>
+<span></span>
+<span><span class="co"># the 1-7-9-11-13 2)5 Dekany</span></span>
 <span><span class="va">dekany_harmonics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span>, <span class="fl">13</span><span class="op">)</span></span>
 <span><span class="va">dekany_choose</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany_1_7_9_11_13</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scale_table.html">scale_table</a></span><span class="op">(</span><span class="va">dekany_harmonics</span>, <span class="va">dekany_choose</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     product    ratio ratio_frac ratio_cents degree</span></span>
-<span><span class="co">#&gt;  1:     1x7 1.000000          1     0.00000      0</span></span>
-<span><span class="co">#&gt;  2:    9x13 1.044643    117/112    75.61176      1</span></span>
-<span><span class="co">#&gt;  3:     7x9 1.125000        9/8   203.91000      2</span></span>
-<span><span class="co">#&gt;  4:   11x13 1.276786    143/112   423.01970      3</span></span>
-<span><span class="co">#&gt;  5:     1x9 1.285714        9/7   435.08410      4</span></span>
-<span><span class="co">#&gt;  6:    7x11 1.375000       11/8   551.31794      5</span></span>
-<span><span class="co">#&gt;  7:    1x11 1.571429       11/7   782.49204      6</span></span>
-<span><span class="co">#&gt;  8:    7x13 1.625000       13/8   840.52766      7</span></span>
-<span><span class="co">#&gt;  9:    9x11 1.767857      99/56   986.40204      8</span></span>
-<span><span class="co">#&gt; 10:    1x13 1.857143       13/7  1071.70176      9</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="va">dekany_harmonics</span>, <span class="va">dekany_choose</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents degree key_12EDO offset_cents</span></span>
+<span><span class="co">#&gt;  1:       1x7 1.000000          1     0.00000      0        C      0.000000</span></span>
+<span><span class="co">#&gt;  2:      9x13 1.044643    117/112    75.61176      1        C#   -24.388243</span></span>
+<span><span class="co">#&gt;  3:       7x9 1.125000        9/8   203.91000      2        D      3.910002</span></span>
+<span><span class="co">#&gt;  4:     11x13 1.276786    143/112   423.01970      3        E     23.019698</span></span>
+<span><span class="co">#&gt;  5:       1x9 1.285714        9/7   435.08410      4        E     35.084095</span></span>
+<span><span class="co">#&gt;  6:      7x11 1.375000       11/8   551.31794      5        F#   -48.682058</span></span>
+<span><span class="co">#&gt;  7:      1x11 1.571429       11/7   782.49204      6        G#   -17.507964</span></span>
+<span><span class="co">#&gt;  8:      7x13 1.625000       13/8   840.52766      7        G#    40.527662</span></span>
+<span><span class="co">#&gt;  9:      9x11 1.767857      99/56   986.40204      8        A#   -13.597962</span></span>
+<span><span class="co">#&gt; 10:      1x13 1.857143       13/7  1071.70176      9        B    -28.298245</span></span>
 <span></span>
 <span><span class="co"># We might want to print out sheet music for a conventional keyboard</span></span>
 <span><span class="co"># player, since the synthesizer is mapping MIDI note numbers to pitches.</span></span>
@@ -133,74 +161,59 @@ For now we are just running the examples.</p>
 <span><span class="co"># seven harmonics taken three at a time.</span></span>
 <span><span class="va">harmonics_35</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span>, <span class="fl">13</span><span class="op">)</span></span>
 <span><span class="va">choose_35</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">any_35</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scale_table.html">scale_table</a></span><span class="op">(</span><span class="va">harmonics_35</span>, <span class="va">choose_35</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     product    ratio ratio_frac ratio_cents degree</span></span>
-<span><span class="co">#&gt;  1:   1x3x5 1.000000          1     0.00000      0</span></span>
-<span><span class="co">#&gt;  2:  5x9x11 1.031250      33/32    53.27294      1</span></span>
-<span><span class="co">#&gt;  3: 7x11x13 1.042708   1001/960    72.40280      2</span></span>
-<span><span class="co">#&gt;  4:   1x7x9 1.050000      21/20    84.46719      3</span></span>
-<span><span class="co">#&gt;  5:  1x5x13 1.083333      13/12   138.57266      4</span></span>
-<span><span class="co">#&gt;  6:  1x3x11 1.100000      11/10   165.00423      5</span></span>
-<span><span class="co">#&gt;  7:   3x5x9 1.125000        9/8   203.91000      6</span></span>
-<span><span class="co">#&gt;  8:  3x7x13 1.137500      91/80   223.03985      7</span></span>
-<span><span class="co">#&gt;  9:   1x5x7 1.166667        7/6   266.87091      8</span></span>
-<span><span class="co">#&gt; 10: 1x11x13 1.191667    143/120   303.57689      9</span></span>
-<span><span class="co">#&gt; 11:  5x9x13 1.218750      39/32   342.48266     10</span></span>
-<span><span class="co">#&gt; 12:  3x9x11 1.237500      99/80   368.91423     11</span></span>
-<span><span class="co">#&gt; 13:  1x7x11 1.283333      77/60   431.87513     12</span></span>
-<span><span class="co">#&gt; 14:  1x3x13 1.300000      13/10   454.21395     13</span></span>
-<span><span class="co">#&gt; 15:   5x7x9 1.312500      21/16   470.78091     14</span></span>
-<span><span class="co">#&gt; 16: 9x11x13 1.340625    429/320   507.48689     15</span></span>
-<span><span class="co">#&gt; 17:  3x5x11 1.375000       11/8   551.31794     16</span></span>
-<span><span class="co">#&gt; 18:   1x3x7 1.400000        7/5   582.51219     17</span></span>
-<span><span class="co">#&gt; 19:  7x9x11 1.443750    231/160   635.78514     18</span></span>
-<span><span class="co">#&gt; 20:  3x9x13 1.462500     117/80   658.12395     19</span></span>
-<span><span class="co">#&gt; 21: 5x11x13 1.489583     143/96   689.89060     20</span></span>
-<span><span class="co">#&gt; 22:   1x5x9 1.500000        3/2   701.95500     21</span></span>
-<span><span class="co">#&gt; 23:  1x7x13 1.516667      91/60   721.08485     22</span></span>
-<span><span class="co">#&gt; 24:   3x7x9 1.575000      63/40   786.42219     23</span></span>
-<span><span class="co">#&gt; 25:  5x7x11 1.604167      77/48   818.18885     24</span></span>
-<span><span class="co">#&gt; 26:  3x5x13 1.625000       13/8   840.52766     25</span></span>
-<span><span class="co">#&gt; 27:  1x9x11 1.650000      33/20   866.95923     26</span></span>
-<span><span class="co">#&gt; 28:  7x9x13 1.706250    273/160   924.99486     27</span></span>
-<span><span class="co">#&gt; 29:   3x5x7 1.750000        7/4   968.82591     28</span></span>
-<span><span class="co">#&gt; 30: 3x11x13 1.787500     143/80  1005.53189     29</span></span>
-<span><span class="co">#&gt; 31:   1x3x9 1.800000        9/5  1017.59629     30</span></span>
-<span><span class="co">#&gt; 32:  1x5x11 1.833333       11/6  1049.36294     31</span></span>
-<span><span class="co">#&gt; 33:  5x7x13 1.895833      91/48  1107.39857     32</span></span>
-<span><span class="co">#&gt; 34:  3x7x11 1.925000      77/40  1133.83013     33</span></span>
-<span><span class="co">#&gt; 35:  1x9x13 1.950000      39/20  1156.16895     34</span></span>
-<span><span class="co">#&gt;     product    ratio ratio_frac ratio_cents degree</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">any_35</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="va">harmonics_35</span>, <span class="va">choose_35</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents degree key_12EDO offset_cents</span></span>
+<span><span class="co">#&gt;  1:     1x3x5 1.000000          1     0.00000      0        C      0.000000</span></span>
+<span><span class="co">#&gt;  2:    5x9x11 1.031250      33/32    53.27294      1        C#   -46.727057</span></span>
+<span><span class="co">#&gt;  3:   7x11x13 1.042708   1001/960    72.40280      2        C#   -27.597204</span></span>
+<span><span class="co">#&gt;  4:     1x7x9 1.050000      21/20    84.46719      3        C#   -15.532807</span></span>
+<span><span class="co">#&gt;  5:    1x5x13 1.083333      13/12   138.57266      4        C#    38.572661</span></span>
+<span><span class="co">#&gt;  6:    1x3x11 1.100000      11/10   165.00423      5        D    -34.995772</span></span>
+<span><span class="co">#&gt;  7:     3x5x9 1.125000        9/8   203.91000      6        D      3.910002</span></span>
+<span><span class="co">#&gt;  8:    3x7x13 1.137500      91/80   223.03985      7        D     23.039854</span></span>
+<span><span class="co">#&gt;  9:     1x5x7 1.166667        7/6   266.87091      8        D#   -33.129094</span></span>
+<span><span class="co">#&gt; 10:   1x11x13 1.191667    143/120   303.57689      9        D#     3.576889</span></span>
+<span><span class="co">#&gt; 11:    5x9x13 1.218750      39/32   342.48266     10        D#    42.482663</span></span>
+<span><span class="co">#&gt; 12:    3x9x11 1.237500      99/80   368.91423     11        E    -31.085770</span></span>
+<span><span class="co">#&gt; 13:    1x7x11 1.283333      77/60   431.87513     12        E     31.875134</span></span>
+<span><span class="co">#&gt; 14:    1x3x13 1.300000      13/10   454.21395     13        F    -45.786052</span></span>
+<span><span class="co">#&gt; 15:     5x7x9 1.312500      21/16   470.78091     14        F    -29.219093</span></span>
+<span><span class="co">#&gt; 16:   9x11x13 1.340625    429/320   507.48689     15        F      7.486891</span></span>
+<span><span class="co">#&gt; 17:    3x5x11 1.375000       11/8   551.31794     16        F#   -48.682058</span></span>
+<span><span class="co">#&gt; 18:     1x3x7 1.400000        7/5   582.51219     17        F#   -17.487807</span></span>
+<span><span class="co">#&gt; 19:    7x9x11 1.443750    231/160   635.78514     18        F#    35.785136</span></span>
+<span><span class="co">#&gt; 20:    3x9x13 1.462500     117/80   658.12395     19        G    -41.876050</span></span>
+<span><span class="co">#&gt; 21:   5x11x13 1.489583     143/96   689.89060     20        G    -10.109397</span></span>
+<span><span class="co">#&gt; 22:     1x5x9 1.500000        3/2   701.95500     21        G      1.955001</span></span>
+<span><span class="co">#&gt; 23:    1x7x13 1.516667      91/60   721.08485     22        G     21.084854</span></span>
+<span><span class="co">#&gt; 24:     3x7x9 1.575000      63/40   786.42219     23        G#   -13.577806</span></span>
+<span><span class="co">#&gt; 25:    5x7x11 1.604167      77/48   818.18885     24        G#    18.188848</span></span>
+<span><span class="co">#&gt; 26:    3x5x13 1.625000       13/8   840.52766     25        G#    40.527662</span></span>
+<span><span class="co">#&gt; 27:    1x9x11 1.650000      33/20   866.95923     26        A    -33.040771</span></span>
+<span><span class="co">#&gt; 28:    7x9x13 1.706250    273/160   924.99486     27        A     24.994855</span></span>
+<span><span class="co">#&gt; 29:     3x5x7 1.750000        7/4   968.82591     28        A#   -31.174094</span></span>
+<span><span class="co">#&gt; 30:   3x11x13 1.787500     143/80  1005.53189     29        A#     5.531890</span></span>
+<span><span class="co">#&gt; 31:     1x3x9 1.800000        9/5  1017.59629     30        A#    17.596288</span></span>
+<span><span class="co">#&gt; 32:    1x5x11 1.833333       11/6  1049.36294     31        A#    49.362941</span></span>
+<span><span class="co">#&gt; 33:    5x7x13 1.895833      91/48  1107.39857     32        B      7.398567</span></span>
+<span><span class="co">#&gt; 34:    3x7x11 1.925000      77/40  1133.83013     33        B     33.830135</span></span>
+<span><span class="co">#&gt; 35:    1x9x13 1.950000      39/20  1156.16895     34      &lt;NA&gt;   -43.831051</span></span>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents degree key_12EDO offset_cents</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="interval-matrix-example">Interval matrix example<a class="anchor" aria-label="anchor" href="#interval-matrix-example"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co"># the defaults yield the 1-3-5-7-9-11 Eikosany</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany_1_7_9_11_13_interval_matrix</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/interval_matrix.html">interval_matrix</a></span><span class="op">(</span><span class="va">dekany_1_7_9_11_13</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       [,1]    [,2]    [,3]    [,4]    [,5]    [,6]    [,7]    [,8]    [,9]   </span></span>
-<span><span class="co">#&gt;  [1,]       1 112/117     8/9 112/143     7/9    8/11    7/11    8/13   56/99</span></span>
-<span><span class="co">#&gt;  [2,] 117/112       1   13/14    9/11   13/16 117/154 117/176    9/14   13/22</span></span>
-<span><span class="co">#&gt;  [3,]     9/8   14/13       1 126/143     7/8    9/11   63/88    9/13    7/11</span></span>
-<span><span class="co">#&gt;  [4,] 143/112    11/9 143/126       1 143/144   13/14   13/16   11/14   13/18</span></span>
-<span><span class="co">#&gt;  [5,]     9/7   16/13     8/7 144/143       1   72/77    9/11   72/91    8/11</span></span>
-<span><span class="co">#&gt;  [6,]    11/8 154/117    11/9   14/13   77/72       1     7/8   11/13     7/9</span></span>
-<span><span class="co">#&gt;  [7,]    11/7 176/117   88/63   16/13    11/9     8/7       1   88/91     8/9</span></span>
-<span><span class="co">#&gt;  [8,]    13/8    14/9    13/9   14/11   91/72   13/11   91/88       1   91/99</span></span>
-<span><span class="co">#&gt;  [9,]   99/56   22/13    11/7   18/13    11/8     9/7     9/8   99/91       1</span></span>
-<span><span class="co">#&gt; [10,]    13/7    16/9  104/63   16/11    13/9  104/77   13/11     8/7  104/99</span></span>
-<span><span class="co">#&gt;       [,10]  </span></span>
-<span><span class="co">#&gt;  [1,]    7/13</span></span>
-<span><span class="co">#&gt;  [2,]    9/16</span></span>
-<span><span class="co">#&gt;  [3,]  63/104</span></span>
-<span><span class="co">#&gt;  [4,]   11/16</span></span>
-<span><span class="co">#&gt;  [5,]    9/13</span></span>
-<span><span class="co">#&gt;  [6,]  77/104</span></span>
-<span><span class="co">#&gt;  [7,]   11/13</span></span>
-<span><span class="co">#&gt;  [8,]     7/8</span></span>
-<span><span class="co">#&gt;  [9,]  99/104</span></span>
-<span><span class="co">#&gt; [10,]       1</span></span></code></pre></div>
+<span><span class="co"># the 1-3-5-7 Hexany</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany_interval_matrix</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/create_interval_matrix.html">create_interval_matrix</a></span><span class="op">(</span><span class="va">hexany</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      [,1]  [,2]  [,3]  [,4]  [,5]  [,6] </span></span>
+<span><span class="co">#&gt; [1,]     1   6/7   4/5 24/35   3/5   4/7</span></span>
+<span><span class="co">#&gt; [2,]   7/6     1 14/15   4/5  7/10   2/3</span></span>
+<span><span class="co">#&gt; [3,]   5/4 15/14     1   6/7   3/4   5/7</span></span>
+<span><span class="co">#&gt; [4,] 35/24   5/4   7/6     1   7/8   5/6</span></span>
+<span><span class="co">#&gt; [5,]   5/3  10/7   4/3   8/7     1 20/21</span></span>
+<span><span class="co">#&gt; [6,]   7/4   3/2   7/5   6/5 21/20     1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="tetrads-of-the-eikosany">Tetrads of the eikosany<a class="anchor" aria-label="anchor" href="#tetrads-of-the-eikosany"></a>
@@ -208,7 +221,7 @@ For now we are just running the examples.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># compute the tetrads of the 1-3-5-7-9-11 Eikosany</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chord_table.html">chord_table</a></span><span class="op">(</span><span class="va">eikosany</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_chord_table.html">create_chord_table</a></span><span class="op">(</span><span class="va">eikosany</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            chord     degrees</span></span>
 <span><span class="co">#&gt;  1:      1:3:5:7   1:6:11:15</span></span>
 <span><span class="co">#&gt;  2:      1:3:5:9  7:11:14:19</span></span>
@@ -246,32 +259,61 @@ For now we are just running the examples.</p>
 <h2 id="keyboard-map-examples">Keyboard map examples<a class="anchor" aria-label="anchor" href="#keyboard-map-examples"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">base_map_c4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/base_keyboard_map.html">base_keyboard_map</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      note_number degree_12edo octave_12edo note_name   freq_12edo cents_12edo</span></span>
-<span><span class="co">#&gt;   1:           0            0           -1        C      8.175799           0</span></span>
-<span><span class="co">#&gt;   2:           1            1           -1        C#     8.661957         100</span></span>
-<span><span class="co">#&gt;   3:           2            2           -1        D      9.177024         200</span></span>
-<span><span class="co">#&gt;   4:           3            3           -1        D#     9.722718         300</span></span>
-<span><span class="co">#&gt;   5:           4            4           -1        E     10.300861         400</span></span>
-<span><span class="co">#&gt;  ---                                                                         </span></span>
-<span><span class="co">#&gt; 124:         123            3            9        D#  9956.063479       12300</span></span>
-<span><span class="co">#&gt; 125:         124            4            9        E  10548.081821       12400</span></span>
-<span><span class="co">#&gt; 126:         125            5            9        F  11175.303406       12500</span></span>
-<span><span class="co">#&gt; 127:         126            6            9        F# 11839.821527       12600</span></span>
-<span><span class="co">#&gt; 128:         127            7            9        G  12543.853951       12700</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">base_map_c3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/base_keyboard_map.html">base_keyboard_map</a></span><span class="op">(</span>middle_c_octave <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      note_number degree_12edo octave_12edo note_name   freq_12edo cents_12edo</span></span>
-<span><span class="co">#&gt;   1:           0            0           -2        C      8.175799           0</span></span>
-<span><span class="co">#&gt;   2:           1            1           -2        C#     8.661957         100</span></span>
-<span><span class="co">#&gt;   3:           2            2           -2        D      9.177024         200</span></span>
-<span><span class="co">#&gt;   4:           3            3           -2        D#     9.722718         300</span></span>
-<span><span class="co">#&gt;   5:           4            4           -2        E     10.300861         400</span></span>
-<span><span class="co">#&gt;  ---                                                                         </span></span>
-<span><span class="co">#&gt; 124:         123            3            8        D#  9956.063479       12300</span></span>
-<span><span class="co">#&gt; 125:         124            4            8        E  10548.081821       12400</span></span>
-<span><span class="co">#&gt; 126:         125            5            8        F  11175.303406       12500</span></span>
-<span><span class="co">#&gt; 127:         126            6            8        F# 11839.821527       12600</span></span>
-<span><span class="co">#&gt; 128:         127            7            8        G  12543.853951       12700</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">hexany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="va">hexany_harmonics</span>, <span class="va">hexany_choose</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">hexany</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      note_number note_name octave degree         freq cents</span></span>
+<span><span class="co">#&gt;   1:           0       1x3     -6      0     8.175799     0</span></span>
+<span><span class="co">#&gt;   2:           1       1x7     -6      1     8.175799     0</span></span>
+<span><span class="co">#&gt;   3:           2       3x5     -6      2     8.175799     0</span></span>
+<span><span class="co">#&gt;   4:           3       5x7     -6      3     8.175799     0</span></span>
+<span><span class="co">#&gt;   5:           4       1x5     -6      4     8.175799     0</span></span>
+<span><span class="co">#&gt;  ---                                                       </span></span>
+<span><span class="co">#&gt; 124:         123       5x7     14      3 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 125:         124       1x5     14      4 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 126:         125       3x7     14      5 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 127:         126       1x3     15      0 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 128:         127       1x7     15      1 12543.853951 12700</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">dekany</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      note_number note_name octave degree         freq cents</span></span>
+<span><span class="co">#&gt;   1:           0       1x7     -2      0     8.175799     0</span></span>
+<span><span class="co">#&gt;   2:           1      9x13     -2      1     8.175799     0</span></span>
+<span><span class="co">#&gt;   3:           2       7x9     -2      2     8.175799     0</span></span>
+<span><span class="co">#&gt;   4:           3     11x13     -2      3     8.175799     0</span></span>
+<span><span class="co">#&gt;   5:           4       1x9     -2      4     8.175799     0</span></span>
+<span><span class="co">#&gt;  ---                                                       </span></span>
+<span><span class="co">#&gt; 124:         123     11x13     10      3 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 125:         124       1x9     10      4 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 126:         125      7x11     10      5 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 127:         126      1x11     10      6 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 128:         127      7x13     10      7 12543.853951 12700</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vanilla_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">vanilla</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      note_number note_name octave degree         freq cents</span></span>
+<span><span class="co">#&gt;   1:           0        C      -1      0     8.175799     0</span></span>
+<span><span class="co">#&gt;   2:           1        C#     -1      1     8.661957   100</span></span>
+<span><span class="co">#&gt;   3:           2        D      -1      2     9.177024   200</span></span>
+<span><span class="co">#&gt;   4:           3        D#     -1      3     9.722718   300</span></span>
+<span><span class="co">#&gt;   5:           4        E      -1      4    10.300861   400</span></span>
+<span><span class="co">#&gt;  ---                                                       </span></span>
+<span><span class="co">#&gt; 124:         123        D#      9      3  9956.063479 12300</span></span>
+<span><span class="co">#&gt; 125:         124        E       9      4 10548.081821 12400</span></span>
+<span><span class="co">#&gt; 126:         125        F       9      5 11175.303406 12500</span></span>
+<span><span class="co">#&gt; 127:         126        F#      9      6 11839.821527 12600</span></span>
+<span><span class="co">#&gt; 128:         127        G       9      7 12543.853951 12700</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_keyboard_map_c3</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">eikosany</span>, middle_c_octave <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;      note_number note_name octave degree       freq     cents</span></span>
+<span><span class="co">#&gt;   1:           0     1x3x5      0      0   32.70320  2400.000</span></span>
+<span><span class="co">#&gt;   2:           1    5x9x11      0      1   33.72517  2453.273</span></span>
+<span><span class="co">#&gt;   3:           2     1x7x9      0      2   34.33836  2484.467</span></span>
+<span><span class="co">#&gt;   4:           3    1x3x11      0      3   35.97352  2565.004</span></span>
+<span><span class="co">#&gt;   5:           4     3x5x9      0      4   36.79110  2603.910</span></span>
+<span><span class="co">#&gt;  ---                                                         </span></span>
+<span><span class="co">#&gt; 124:         123    1x3x11      6      3 2302.30497  9765.004</span></span>
+<span><span class="co">#&gt; 125:         124     3x5x9      6      4 2354.63009  9803.910</span></span>
+<span><span class="co">#&gt; 126:         125     1x5x7      6      5 2441.83861  9866.871</span></span>
+<span><span class="co">#&gt; 127:         126    3x9x11      6      6 2590.09310  9968.914</span></span>
+<span><span class="co">#&gt; 128:         127    1x7x11      6      7 2686.02247 10031.875</span></span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
