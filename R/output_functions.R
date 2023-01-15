@@ -92,7 +92,6 @@ create_minilogue_xd_scale_file <- function(
   )
 
   # write to file
-  print(text_data)
   writeLines(text_data, output_file_path)
 
   # return the data

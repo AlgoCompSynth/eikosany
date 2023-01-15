@@ -1,9 +1,9 @@
 ---
-title: "Constructing the Eikosany"
+title: "Run the Examples"
 output: rmarkdown::html_vignette
 bibliography: eikosany.bibtex
 vignette: >
-  %\VignetteIndexEntry{Constructing the Eikosany}
+  %\VignetteIndexEntry{Run the Examples}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,8 +19,8 @@ knitr::opts_chunk$set(
 library(eikosany)
 ```
 
-See @narushima2019microtonality for the details. For now we are just running
-the examples.
+This vignette just runs the examples. See @narushima2019microtonality for the
+details.
 
 ## create_scale_table examples
 ```{r}
@@ -80,5 +80,13 @@ print(eikosany_keyboard_map_c3 <-
 
 ```
 
+## Minilogue XD `.scl` file example
+```{r}
+print(eikosany_minilogue_xd_scl_file <- create_minilogue_xd_scale_file(
+  eikosany_keyboard_map_c3,
+  "~/Eikosany-1-3-5-7-9-11.scl",
+  "Eikosany 1-3-5-7-9-11"
+))
+```
 
 ## References
