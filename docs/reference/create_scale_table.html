@@ -83,6 +83,18 @@ Eikosany.</p></dd>
 <li><p><code>key_12EDO</code>: note name for closest 12EDO note</p></li>
 <li><p><code>offset_cents</code>: offset in cents from <code>key_12EDO</code></p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The Dirtywave M8
+(https://cdn.shopify.com/s/files/1/0455/0485/6229/files/m8_operation_manual_v20220621.pdf?v=1655861519,
+page 24) can use arbitrary scales defined by offsets in cents from a 12EDO
+note. For scales with 12 or fewer notes per octave, you can just define
+the scale using <code>key_12EDO</code> and <code>offset_cents</code> from this table. For scales
+with more than 12 notes per octave, you need to allocate multiple scales in
+the M8.</p>
+<p>There may be other synthesizers that can be tuned this way, but the M8 is
+the only one I have.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -97,6 +109,7 @@ Eikosany.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany</span> <span class="op">&lt;-</span> <span class="fu">create_scale_table</span><span class="op">(</span><span class="va">hexany_harmonics</span>, <span class="va">hexany_choose</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the 1-7-9-11-13 2)5 Dekany</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dekany_harmonics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span>, <span class="fl">13</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dekany_choose</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany</span> <span class="op">&lt;-</span> <span class="fu">create_scale_table</span><span class="op">(</span><span class="va">dekany_harmonics</span>, <span class="va">dekany_choose</span><span class="op">)</span><span class="op">)</span></span></span>

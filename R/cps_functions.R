@@ -100,9 +100,9 @@
   note_names <- .NAMES_12EDO
   index2name <- cents %/% 100
   offset_cents <- cents %% 100
-  index_degree <- offset_cents > 50
-  index2name[index_degree] <- index2name[index_degree] + 1
-  offset_cents[index_degree] <- offset_cents[index_degree] - 100
+  index2increment <- offset_cents > 50 & (index2name + 1) < 12
+  index2name[index2increment] <- index2name[index2increment] + 1
+  offset_cents[index2increment] <- offset_cents[index2increment] - 100
   key_12EDO <- note_names[index2name + 1]
   return(list(key_12EDO = key_12EDO, offset_cents = offset_cents))
 }
@@ -134,6 +134,17 @@
 #' \item `key_12EDO`: note name for closest 12EDO note
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
+#' @details The Dirtywave M8
+#' (https://cdn.shopify.com/s/files/1/0455/0485/6229/files/m8_operation_manual_v20220621.pdf?v=1655861519,
+#' page 24) can use arbitrary scales defined by offsets in cents from a 12EDO
+#' note. For scales with 12 or fewer notes per octave, you can just define
+#' the scale using `key_12EDO` and `offset_cents` from this table. For scales
+#' with more than 12 notes per octave, you need to allocate multiple scales in
+#' the M8.
+#'
+#' There may be other synthesizers that can be tuned this way, but the M8 is
+#' the only one I have.
+#'
 #' @examples
 #' \dontrun{
 #'
@@ -146,6 +157,7 @@
 #' print(hexany <- create_scale_table(hexany_harmonics, hexany_choose))
 #'
 #' # the 1-7-9-11-13 2)5 Dekany
+#'
 #' dekany_harmonics <- c(1, 7, 9, 11, 13)
 #' dekany_choose <- 2
 #' print(dekany <- create_scale_table(dekany_harmonics, dekany_choose))
@@ -203,8 +215,8 @@ create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
 #' for 12EDO are irrational, so this is an approximation.
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `base_12EDO`: note name for nearest 12EDO note
-#' \item `offset_cents`: offset in cents from `base_12EDO`
+#' \item `key_12EDO`: note name for nearest 12EDO note
+#' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #' @examples
 #' \dontrun{
@@ -214,7 +226,7 @@ create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
 #' }
 
 create_12edo_scale_table <- function() {
-  base_12EDO <- note_name <- .NAMES_12EDO
+  key_12EDO <- note_name <- .NAMES_12EDO
   degree <- .DEGREES_12EDO
   ratio_cents <- degree * 100
   ratio <- .cents2ratio(ratio_cents)
@@ -226,7 +238,7 @@ create_12edo_scale_table <- function() {
     ratio_frac,
     ratio_cents,
     degree,
-    base_12EDO,
+    key_12EDO,
     offset
   )
   data.table::setkey(scale_table, ratio)

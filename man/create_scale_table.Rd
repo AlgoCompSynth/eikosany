@@ -30,6 +30,18 @@ a \code{data.table} with ten columns:
 \description{
 Creates a scale table from a combination product set definition
 }
+\details{
+The Dirtywave M8
+(https://cdn.shopify.com/s/files/1/0455/0485/6229/files/m8_operation_manual_v20220621.pdf?v=1655861519,
+page 24) can use arbitrary scales defined by offsets in cents from a 12EDO
+note. For scales with 12 or fewer notes per octave, you can just define
+the scale using \code{key_12EDO} and \code{offset_cents} from this table. For scales
+with more than 12 notes per octave, you need to allocate multiple scales in
+the M8.
+
+There may be other synthesizers that can be tuned this way, but the M8 is
+the only one I have.
+}
 \examples{
 \dontrun{
 
@@ -42,6 +54,7 @@ hexany_choose = 2
 print(hexany <- create_scale_table(hexany_harmonics, hexany_choose))
 
 # the 1-7-9-11-13 2)5 Dekany
+
 dekany_harmonics <- c(1, 7, 9, 11, 13)
 dekany_choose <- 2
 print(dekany <- create_scale_table(dekany_harmonics, dekany_choose))
