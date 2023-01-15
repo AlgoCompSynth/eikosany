@@ -4,12 +4,18 @@
 \alias{create_minilogue_xd_scale_file}
 \title{Create Minilogue XD Scale File}
 \usage{
-create_minilogue_xd_scale_file(keyboard_map, output_file_path)
+create_minilogue_xd_scale_file(
+  keyboard_map,
+  output_file_path,
+  scale_description = "'https://algocompsynth.github.io/eikosany/' made this!"
+)
 }
 \arguments{
 \item{keyboard_map}{a keyboard map created by \code{create_keyboard_map}}
 
 \item{output_file_path}{path to a file for which you have write permission}
+
+\item{scale_description}{tell the user what scale this is}
 }
 \value{
 a character vector containing the data written to the file. Each
@@ -74,4 +80,12 @@ I have not received any response other than an acknowledgement of my email.
 At some point I'll run out of easier tasks and try to troubleshoot the MIDI
 \code{sysex} method. Or perhaps Korg will respond with an updated sound librarian.
 Meanwhile, I've got this function and will be making music with it. Cheers!
+}
+\examples{
+\dontrun{
+
+eikosany_map <- create_keyboard_map(create_scale_table())
+create_minilogue_xd_scale_file(
+  eikosany_map, "~/test.scl", "Eikosany 1-3-5-7-9-11")
+}
 }

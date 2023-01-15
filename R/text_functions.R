@@ -4,8 +4,16 @@
 #' @export create_minilogue_xd_scale_file
 #' @param keyboard_map a keyboard map created by `create_keyboard_map`
 #' @param output_file_path path to a file for which you have write permission
+#' @param scale_description tell the user what scale this is
 #' @return a character vector containing the data written to the file. Each
 #' element of the vector is a line of ASCII text.
+#' @examples
+#' \dontrun{
+#'
+#' eikosany_map <- create_keyboard_map(create_scale_table())
+#' create_minilogue_xd_scale_file(
+#'   eikosany_map, "~/test.scl", "Eikosany 1-3-5-7-9-11")
+#' }
 #' @details The Korg Minilogue XD can be microtuned in two ways:
 #' \itemize{
 #' \item 1. A `user octave`: all octaves of the synthesizer are microtuned using
@@ -62,5 +70,31 @@
 #' `sysex` method. Or perhaps Korg will respond with an updated sound librarian.
 #' Meanwhile, I've got this function and will be making music with it. Cheers!
 
-create_minilogue_xd_scale_file <- function(keyboard_map, output_file_path) {
+create_minilogue_xd_scale_file <- function(
+    keyboard_map,
+    output_file_path,
+    scale_description = "'https://algocompsynth.github.io/eikosany/' made this!"
+) {
+
+  # check the keyboard map
+  if (length(keyboard_map$cents) != 128) {
+    stop("Keyboard map must have 128 rows!")
+  }
+
+  # construct data
+  text_data <- c(
+    paste("!", output_file_path),
+    scale_description,
+    "! number of ratios in scale",
+    "127",
+    "! ratios (cents above MIDI note number 0)",
+    as.character(sprintf("%f", keyboard_map$cents[2:128]))
+  )
+
+  # write to file
+  print(text_data)
+  writeLines(text_data, output_file_path)
+
+  # return the data
+  return(text_data)
 }
