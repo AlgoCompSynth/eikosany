@@ -355,15 +355,17 @@ create_chord_table <- function(scale_table, choose) {
 #' @param middle_c_octave octave number for middle C. There are varying
 #' conventions for the octave number for middle C. The default for this
 #' function is 4, but other software can use 3 or even some other number
-#' @return the keyboard map. This is a data.table with six columns:
+#' @return the keyboard map. This is a data.table with eight columns:
 #' \itemize{
 #' \item `note_number`: the MIDI note number from `.NN_MIN` through `.NN_MAX`
 #' \item `note_name`: the note name
+#' \item `ratio_frac`: ratio for the note as a vulgar fraction
 #' \item `octave`: the octave number of the note
 #' \item `degree`: the scale degree of the note
 #' \item `freq`: the frequency in Hz
 #' \item `cents`: cents above default MIDI note `.NN_MIN`, which has frequency
 #' `.FREQ_MIN`.
+#' \item `name_12edo`: note name of the key in 12EDO
 #' }
 #' @details The function is currently hard-coded to compute the map so that
 #' middle C with frequency `.FREQ_MIDDLE_C`is mapped to MIDI note number
@@ -400,10 +402,14 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
   degrees <- nrow(scale_table)
   octave <- (note_number - .NN_MIDDLE_C) %/% degrees
   degree <- (note_number - .NN_MIDDLE_C) %% degrees
+  degree_12EDO <- (note_number - .NN_MIDDLE_C) %% 12
 
   # note names
-  note_name <- vector(mode = "character", length = note_numbers)
+  note_name <- name_12edo <- ratio_frac <-
+    vector(mode = "character", length = note_numbers)
   note_name[note_number + 1] <- scale_table$note_name[degree + 1]
+  ratio_frac[note_number + 1] <- scale_table$ratio_frac[degree + 1]
+  name_12edo[note_number + 1] <- .NAMES_12EDO[degree_12EDO + 1]
 
   # cents and frequencies
   cents <-
@@ -425,10 +431,12 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
   keyboard_map <- data.table::data.table(
     note_number,
     note_name,
+    ratio_frac,
     octave,
     degree,
     freq,
-    cents
+    cents,
+    name_12edo
   )
   data.table::setkey(keyboard_map, note_number)
 
