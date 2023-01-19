@@ -24,6 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/plot-eikosany-chords.html">Plot the Eikosany Chords</a>
     <a class="dropdown-item" href="../articles/run-the-examples.html">Run the Examples</a>
   </div>
 </li>
@@ -73,13 +74,15 @@ function is 4, but other software can use 3 or even some other number</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>the keyboard map. This is a data.table with six columns:</p><ul><li><p><code>note_number</code>: the MIDI note number from <code>.NN_MIN</code> through <code>.NN_MAX</code></p></li>
+<p>the keyboard map. This is a data.table with eight columns:</p><ul><li><p><code>note_number</code>: the MIDI note number from <code>.NN_MIN</code> through <code>.NN_MAX</code></p></li>
 <li><p><code>note_name</code>: the note name</p></li>
+<li><p><code>ratio_frac</code>: ratio for the note as a vulgar fraction</p></li>
 <li><p><code>octave</code>: the octave number of the note</p></li>
 <li><p><code>degree</code>: the scale degree of the note</p></li>
 <li><p><code>freq</code>: the frequency in Hz</p></li>
 <li><p><code>cents</code>: cents above default MIDI note <code>.NN_MIN</code>, which has frequency
 <code>.FREQ_MIN</code>.</p></li>
+<li><p><code>name_12edo</code>: note name of the key in 12EDO</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

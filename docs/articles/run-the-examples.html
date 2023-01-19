@@ -41,6 +41,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/plot-eikosany-chords.html">Plot the Eikosany Chords</a>
     <a class="dropdown-item" href="../articles/run-the-examples.html">Run the Examples</a>
   </div>
 </li>
@@ -260,59 +261,107 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hexany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="va">hexany_harmonics</span>, <span class="va">hexany_choose</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">hexany</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      note_number note_name octave degree         freq cents</span></span>
-<span><span class="co">#&gt;   1:           0       1x3     -6      0     8.175799     0</span></span>
-<span><span class="co">#&gt;   2:           1       1x7     -6      1     8.175799     0</span></span>
-<span><span class="co">#&gt;   3:           2       3x5     -6      2     8.175799     0</span></span>
-<span><span class="co">#&gt;   4:           3       5x7     -6      3     8.175799     0</span></span>
-<span><span class="co">#&gt;   5:           4       1x5     -6      4     8.175799     0</span></span>
-<span><span class="co">#&gt;  ---                                                       </span></span>
-<span><span class="co">#&gt; 124:         123       5x7     14      3 12543.853951 12700</span></span>
-<span><span class="co">#&gt; 125:         124       1x5     14      4 12543.853951 12700</span></span>
-<span><span class="co">#&gt; 126:         125       3x7     14      5 12543.853951 12700</span></span>
-<span><span class="co">#&gt; 127:         126       1x3     15      0 12543.853951 12700</span></span>
-<span><span class="co">#&gt; 128:         127       1x7     15      1 12543.853951 12700</span></span>
+<span><span class="co">#&gt;      note_number note_name ratio_frac octave degree         freq cents</span></span>
+<span><span class="co">#&gt;   1:           0       1x3          1     -6      0     8.175799     0</span></span>
+<span><span class="co">#&gt;   2:           1       1x7        7/6     -6      1     8.175799     0</span></span>
+<span><span class="co">#&gt;   3:           2       3x5        5/4     -6      2     8.175799     0</span></span>
+<span><span class="co">#&gt;   4:           3       5x7      35/24     -6      3     8.175799     0</span></span>
+<span><span class="co">#&gt;   5:           4       1x5        5/3     -6      4     8.175799     0</span></span>
+<span><span class="co">#&gt;  ---                                                                  </span></span>
+<span><span class="co">#&gt; 124:         123       5x7      35/24     14      3 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 125:         124       1x5        5/3     14      4 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 126:         125       3x7        7/4     14      5 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 127:         126       1x3          1     15      0 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 128:         127       1x7        7/6     15      1 12543.853951 12700</span></span>
+<span><span class="co">#&gt;      name_12edo</span></span>
+<span><span class="co">#&gt;   1:         C </span></span>
+<span><span class="co">#&gt;   2:         C#</span></span>
+<span><span class="co">#&gt;   3:         D </span></span>
+<span><span class="co">#&gt;   4:         D#</span></span>
+<span><span class="co">#&gt;   5:         E </span></span>
+<span><span class="co">#&gt;  ---           </span></span>
+<span><span class="co">#&gt; 124:         D#</span></span>
+<span><span class="co">#&gt; 125:         E </span></span>
+<span><span class="co">#&gt; 126:         F </span></span>
+<span><span class="co">#&gt; 127:         F#</span></span>
+<span><span class="co">#&gt; 128:         G</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">dekany</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      note_number note_name octave degree         freq cents</span></span>
-<span><span class="co">#&gt;   1:           0       1x7     -2      0     8.175799     0</span></span>
-<span><span class="co">#&gt;   2:           1      9x13     -2      1     8.175799     0</span></span>
-<span><span class="co">#&gt;   3:           2       7x9     -2      2     8.175799     0</span></span>
-<span><span class="co">#&gt;   4:           3     11x13     -2      3     8.175799     0</span></span>
-<span><span class="co">#&gt;   5:           4       1x9     -2      4     8.175799     0</span></span>
-<span><span class="co">#&gt;  ---                                                       </span></span>
-<span><span class="co">#&gt; 124:         123     11x13     10      3 12543.853951 12700</span></span>
-<span><span class="co">#&gt; 125:         124       1x9     10      4 12543.853951 12700</span></span>
-<span><span class="co">#&gt; 126:         125      7x11     10      5 12543.853951 12700</span></span>
-<span><span class="co">#&gt; 127:         126      1x11     10      6 12543.853951 12700</span></span>
-<span><span class="co">#&gt; 128:         127      7x13     10      7 12543.853951 12700</span></span>
+<span><span class="co">#&gt;      note_number note_name ratio_frac octave degree         freq cents</span></span>
+<span><span class="co">#&gt;   1:           0       1x7          1     -2      0     8.175799     0</span></span>
+<span><span class="co">#&gt;   2:           1      9x13    117/112     -2      1     8.175799     0</span></span>
+<span><span class="co">#&gt;   3:           2       7x9        9/8     -2      2     8.175799     0</span></span>
+<span><span class="co">#&gt;   4:           3     11x13    143/112     -2      3     8.175799     0</span></span>
+<span><span class="co">#&gt;   5:           4       1x9        9/7     -2      4     8.175799     0</span></span>
+<span><span class="co">#&gt;  ---                                                                  </span></span>
+<span><span class="co">#&gt; 124:         123     11x13    143/112     10      3 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 125:         124       1x9        9/7     10      4 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 126:         125      7x11       11/8     10      5 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 127:         126      1x11       11/7     10      6 12543.853951 12700</span></span>
+<span><span class="co">#&gt; 128:         127      7x13       13/8     10      7 12543.853951 12700</span></span>
+<span><span class="co">#&gt;      name_12edo</span></span>
+<span><span class="co">#&gt;   1:         C </span></span>
+<span><span class="co">#&gt;   2:         C#</span></span>
+<span><span class="co">#&gt;   3:         D </span></span>
+<span><span class="co">#&gt;   4:         D#</span></span>
+<span><span class="co">#&gt;   5:         E </span></span>
+<span><span class="co">#&gt;  ---           </span></span>
+<span><span class="co">#&gt; 124:         D#</span></span>
+<span><span class="co">#&gt; 125:         E </span></span>
+<span><span class="co">#&gt; 126:         F </span></span>
+<span><span class="co">#&gt; 127:         F#</span></span>
+<span><span class="co">#&gt; 128:         G</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vanilla_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">vanilla</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      note_number note_name octave degree         freq cents</span></span>
-<span><span class="co">#&gt;   1:           0        C      -1      0     8.175799     0</span></span>
-<span><span class="co">#&gt;   2:           1        C#     -1      1     8.661957   100</span></span>
-<span><span class="co">#&gt;   3:           2        D      -1      2     9.177024   200</span></span>
-<span><span class="co">#&gt;   4:           3        D#     -1      3     9.722718   300</span></span>
-<span><span class="co">#&gt;   5:           4        E      -1      4    10.300861   400</span></span>
-<span><span class="co">#&gt;  ---                                                       </span></span>
-<span><span class="co">#&gt; 124:         123        D#      9      3  9956.063479 12300</span></span>
-<span><span class="co">#&gt; 125:         124        E       9      4 10548.081821 12400</span></span>
-<span><span class="co">#&gt; 126:         125        F       9      5 11175.303406 12500</span></span>
-<span><span class="co">#&gt; 127:         126        F#      9      6 11839.821527 12600</span></span>
-<span><span class="co">#&gt; 128:         127        G       9      7 12543.853951 12700</span></span>
+<span><span class="co">#&gt;      note_number note_name ratio_frac octave degree         freq cents</span></span>
+<span><span class="co">#&gt;   1:           0        C           1     -1      0     8.175799     0</span></span>
+<span><span class="co">#&gt;   2:           1        C#  1461/1379     -1      1     8.661957   100</span></span>
+<span><span class="co">#&gt;   3:           2        D   1714/1527     -1      2     9.177024   200</span></span>
+<span><span class="co">#&gt;   4:           3        D#  1785/1501     -1      3     9.722718   300</span></span>
+<span><span class="co">#&gt;   5:           4        E     635/504     -1      4    10.300861   400</span></span>
+<span><span class="co">#&gt;  ---                                                                  </span></span>
+<span><span class="co">#&gt; 124:         123        D#  1785/1501      9      3  9956.063479 12300</span></span>
+<span><span class="co">#&gt; 125:         124        E     635/504      9      4 10548.081821 12400</span></span>
+<span><span class="co">#&gt; 126:         125        F   3249/2434      9      5 11175.303406 12500</span></span>
+<span><span class="co">#&gt; 127:         126        F#   1393/985      9      6 11839.821527 12600</span></span>
+<span><span class="co">#&gt; 128:         127        G   2213/1477      9      7 12543.853951 12700</span></span>
+<span><span class="co">#&gt;      name_12edo</span></span>
+<span><span class="co">#&gt;   1:         C </span></span>
+<span><span class="co">#&gt;   2:         C#</span></span>
+<span><span class="co">#&gt;   3:         D </span></span>
+<span><span class="co">#&gt;   4:         D#</span></span>
+<span><span class="co">#&gt;   5:         E </span></span>
+<span><span class="co">#&gt;  ---           </span></span>
+<span><span class="co">#&gt; 124:         D#</span></span>
+<span><span class="co">#&gt; 125:         E </span></span>
+<span><span class="co">#&gt; 126:         F </span></span>
+<span><span class="co">#&gt; 127:         F#</span></span>
+<span><span class="co">#&gt; 128:         G</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_keyboard_map_c3</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">eikosany</span>, middle_c_octave <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;      note_number note_name octave degree       freq     cents</span></span>
-<span><span class="co">#&gt;   1:           0     1x3x5      0      0   32.70320  2400.000</span></span>
-<span><span class="co">#&gt;   2:           1    5x9x11      0      1   33.72517  2453.273</span></span>
-<span><span class="co">#&gt;   3:           2     1x7x9      0      2   34.33836  2484.467</span></span>
-<span><span class="co">#&gt;   4:           3    1x3x11      0      3   35.97352  2565.004</span></span>
-<span><span class="co">#&gt;   5:           4     3x5x9      0      4   36.79110  2603.910</span></span>
-<span><span class="co">#&gt;  ---                                                         </span></span>
-<span><span class="co">#&gt; 124:         123    1x3x11      6      3 2302.30497  9765.004</span></span>
-<span><span class="co">#&gt; 125:         124     3x5x9      6      4 2354.63009  9803.910</span></span>
-<span><span class="co">#&gt; 126:         125     1x5x7      6      5 2441.83861  9866.871</span></span>
-<span><span class="co">#&gt; 127:         126    3x9x11      6      6 2590.09310  9968.914</span></span>
-<span><span class="co">#&gt; 128:         127    1x7x11      6      7 2686.02247 10031.875</span></span></code></pre></div>
+<span><span class="co">#&gt;      note_number note_name ratio_frac octave degree       freq     cents</span></span>
+<span><span class="co">#&gt;   1:           0     1x3x5          1      0      0   32.70320  2400.000</span></span>
+<span><span class="co">#&gt;   2:           1    5x9x11      33/32      0      1   33.72517  2453.273</span></span>
+<span><span class="co">#&gt;   3:           2     1x7x9      21/20      0      2   34.33836  2484.467</span></span>
+<span><span class="co">#&gt;   4:           3    1x3x11      11/10      0      3   35.97352  2565.004</span></span>
+<span><span class="co">#&gt;   5:           4     3x5x9        9/8      0      4   36.79110  2603.910</span></span>
+<span><span class="co">#&gt;  ---                                                                    </span></span>
+<span><span class="co">#&gt; 124:         123    1x3x11      11/10      6      3 2302.30497  9765.004</span></span>
+<span><span class="co">#&gt; 125:         124     3x5x9        9/8      6      4 2354.63009  9803.910</span></span>
+<span><span class="co">#&gt; 126:         125     1x5x7        7/6      6      5 2441.83861  9866.871</span></span>
+<span><span class="co">#&gt; 127:         126    3x9x11      99/80      6      6 2590.09310  9968.914</span></span>
+<span><span class="co">#&gt; 128:         127    1x7x11      77/60      6      7 2686.02247 10031.875</span></span>
+<span><span class="co">#&gt;      name_12edo</span></span>
+<span><span class="co">#&gt;   1:         C </span></span>
+<span><span class="co">#&gt;   2:         C#</span></span>
+<span><span class="co">#&gt;   3:         D </span></span>
+<span><span class="co">#&gt;   4:         D#</span></span>
+<span><span class="co">#&gt;   5:         E </span></span>
+<span><span class="co">#&gt;  ---           </span></span>
+<span><span class="co">#&gt; 124:         D#</span></span>
+<span><span class="co">#&gt; 125:         E </span></span>
+<span><span class="co">#&gt; 126:         F </span></span>
+<span><span class="co">#&gt; 127:         F#</span></span>
+<span><span class="co">#&gt; 128:         G</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="minilogue-xd--scl-file-example">Minilogue XD <code>.scl</code> file example<a class="anchor" aria-label="anchor" href="#minilogue-xd--scl-file-example"></a>
