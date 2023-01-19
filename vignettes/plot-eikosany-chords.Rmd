@@ -1,0 +1,45 @@
+---
+title: "Plot the Eikosany Chords"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Plot the Eikosany Chords}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(eikosany)
+```
+
+```{r fig.width=7}
+scale <- create_scale_table() # 1-3-5-7-9-11 Eikosany is the default
+chords <- create_chord_table(scale, choose = 4)
+chord_names <- chords$chord
+degrees <- chords$degrees
+degrees_matrix <- matrix(
+  unlist(lapply(strsplit(degrees, ":"), as.numeric)),
+  byrow = TRUE,
+  nrow = length(degrees)
+)
+
+for (ichord in 1:nrow(degrees_matrix)) {
+  chord_vector <- degrees_matrix[ichord, ]
+  title_string <- paste(
+    "Chord =",
+    chord_names[ichord],
+    ", Degrees =",
+    degrees[ichord],
+    sep = " "
+  )
+  piano_plot <- create_chord_plot(chord_vector, title_string)
+  print(piano_plot)
+}
+
+```

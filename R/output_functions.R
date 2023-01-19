@@ -97,3 +97,31 @@ create_minilogue_xd_scale_file <- function(
   # return the data
   return(text_data)
 }
+
+#' @title Create Chord Plot
+#' @name create_chord_plot
+#' @description Creates a `ggplot2` object to plot a chord
+#' @export create_chord_plot
+#' @importFrom magrittr "%>%"
+#' @importFrom pichor highlight_keys
+#' @importFrom pichor ggpiano
+#' @importFrom ggplot2 labs
+#' @param chord a numeric vector with the scale degrees for the chord
+#' @param title_string A string to use for a plot title. This will usually
+#' be the chord name from a chord table
+#' @return a `ggplot2` object that can be printed
+#' @examples
+#' \dontrun{
+#'   print(create_chord_plot(c(1, 6, 11, 15), "1:3:5:7"))
+#' }
+create_chord_plot <- function(chord, title_string) {
+  plot <-
+    pichor::highlight_keys(data = keys_chords, chord + 1) %>%
+    pichor::ggpiano(labels = TRUE) +
+    ggplot2::labs(title = title_string)
+  return(plot)
+}
+
+utils::globalVariables(c(
+  #"keys_chords"
+))

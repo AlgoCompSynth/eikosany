@@ -23,4 +23,11 @@ Suggests:
 VignetteBuilder: knitr
 Imports: 
     fractional,
-    data.table
+    data.table,
+    ggplot2,
+    magrittr,
+    pichor (>= 0.0.0.9020)
+Depends: 
+    R (>= 2.10)
+Remotes:  
+    AlgoCompSynth/pichor
