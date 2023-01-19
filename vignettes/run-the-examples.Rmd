@@ -60,6 +60,12 @@ print(hexany_interval_matrix <-create_interval_matrix(hexany))
 
 ```
 
+## Interval list example
+```{r}
+print(eikosany_interval_list <-create_interval_list(eikosany))
+
+```
+
 ## Tetrads of the eikosany
 ```{r}
 

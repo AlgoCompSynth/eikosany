@@ -263,11 +263,83 @@ create_12edo_scale_table <- function() {
 #' }
 
 create_interval_matrix <- function(scale_table) {
-  fractional::fractional(outer(
+  result <- fractional::fractional(outer(
     scale_table$ratio,
     scale_table$ratio,
     "/"
   ))
+  rownames(result) <- paste("to", scale_table$degree, sep = "_")
+  colnames(result) <- paste("from", scale_table$degree, sep = "_")
+  return(result)
+}
+
+#' @title Create Interval List
+#' @name create_interval_list
+#' @description Creates an interval list from a scale table
+#' @importFrom fractional fractional
+#' @importFrom data.table data.table
+#' @importFrom data.table setkey
+#' @export create_interval_list
+#' @param scale_table a scale table from `create_scale_table`
+#' @return an interval list. This is a data.table with seven columns
+#' \itemize{
+#' \item `from` name of "from" note
+#' \item `from_degree` scale degree of "from" note
+#' \item `to` name of "to" note
+#' \item `to_degree` scale degree of "to" note
+#' \item `ratio` interval as a number
+#' \item `ratio_frac` interval as a vulgar fraction (character)
+#' \item `ratio_cents` interval in cents
+#' }
+#' @examples
+#' \dontrun{
+#'
+#' # default is the 1-3-5-7-9-11 Eikosany
+#' eikosany <- create_scale_table()
+#' print(eikosany_interval_list <-create_interval_list(eikosany))
+#'
+#' }
+
+create_interval_list <- function(scale_table) {
+
+  # get dimensions
+  scale_degrees <- length(scale_table$degree)
+  out_rows <- scale_degrees * scale_degrees
+
+  # allocate output vectors
+  from_name <- to_name <- vector(mode = "character", length = out_rows)
+  from_degree <- to_degree <- vector(mode = "integer", length = out_rows)
+  ratio <- vector(mode = "numeric", length = out_rows)
+
+  out_ix <- 0
+  for (ix_from in 1:scale_degrees) {
+    for (ix_to in 1:scale_degrees) {
+
+      out_ix <- out_ix + 1
+      ratio[out_ix] <-
+        scale_table$ratio[ix_to] / scale_table$ratio[ix_from]
+      from_name[out_ix] <- scale_table$note_name[ix_from]
+      to_name[out_ix] <- scale_table$note_name[ix_to]
+      from_degree[out_ix] <- scale_table$degree[ix_from]
+      to_degree[out_ix] <- scale_table$degree[ix_to]
+
+    }
+  }
+
+  ratio_frac <- as.character(fractional::fractional(ratio))
+  ratio_cents <- .ratio2cents(ratio)
+
+  result <- data.table::data.table(
+    from_name,
+    from_degree,
+    to_name,
+    to_degree,
+    ratio,
+    ratio_frac,
+    ratio_cents
+  )
+  data.table::setkey(result, ratio)
+  return(result)
 }
 
 #' @title Create Chord Table

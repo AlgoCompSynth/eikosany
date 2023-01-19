@@ -3,6 +3,7 @@
 export(create_12edo_scale_table)
 export(create_chord_plot)
 export(create_chord_table)
+export(create_interval_list)
 export(create_interval_matrix)
 export(create_keyboard_map)
 export(create_minilogue_xd_scale_file)

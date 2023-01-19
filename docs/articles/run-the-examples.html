@@ -207,18 +207,36 @@
 <code class="sourceCode R"><span></span>
 <span><span class="co"># the 1-3-5-7 Hexany</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany_interval_matrix</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/create_interval_matrix.html">create_interval_matrix</a></span><span class="op">(</span><span class="va">hexany</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      [,1]  [,2]  [,3]  [,4]  [,5]  [,6] </span></span>
-<span><span class="co">#&gt; [1,]     1   6/7   4/5 24/35   3/5   4/7</span></span>
-<span><span class="co">#&gt; [2,]   7/6     1 14/15   4/5  7/10   2/3</span></span>
-<span><span class="co">#&gt; [3,]   5/4 15/14     1   6/7   3/4   5/7</span></span>
-<span><span class="co">#&gt; [4,] 35/24   5/4   7/6     1   7/8   5/6</span></span>
-<span><span class="co">#&gt; [5,]   5/3  10/7   4/3   8/7     1 20/21</span></span>
-<span><span class="co">#&gt; [6,]   7/4   3/2   7/5   6/5 21/20     1</span></span></code></pre></div>
+<span><span class="co">#&gt;      from_0 from_1 from_2 from_3 from_4 from_5</span></span>
+<span><span class="co">#&gt; to_0     1    6/7    4/5  24/35    3/5    4/7 </span></span>
+<span><span class="co">#&gt; to_1   7/6      1  14/15    4/5   7/10    2/3 </span></span>
+<span><span class="co">#&gt; to_2   5/4  15/14      1    6/7    3/4    5/7 </span></span>
+<span><span class="co">#&gt; to_3 35/24    5/4    7/6      1    7/8    5/6 </span></span>
+<span><span class="co">#&gt; to_4   5/3   10/7    4/3    8/7      1  20/21 </span></span>
+<span><span class="co">#&gt; to_5   7/4    3/2    7/5    6/5  21/20      1</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="interval-list-example">Interval list example<a class="anchor" aria-label="anchor" href="#interval-list-example"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_interval_list</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/create_interval_list.html">create_interval_list</a></span><span class="op">(</span><span class="va">eikosany</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      from_name from_degree to_name to_degree     ratio ratio_frac ratio_cents</span></span>
+<span><span class="co">#&gt;   1:    3x7x11          19   1x3x5         0 0.5194805      40/77   -1133.830</span></span>
+<span><span class="co">#&gt;   2:    3x7x11          19  5x9x11         1 0.5357143      15/28   -1080.557</span></span>
+<span><span class="co">#&gt;   3:    3x7x11          19   1x7x9         2 0.5454545       6/11   -1049.363</span></span>
+<span><span class="co">#&gt;   4:    1x5x11          18   1x3x5         0 0.5454545       6/11   -1049.363</span></span>
+<span><span class="co">#&gt;   5:     1x3x9          17   1x3x5         0 0.5555556        5/9   -1017.596</span></span>
+<span><span class="co">#&gt;  ---                                                                         </span></span>
+<span><span class="co">#&gt; 396:     1x3x5           0   1x3x9        17 1.8000000        9/5    1017.596</span></span>
+<span><span class="co">#&gt; 397:     1x3x5           0  1x5x11        18 1.8333333       11/6    1049.363</span></span>
+<span><span class="co">#&gt; 398:     1x7x9           2  3x7x11        19 1.8333333       11/6    1049.363</span></span>
+<span><span class="co">#&gt; 399:    5x9x11           1  3x7x11        19 1.8666667      28/15    1080.557</span></span>
+<span><span class="co">#&gt; 400:     1x3x5           0  3x7x11        19 1.9250000      77/40    1133.830</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="tetrads-of-the-eikosany">Tetrads of the eikosany<a class="anchor" aria-label="anchor" href="#tetrads-of-the-eikosany"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># compute the tetrads of the 1-3-5-7-9-11 Eikosany</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_chord_table.html">create_chord_table</a></span><span class="op">(</span><span class="va">eikosany</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
@@ -258,7 +276,7 @@
 <div class="section level2">
 <h2 id="keyboard-map-examples">Keyboard map examples<a class="anchor" aria-label="anchor" href="#keyboard-map-examples"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hexany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="va">hexany_harmonics</span>, <span class="va">hexany_choose</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">hexany</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      note_number note_name ratio_frac octave degree         freq cents</span></span>
@@ -366,7 +384,7 @@
 <div class="section level2">
 <h2 id="minilogue-xd--scl-file-example">Minilogue XD <code>.scl</code> file example<a class="anchor" aria-label="anchor" href="#minilogue-xd--scl-file-example"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_minilogue_xd_scl_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_minilogue_xd_scale_file.html">create_minilogue_xd_scale_file</a></span><span class="op">(</span></span>
 <span>  <span class="va">eikosany_keyboard_map_c3</span>,</span>
 <span>  <span class="st">"~/Eikosany-1-3-5-7-9-11.scl"</span>,</span>
