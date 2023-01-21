@@ -4,7 +4,7 @@
 \alias{create_chord_plot}
 \title{Create Chord Plot}
 \usage{
-create_chord_plot(chord, title_string, keyboard_map, base_note_number)
+create_chord_plot(chord, title_string, keyboard_map, base_note_number = 48)
 }
 \arguments{
 \item{chord}{a numeric vector with the scale degrees for the chord}
@@ -14,8 +14,11 @@ be the chord name from a chord table}
 
 \item{keyboard_map}{the keyboard map for the scale}
 
-\item{base_note_number}{must be == 0 modulo 12! The \code{pichor} keyboard
-has exactly 24 notes, starts with a "C" and ends with a "B".}
+\item{base_note_number}{This routine assumes a 37-key synth keyboard,
+with the leftmost key emitting a MIDI note number for a C. Thus,
+\code{base_note_number} must be equal to zero modulo 12. The default is 48,
+the C below middle C. This is where the Minilogue XD is set after a
+factory reset.}
 }
 \value{
 a \code{ggplot2} object that can be printed
@@ -31,7 +34,7 @@ Creates a \code{ggplot2} object to plot a chord
     c(1, 6, 11, 15),
      "1:3:5:7",
      eikosany_map,
-     60
+     48
   ))
 }
 }

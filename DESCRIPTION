@@ -28,7 +28,6 @@ Imports:
     magrittr,
     pichor (>= 0.0.0.9020)
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
 Remotes: 
     AlgoCompSynth/pichor
-LazyData: true

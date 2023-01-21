@@ -110,8 +110,11 @@ create_minilogue_xd_scale_file <- function(
 #' @param title_string A string to use for a plot title. This will usually
 #' be the chord name from a chord table
 #' @param keyboard_map the keyboard map for the scale
-#' @param base_note_number must be == 0 modulo 12! The `pichor` keyboard
-#' has exactly 24 notes, starts with a "C" and ends with a "B".
+#' @param base_note_number This routine assumes a 37-key synth keyboard,
+#' with the leftmost key emitting a MIDI note number for a C. Thus,
+#' `base_note_number` must be equal to zero modulo 12. The default is 48,
+#' the C below middle C. This is where the Minilogue XD is set after a
+#' factory reset.
 #' @return a `ggplot2` object that can be printed
 #' @examples
 #' \dontrun{
@@ -121,15 +124,15 @@ create_minilogue_xd_scale_file <- function(
 #'     c(1, 6, 11, 15),
 #'      "1:3:5:7",
 #'      eikosany_map,
-#'      60
+#'      48
 #'   ))
 #' }
 create_chord_plot <-
-  function(chord, title_string, keyboard_map, base_note_number) {
+  function(chord, title_string, keyboard_map, base_note_number = 48) {
 
     chord_map <- keyboard_map[
       degree %in% chord & note_number >= base_note_number &
-        note_number < base_note_number + 24
+        note_number < base_note_number + 37
     ]
     key_numbers <- chord_map$note_number - base_note_number + 1
   plot <-
