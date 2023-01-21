@@ -304,16 +304,15 @@ create_interval_list <- function(scale_table) {
 
   # get dimensions
   scale_degrees <- length(scale_table$degree)
-  out_rows <- scale_degrees * scale_degrees
-
+  out_rows <- scale_degrees * (scale_degrees - 1) / 2
   # allocate output vectors
   from_name <- to_name <- vector(mode = "character", length = out_rows)
   from_degree <- to_degree <- vector(mode = "integer", length = out_rows)
   ratio <- vector(mode = "numeric", length = out_rows)
 
   out_ix <- 0
-  for (ix_from in 1:scale_degrees) {
-    for (ix_to in 1:scale_degrees) {
+  for (ix_from in 1:(scale_degrees - 1)) {
+    for (ix_to in (ix_from + 1):scale_degrees) {
 
       out_ix <- out_ix + 1
       ratio[out_ix] <-
