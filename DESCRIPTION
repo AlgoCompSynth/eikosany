@@ -29,5 +29,6 @@ Imports:
     pichor (>= 0.0.0.9020)
 Depends: 
     R (>= 2.10)
-Remotes:  
+Remotes: 
     AlgoCompSynth/pichor
+LazyData: true
