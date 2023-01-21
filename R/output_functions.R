@@ -109,14 +109,31 @@ create_minilogue_xd_scale_file <- function(
 #' @param chord a numeric vector with the scale degrees for the chord
 #' @param title_string A string to use for a plot title. This will usually
 #' be the chord name from a chord table
+#' @param keyboard_map the keyboard map for the scale
+#' @param base_note_number must be == 0 modulo 12! The `pichor` keyboard
+#' has exactly 24 notes, starts with a "C" and ends with a "B".
 #' @return a `ggplot2` object that can be printed
 #' @examples
 #' \dontrun{
-#'   print(create_chord_plot(c(1, 6, 11, 15), "1:3:5:7"))
+#'   eikosany <- create_scale_table()
+#'   eikosany_map <- create_keyboard_map(eikosany)
+#'   print(create_chord_plot(
+#'     c(1, 6, 11, 15),
+#'      "1:3:5:7",
+#'      eikosany_map,
+#'      60
+#'   ))
 #' }
-create_chord_plot <- function(chord, title_string) {
+create_chord_plot <-
+  function(chord, title_string, keyboard_map, base_note_number) {
+
+    chord_map <- keyboard_map[
+      degree %in% chord & note_number >= base_note_number &
+        note_number < base_note_number + 24
+    ]
+    key_numbers <- chord_map$note_number - base_note_number + 1
   plot <-
-    pichor::highlight_keys(data = keys_chords, chord + 1) %>%
+    pichor::highlight_keys(data = keys_chords, key_numbers) %>%
     pichor::ggpiano(labels = TRUE) +
     ggplot2::labs(title = title_string)
   return(plot)
