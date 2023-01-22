@@ -96,17 +96,6 @@
   return(2 ^ (cents / 1200))
 }
 
-.pitch_bend_offsets <- function(cents) {
-  note_names <- .NAMES_12EDO
-  index2name <- cents %/% 100
-  offset_cents <- cents %% 100
-  index2increment <- offset_cents > 50 & (index2name + 1) < 12
-  index2name[index2increment] <- index2name[index2increment] + 1
-  offset_cents[index2increment] <- offset_cents[index2increment] - 100
-  key_12EDO <- note_names[index2name + 1]
-  return(list(key_12EDO = key_12EDO, offset_cents = offset_cents))
-}
-
 #' @title Create Scale Table
 #' @name create_scale_table
 #' @description Creates a scale table from a combination product set definition
@@ -189,9 +178,16 @@ create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
   )
   data.table::setkey(result_table, ratio)
   result_table <- result_table[, "degree" := .I - 1]
-  pitch_bend_offsets <- .pitch_bend_offsets(result_table$ratio_cents)
-  result_table$key_12EDO <- pitch_bend_offsets$key_12EDO
-  result_table$offset_cents <- pitch_bend_offsets$offset_cents
+
+  # compute pitch bend offsets
+  index2name <- result_table$ratio_cents %/% 100
+  offset_cents <- result_table$ratio_cents %% 100
+  index2increment <- offset_cents > 50 & (index2name + 1) < 12
+  index2name[index2increment] <- index2name[index2increment] + 1
+  offset_cents[index2increment] <- offset_cents[index2increment] - 100
+  result_table$key_12EDO <- .NAMES_12EDO[index2name + 1]
+  result_table$offset_cents <- offset_cents
+
   return(result_table)
 }
 
@@ -439,6 +435,11 @@ create_chord_table <- function(scale_table, choose) {
 #' \item `freq`: the frequency in Hz
 #' \item `cents`: cents above default MIDI note `.NN_MIN`, which has frequency
 #' `.FREQ_MIN`.
+#' \item `ref_keyname`: some synthesizers, including the Korg Minilogue XD,
+#' let you retune a key as an offset in cents from another reference key.
+#' This column is the name of that reference key.
+#' \item `ref_octave`: the octave number of the reference key
+#' \item `ref_offset`: the offset in cents from the reference key
 #' }
 #' @details The function is currently hard-coded to compute the map so that
 #' middle C with frequency `.FREQ_MIDDLE_C`is mapped to MIDI note number
@@ -473,11 +474,11 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
 
   # create indices
   degrees <- nrow(scale_table)
-  degrees_key <- 12
+  degrees_12edo <- 12
   octave <- (note_number - .NN_MIDDLE_C) %/% degrees
-  key_octave <- (note_number - .NN_MIDDLE_C) %/% degrees_key
+  key_octave <- (note_number - .NN_MIDDLE_C) %/% degrees_12edo
   degree <- (note_number - .NN_MIDDLE_C) %% degrees
-  degree_12EDO <- (note_number - .NN_MIDDLE_C) %% degrees_key
+  degree_12EDO <- (note_number - .NN_MIDDLE_C) %% degrees_12edo
 
   # note names
   note_name <- key_name <- ratio_frac <-
@@ -490,6 +491,20 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
   cents <-
     scale_table$ratio_cents[degree + 1] + octave * 1200 + .CENTS_MIDDLE_C
   freq <- .cents2ratio(cents) * .FREQ_MIN
+
+  # reference keys and offsets
+  ref_semitones <- cents %/% 100
+  ref_offsets <- cents %% 100
+  ref_octave <- ref_semitones %/% degrees_12edo
+  ref_degree <- ref_semitones %% degrees_12edo
+
+  index2increment <- ref_offsets > 50
+  ref_offsets[index2increment] <- ref_offsets[index2increment] - 100
+  ref_degree[index2increment] <- ref_degree[index2increment] + 1
+  index2overflow <- ref_degree == degrees_12edo
+  ref_octave[index2overflow] <- ref_octave[index2overflow] + 1
+  ref_degree[index2overflow] <- 0
+  ref_keyname <- .NAMES_12EDO[ref_degree]
 
   # fix octave numbers
   octave <- octave + middle_c_octave
@@ -513,7 +528,10 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
     degree,
     octave,
     freq,
-    cents
+    cents,
+    ref_keyname,
+    ref_octave,
+    ref_offsets
   )
   data.table::setkey(keyboard_map, note_number)
 

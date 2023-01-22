@@ -27,6 +27,11 @@ normally press to play this note number
 \item \code{freq}: the frequency in Hz
 \item \code{cents}: cents above default MIDI note \code{.NN_MIN}, which has frequency
 \code{.FREQ_MIN}.
+\item \code{ref_keyname}: some synthesizers, including the Korg Minilogue XD,
+let you retune a key as an offset in cents from another reference key.
+This column is the name of that reference key.
+\item \code{ref_octave}: the octave number of the reference key
+\item \code{ref_offset}: the offset in cents from the reference key
 }
 }
 \description{
