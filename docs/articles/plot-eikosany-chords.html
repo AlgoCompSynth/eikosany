@@ -84,6 +84,9 @@
 <code class="sourceCode R"><span><span class="va">scale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># 1-3-5-7-9-11 Eikosany is the default</span></span>
 <span><span class="va">scale_degrees</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">scale</span><span class="op">$</span><span class="va">degree</span><span class="op">)</span></span>
 <span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">scale</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names</span></span>
+<span><span class="co">#&gt; = check.names, : Item 10 has 121 rows but longest item has 128; recycled with</span></span>
+<span><span class="co">#&gt; remainder.</span></span>
 <span><span class="va">base_note_number</span> <span class="op">=</span> <span class="fl">48</span></span>
 <span><span class="va">chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_chord_table.html">create_chord_table</a></span><span class="op">(</span><span class="va">scale</span>, choose <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">chord_names</span> <span class="op">&lt;-</span> <span class="va">chords</span><span class="op">$</span><span class="va">chord</span></span>

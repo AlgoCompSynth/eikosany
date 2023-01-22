@@ -241,43 +241,15 @@ create_12edo_scale_table <- function() {
   return(scale_table)
 }
 
-#' @title Create Interval Matrix
-#' @name create_interval_matrix
-#' @description Creates an interval matrix from a scale table
-#' @importFrom fractional fractional
-#' @export create_interval_matrix
-#' @param scale_table a scale table from the `create_scale_table` function
-#' @return an interval matrix
-#' @examples
-#' \dontrun{
-#'
-#' # the 1-3-5-7 Hexany
-#' hexany_harmonics <- c(1, 3, 5, 7)
-#' hexany_choose = 2
-#' hexany <- create_scale_table(hexany_harmonics, hexany_choose)
-#' print(hexany_interval_matrix <-create_interval_matrix(hexany))
-#' }
-
-create_interval_matrix <- function(scale_table) {
-  result <- fractional::fractional(outer(
-    scale_table$ratio,
-    scale_table$ratio,
-    "/"
-  ))
-  rownames(result) <- paste("to", scale_table$degree, sep = "_")
-  colnames(result) <- paste("from", scale_table$degree, sep = "_")
-  return(result)
-}
-
-#' @title Create Interval List
-#' @name create_interval_list
-#' @description Creates an interval list from a scale table
+#' @title Create Interval Table
+#' @name create_interval_table
+#' @description Creates an interval table from a scale table
 #' @importFrom fractional fractional
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
-#' @export create_interval_list
+#' @export create_interval_table
 #' @param scale_table a scale table from `create_scale_table`
-#' @return an interval list. This is a data.table with seven columns
+#' @return an interval table. This is a data.table with seven columns
 #' \itemize{
 #' \item `from` name of "from" note
 #' \item `from_degree` scale degree of "from" note
@@ -292,11 +264,11 @@ create_interval_matrix <- function(scale_table) {
 #'
 #' # default is the 1-3-5-7-9-11 Eikosany
 #' eikosany <- create_scale_table()
-#' print(eikosany_interval_list <-create_interval_list(eikosany))
+#' print(eikosany_interval_table <-create_interval_table(eikosany))
 #'
 #' }
 
-create_interval_list <- function(scale_table) {
+create_interval_table <- function(scale_table) {
 
   # get dimensions
   scale_degrees <- length(scale_table$degree)

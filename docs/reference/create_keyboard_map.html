@@ -75,14 +75,21 @@ function is 4, but other software can use 3 or even some other number</p></dd>
     
 
 <p>the keyboard map. This is a data.table with eight columns:</p><ul><li><p><code>note_number</code>: the MIDI note number from <code>.NN_MIN</code> through <code>.NN_MAX</code></p></li>
-<li><p><code>note_name</code>: the note name</p></li>
+<li><p><code>key_name</code>: note name of the key in 12EDO. This is the key you'd
+normally press to play this note number</p></li>
+<li><p><code>key_octave</code>: the octave the key normally plays</p></li>
+<li><p><code>note_name</code>: the note name from the scale table</p></li>
 <li><p><code>ratio_frac</code>: ratio for the note as a vulgar fraction</p></li>
-<li><p><code>octave</code>: the octave number of the note</p></li>
 <li><p><code>degree</code>: the scale degree of the note</p></li>
+<li><p><code>octave</code>: the octave number of the note</p></li>
 <li><p><code>freq</code>: the frequency in Hz</p></li>
 <li><p><code>cents</code>: cents above default MIDI note <code>.NN_MIN</code>, which has frequency
 <code>.FREQ_MIN</code>.</p></li>
-<li><p><code>name_12edo</code>: note name of the key in 12EDO</p></li>
+<li><p><code>ref_keyname</code>: some synthesizers, including the Korg Minilogue XD,
+let you retune a key as an offset in cents from another reference key.
+This column is the name of that reference key.</p></li>
+<li><p><code>ref_octave</code>: the octave number of the reference key</p></li>
+<li><p><code>ref_offset</code>: the offset in cents from the reference key</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
