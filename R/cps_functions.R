@@ -429,14 +429,16 @@ create_chord_table <- function(scale_table, choose) {
 #' @return the keyboard map. This is a data.table with eight columns:
 #' \itemize{
 #' \item `note_number`: the MIDI note number from `.NN_MIN` through `.NN_MAX`
-#' \item `note_name`: the note name
+#' \item `key_name`: note name of the key in 12EDO. This is the key you'd
+#' normally press to play this note number
+#' \item `key_octave`: the octave the key normally plays
+#' \item `note_name`: the note name from the scale table
 #' \item `ratio_frac`: ratio for the note as a vulgar fraction
-#' \item `octave`: the octave number of the note
 #' \item `degree`: the scale degree of the note
+#' \item `octave`: the octave number of the note
 #' \item `freq`: the frequency in Hz
 #' \item `cents`: cents above default MIDI note `.NN_MIN`, which has frequency
 #' `.FREQ_MIN`.
-#' \item `name_12edo`: note name of the key in 12EDO
 #' }
 #' @details The function is currently hard-coded to compute the map so that
 #' middle C with frequency `.FREQ_MIDDLE_C`is mapped to MIDI note number
@@ -471,24 +473,27 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
 
   # create indices
   degrees <- nrow(scale_table)
+  degrees_key <- 12
   octave <- (note_number - .NN_MIDDLE_C) %/% degrees
+  key_octave <- (note_number - .NN_MIDDLE_C) %/% degrees_key
   degree <- (note_number - .NN_MIDDLE_C) %% degrees
-  degree_12EDO <- (note_number - .NN_MIDDLE_C) %% 12
+  degree_12EDO <- (note_number - .NN_MIDDLE_C) %% degrees_key
 
   # note names
-  note_name <- name_12edo <- ratio_frac <-
+  note_name <- key_name <- ratio_frac <-
     vector(mode = "character", length = note_numbers)
   note_name[note_number + 1] <- scale_table$note_name[degree + 1]
   ratio_frac[note_number + 1] <- scale_table$ratio_frac[degree + 1]
-  name_12edo[note_number + 1] <- .NAMES_12EDO[degree_12EDO + 1]
+  key_name[note_number + 1] <- .NAMES_12EDO[degree_12EDO + 1]
 
   # cents and frequencies
   cents <-
     scale_table$ratio_cents[degree + 1] + octave * 1200 + .CENTS_MIDDLE_C
   freq <- .cents2ratio(cents) * .FREQ_MIN
 
-  # fix octave number
+  # fix octave numbers
   octave <- octave + middle_c_octave
+  key_octave <- key_octave + middle_c_octave
 
   # replace out of range values
   index_low <- cents < .CENTS_MIN
@@ -501,13 +506,14 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
   # build and return the map
   keyboard_map <- data.table::data.table(
     note_number,
+    key_name,
+    key_octave,
     note_name,
     ratio_frac,
-    octave,
     degree,
+    octave,
     freq,
-    cents,
-    name_12edo
+    cents
   )
   data.table::setkey(keyboard_map, note_number)
 

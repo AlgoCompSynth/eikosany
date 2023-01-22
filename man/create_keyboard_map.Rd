@@ -17,14 +17,16 @@ function is 4, but other software can use 3 or even some other number}
 the keyboard map. This is a data.table with eight columns:
 \itemize{
 \item \code{note_number}: the MIDI note number from \code{.NN_MIN} through \code{.NN_MAX}
-\item \code{note_name}: the note name
+\item \code{key_name}: note name of the key in 12EDO. This is the key you'd
+normally press to play this note number
+\item \code{key_octave}: the octave the key normally plays
+\item \code{note_name}: the note name from the scale table
 \item \code{ratio_frac}: ratio for the note as a vulgar fraction
-\item \code{octave}: the octave number of the note
 \item \code{degree}: the scale degree of the note
+\item \code{octave}: the octave number of the note
 \item \code{freq}: the frequency in Hz
 \item \code{cents}: cents above default MIDI note \code{.NN_MIN}, which has frequency
 \code{.FREQ_MIN}.
-\item \code{name_12edo}: note name of the key in 12EDO
 }
 }
 \description{
