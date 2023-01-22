@@ -465,8 +465,9 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
   freq <- .cents2ratio(cents) * .FREQ_MIN
 
   # reference keys and offsets
-  ref_semitones <- cents %/% 100
-  ref_offsets <- cents %% 100
+  rcents <- round(cents, 0) # round for printing / offset calculations
+  ref_semitones <- rcents %/% 100
+  ref_offsets <- rcents %% 100
   ref_octave <- ref_semitones %/% degrees_12edo
   ref_degree <- ref_semitones %% degrees_12edo
 

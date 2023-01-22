@@ -82,13 +82,14 @@ create_minilogue_xd_scale_file <- function(
   }
 
   # construct data
+  rcents <- round(keyboard_map$cents, 0)
   text_data <- c(
     paste("!", output_file_path),
     scale_description,
     "! number of ratios in scale",
     "127",
     "! ratios (cents above MIDI note number 0)",
-    as.character(sprintf("%f", keyboard_map$cents[2:128]))
+    as.character(sprintf("%f", rcents[2:128]))
   )
 
   # write to file
