@@ -104,6 +104,7 @@ create_minilogue_xd_scale_file <- function(
 #' @description Creates a `ggplot2` object to plot a chord
 #' @export create_chord_plot
 #' @importFrom magrittr "%>%"
+#' @importFrom pichor generate_keys_chords
 #' @importFrom pichor highlight_keys
 #' @importFrom pichor ggpiano
 #' @importFrom ggplot2 labs
@@ -136,9 +137,10 @@ create_chord_plot <-
         note_number < base_note_number + 37
     ]
     key_numbers <- chord_map$note_number - base_note_number + 1
+    keyboard_data <- pichor::generate_keys_chords(number_white_keys = 22)
   plot <-
     pichor::highlight_keys(data = keys_chords, key_numbers) %>%
-    pichor::ggpiano(labels = TRUE) +
+    pichor::ggpiano(keyboard_data, labels = TRUE) +
     ggplot2::labs(title = title_string)
   return(plot)
 }
