@@ -313,17 +313,22 @@ create_interval_table <- function(scale_table) {
 #' @name create_chord_table
 #' @description Creates a chord table
 #' @importFrom data.table data.table
+#' @importFrom data.table setkey
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
 #' @export create_chord_table
 #' @param scale_table the scale table to use for note number and name lookup
 #' @param choose the number of harmonics to choose for each chord
-#' @return a data.table with two columns:
+#' @return a data.table with four columns:
 #' \itemize{
 #' \item `chord`: the chord expressed as colon-separated harmonics. A
 #' subharmonic chord is prefixed with a "~".
 #' \item `degrees`: the chord expressed as colon-separated scale degrees
+#' \item `chord_index`: the row number of the chord in the combination output
+#' \item `is_subharm`: zero if it's harmonic, one if it's subharmonic.
 #' }
+#' The resulting data.table is sorted into harmonic-subharmonic pairs using
+#' `data.table::setkey.`
 #' @examples
 #' \dontrun{
 #'
@@ -336,6 +341,7 @@ create_interval_table <- function(scale_table) {
 create_chord_table <- function(scale_table, choose) {
   harmonics <- .label2harmonics(scale_table$note_name, .NOTE_SEP)
   chords <- t(combn(harmonics, choose))
+  num_chords <- nrow(chords)
   others <- t(
     apply(chords, MARGIN = 1, FUN = function(x) setdiff(harmonics, x)
   ))
@@ -377,10 +383,16 @@ create_chord_table <- function(scale_table, choose) {
   harm_label <- .matrix2label(harm_matrix, ..CHORD_SEP)
   subharm_label <- .matrix2label(subharm_matrix, ..CHORD_SEP)
 
-  return(data.table::data.table(
+  # make table
+  result_table <- data.table::data.table(
     chord = c(chord_label, subchord_label),
     degrees = c(harm_label, subharm_label)
-  ))
+  )
+  result_table$chord_index <- c(seq(1, num_chords), seq(1, num_chords))
+  result_table$is_subharm <- 0
+  result_table$is_subharm[grep("/", result_table$chord)] <- 1
+  data.table::setkey(result_table, chord_index, is_subharm)
+  return(result_table)
 }
 
 #' @title Create Keyboard Map
@@ -514,8 +526,10 @@ create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
 
 utils::globalVariables(c(
   "cents_12edo",
+  "chord_index",
   "degree",
   "freq_12edo",
+  "is_subharm",
   "note_name",
   "note_number",
   "product"

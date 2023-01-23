@@ -72,10 +72,16 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>a data.table with two columns:</p><ul><li><p><code>chord</code>: the chord expressed as colon-separated harmonics. A
+<p>a data.table with four columns:</p><ul><li><p><code>chord</code>: the chord expressed as colon-separated harmonics. A
 subharmonic chord is prefixed with a "~".</p></li>
 <li><p><code>degrees</code>: the chord expressed as colon-separated scale degrees</p></li>
-</ul></div>
+<li><p><code>chord_index</code>: the row number of the chord in the combination output</p></li>
+<li><p><code>is_subharm</code>: zero if it's harmonic, one if it's subharmonic.</p></li>
+</ul><p>The resulting data.table is sorted into harmonic-subharmonic pairs using
+<code>data.table::setkey.</code></p>
+
+
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

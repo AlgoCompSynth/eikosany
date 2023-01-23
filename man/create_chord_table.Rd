@@ -12,12 +12,16 @@ create_chord_table(scale_table, choose)
 \item{choose}{the number of harmonics to choose for each chord}
 }
 \value{
-a data.table with two columns:
+a data.table with four columns:
 \itemize{
 \item \code{chord}: the chord expressed as colon-separated harmonics. A
 subharmonic chord is prefixed with a "~".
 \item \code{degrees}: the chord expressed as colon-separated scale degrees
+\item \code{chord_index}: the row number of the chord in the combination output
+\item \code{is_subharm}: zero if it's harmonic, one if it's subharmonic.
 }
+The resulting data.table is sorted into harmonic-subharmonic pairs using
+\code{data.table::setkey.}
 }
 \description{
 Creates a chord table

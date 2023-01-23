@@ -139,7 +139,7 @@ create_chord_plot <-
     key_numbers <- chord_map$note_number - base_note_number + 1
     keyboard_data <- pichor::generate_keys_chords(number_white_keys = 22)
   plot <-
-    pichor::highlight_keys(data = keys_chords, key_numbers) %>%
+    pichor::highlight_keys(data = keyboard_data, key_numbers) %>%
     pichor::ggpiano(keyboard_data, labels = TRUE) +
     ggplot2::labs(title = title_string)
   return(plot)
