@@ -58,11 +58,18 @@ print(eikosany_interval_table <-create_interval_table(eikosany))
 
 ```
 
-## Tetrads of the eikosany
+## Chord table examples
 ```{r}
 
 # compute the tetrads of the 1-3-5-7-9-11 Eikosany
-print(eikosany_chords <- create_chord_table(eikosany, 4))
+eikosany <- create_scale_table()
+print(eikosany_chords <- create_chord_table(eikosany))
+
+# compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany
+hebdomekontany <- create_scale_table(
+  harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
+)
+print(hebdomekontany_chords <- create_chord_table(hebdomekontany))
 
 ```
 

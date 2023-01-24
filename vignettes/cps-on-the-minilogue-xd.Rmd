@@ -1,0 +1,22 @@
+---
+title: "Combination Product Sets on the Korg Minilogue XD"
+output: rmarkdown::html_vignette
+bibliography: eikosany.bibtex
+vignette: >
+  %\VignetteIndexEntry{Combination Product Sets on the Korg Minilogue XD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(eikosany)
+```
+
+# References

@@ -4,12 +4,15 @@
 \alias{create_chord_table}
 \title{Create Chord Table}
 \usage{
-create_chord_table(scale_table, choose)
+create_chord_table(scale_table)
 }
 \arguments{
-\item{scale_table}{the scale table to use for note number and name lookup}
+\item{scale_table}{a scale table based on an \emph{even} number of harmonic
+factors. It will abort via
 
-\item{choose}{the number of harmonics to choose for each chord}
+\code{stop("number of harmonic factors must be even!")}
+
+if it receives one with an odd number.}
 }
 \value{
 a data.table with four columns:
@@ -24,14 +27,32 @@ The resulting data.table is sorted into harmonic-subharmonic pairs using
 \code{data.table::setkey.}
 }
 \description{
-Creates a chord table
+Creates a chord table for a combination product set scale
+based on an \emph{even} number of harmonic factors.
+}
+\details{
+The algorithm used only works for a combination product set
+built from an \emph{even} number of harmonic factors, so it aborts if it
+receives one with an odd number.
+
+In the following, the symbol \verb{n)m} is Erv Wilson's notation for the
+number of combinations of \code{m} items taken \code{n} at a time. \code{n_harmonics}
+is the number of harmonic factors, the resulting chords will have
+\code{choose <- n_harmonics / 2 + 1} notes. There will be
+\verb{choose)n_harmonics} "harmonic" chords and \verb{choose)n_harmonics}
+"sub-harmonic" chords. T
 }
 \examples{
 \dontrun{
 
-
 # compute the tetrads of the 1-3-5-7-9-11 Eikosany
 eikosany <- create_scale_table()
-print(eikosany_chords <- create_chord_table(eikosany, 4))
+print(eikosany_chords <- create_chord_table(eikosany))
+
+# compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany
+hebdomekontany <- create_scale_table(
+  harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
+)
+print(hebdomekontany_chords <- create_chord_table(hebdomekontany))
 }
 }

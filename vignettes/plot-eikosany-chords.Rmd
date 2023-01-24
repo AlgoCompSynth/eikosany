@@ -23,7 +23,7 @@ scale <- create_scale_table() # 1-3-5-7-9-11 Eikosany is the default
 scale_degrees <- length(scale$degree)
 map <- create_keyboard_map(scale)
 base_note_number = 48
-chords <- create_chord_table(scale, choose = 4)
+chords <- create_chord_table(scale)
 chord_names <- chords$chord
 degrees <- chords$degrees
 degrees_matrix <- matrix(

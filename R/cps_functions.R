@@ -311,14 +311,19 @@ create_interval_table <- function(scale_table) {
 
 #' @title Create Chord Table
 #' @name create_chord_table
-#' @description Creates a chord table
+#' @description Creates a chord table for a combination product set scale
+#' based on an *even* number of harmonic factors.
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
 #' @export create_chord_table
-#' @param scale_table the scale table to use for note number and name lookup
-#' @param choose the number of harmonics to choose for each chord
+#' @param scale_table a scale table based on an *even* number of harmonic
+#' factors. It will abort via
+#'
+#'   `stop("number of harmonic factors must be even!")`
+#'
+#' if it receives one with an odd number.
 #' @return a data.table with four columns:
 #' \itemize{
 #' \item `chord`: the chord expressed as colon-separated harmonics. A
@@ -329,17 +334,39 @@ create_interval_table <- function(scale_table) {
 #' }
 #' The resulting data.table is sorted into harmonic-subharmonic pairs using
 #' `data.table::setkey.`
+#' @details The algorithm used only works for a combination product set
+#' built from an *even* number of harmonic factors, so it aborts if it
+#' receives one with an odd number.
+#'
+#' In the following, the symbol `n)m` is Erv Wilson's notation for the
+#' number of combinations of `m` items taken `n` at a time. `n_harmonics`
+#' is the number of harmonic factors, the resulting chords will have
+#' `choose <- n_harmonics / 2 + 1` notes. There will be
+#' `choose)n_harmonics` "harmonic" chords and `choose)n_harmonics`
+#' "sub-harmonic" chords. T
+#'
 #' @examples
 #' \dontrun{
 #'
-#'
 #' # compute the tetrads of the 1-3-5-7-9-11 Eikosany
 #' eikosany <- create_scale_table()
-#' print(eikosany_chords <- create_chord_table(eikosany, 4))
+#' print(eikosany_chords <- create_chord_table(eikosany))
+#'
+#' # compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany
+#' hebdomekontany <- create_scale_table(
+#'   harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
+#' )
+#' print(hebdomekontany_chords <- create_chord_table(hebdomekontany))
 #' }
 
-create_chord_table <- function(scale_table, choose) {
+create_chord_table <- function(scale_table) {
   harmonics <- .label2harmonics(scale_table$note_name, .NOTE_SEP)
+  n_harmonics <- length(harmonics)
+  if (n_harmonics %% 2 == 1) {
+    stop("number of harmonic factors must be even!")
+  } else {
+    choose <- n_harmonics / 2 + 1
+  }
   chords <- t(combn(harmonics, choose))
   num_chords <- nrow(chords)
   others <- t(

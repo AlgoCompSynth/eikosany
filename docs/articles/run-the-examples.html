@@ -41,6 +41,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/cps-on-the-minilogue-xd.html">Combination Product Sets on the Korg Minilogue XD</a>
     <a class="dropdown-item" href="../articles/plot-eikosany-chords.html">Plot the Eikosany Chords</a>
     <a class="dropdown-item" href="../articles/run-the-examples.html">Run the Examples</a>
   </div>
@@ -219,12 +220,13 @@
 <span><span class="co">#&gt; 190:     1x3x5           0  3x7x11        19 1.925000      77/40  1133.83013</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="tetrads-of-the-eikosany">Tetrads of the eikosany<a class="anchor" aria-label="anchor" href="#tetrads-of-the-eikosany"></a>
+<h2 id="chord-table-examples">Chord table examples<a class="anchor" aria-label="anchor" href="#chord-table-examples"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># compute the tetrads of the 1-3-5-7-9-11 Eikosany</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_chord_table.html">create_chord_table</a></span><span class="op">(</span><span class="va">eikosany</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_chord_table.html">create_chord_table</a></span><span class="op">(</span><span class="va">eikosany</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            chord     degrees chord_index is_subharm</span></span>
 <span><span class="co">#&gt;  1:      1:3:5:7   1:6:11:15           1          0</span></span>
 <span><span class="co">#&gt;  2:  /1:/3:/5:/7   0:5:10:16           1          1</span></span>
@@ -256,7 +258,25 @@
 <span><span class="co">#&gt; 28: /3:/7:/9:/11  6:11:13:19          14          1</span></span>
 <span><span class="co">#&gt; 29:     5:7:9:11   0:3:10:17          15          0</span></span>
 <span><span class="co">#&gt; 30: /5:/7:/9:/11   1:8:11:14          15          1</span></span>
-<span><span class="co">#&gt;            chord     degrees chord_index is_subharm</span></span></code></pre></div>
+<span><span class="co">#&gt;            chord     degrees chord_index is_subharm</span></span>
+<span></span>
+<span><span class="co"># compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany</span></span>
+<span><span class="va">hebdomekontany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span></span>
+<span>  harmonics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span>, <span class="fl">13</span>, <span class="fl">15</span><span class="op">)</span>, choose <span class="op">=</span> <span class="fl">4</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hebdomekontany_chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_chord_table.html">create_chord_table</a></span><span class="op">(</span><span class="va">hebdomekontany</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                  chord        degrees chord_index is_subharm</span></span>
+<span><span class="co">#&gt;   1:         1:3:5:7:9 11:24:37:47:65           1          0</span></span>
+<span><span class="co">#&gt;   2:    /1:/3:/5:/7:/9  0:13:26:42:60           1          1</span></span>
+<span><span class="co">#&gt;   3:        1:3:5:7:11  5:28:37:45:61           2          0</span></span>
+<span><span class="co">#&gt;   4:   /1:/3:/5:/7:/11   0:9:32:46:62           2          1</span></span>
+<span><span class="co">#&gt;   5:        1:3:5:7:13 10:29:37:44:57           3          0</span></span>
+<span><span class="co">#&gt;  ---                                                        </span></span>
+<span><span class="co">#&gt; 108: /5:/7:/11:/13:/15  1:11:40:47:55          54          1</span></span>
+<span><span class="co">#&gt; 109:      5:9:11:13:15   0:9:27:41:60          55          0</span></span>
+<span><span class="co">#&gt; 110: /5:/9:/11:/13:/15 10:28:37:47:66          55          1</span></span>
+<span><span class="co">#&gt; 111:      7:9:11:13:15   0:7:26:46:63          56          0</span></span>
+<span><span class="co">#&gt; 112: /7:/9:/11:/13:/15 11:30:37:44:61          56          1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="keyboard-map-examples">Keyboard map examples<a class="anchor" aria-label="anchor" href="#keyboard-map-examples"></a>
