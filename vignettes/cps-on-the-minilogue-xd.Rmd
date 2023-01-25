@@ -19,4 +19,59 @@ knitr::opts_chunk$set(
 library(eikosany)
 ```
 
-# References
+## The Korg Minilogue XD
+The [Korg Minilogue
+XD](https://www.korg.com/us/products/synthesizers/minilogue_xd/)
+is a digital-controlled four-voice analogue synthesizer with an added digital
+multi-engine that provides digital signal processing capabilities -
+oscillators, filters, and effects. The Minilogue XD comes in two form
+factors - a synthesizer with a 37-key keyboard and a module without the
+keyboard.
+
+There is a [Sound
+Librarian](https://www.korg.com/us/products/synthesizers/minilogue_xd/librarian_contents.php)
+for managing the sound programs and multi-engine software in the Minilogue
+XD, and a [Software Development Kit - `logue
+SDK`](https://www.korg.com/us/products/synthesizers/minilogue_xd/sdk.php)
+for developing multi-engine software.
+
+The Minilogue XD and Minilogue XD Module can be microtuned to arbitrary
+scales in two ways:
+
+1. user octaves, and
+2. user scales [@Korg2019a].
+
+Both methods can be implemented directly on the device or uploaded to the
+device with the Sound Librarian.
+
+The *user octave* method can be used for any scale with 12 or fewer notes per
+octave. Each octave in the whole range of the instrument is tuned to the same
+settings, expressed as offsets in cents from the standard 12 equal divisions
+of the octave (12EDO) tuning. Thus, you can tune a Minilogue XD or Minilogue
+XD Module to a Hexany [@narushima2019microtonality, 151] or Dekany
+[@narushima2019microtonality, 160] by user octaves, using the output of
+`create_scale_table`.
+
+### 1-3-5-7 Hexany
+```{r}
+hexany <- create_scale_table(harmonics = c(1, 3, 5, 7), choose = 2)
+print(hexany)
+
+```
+
+### 1-3-5-7-9 2)5 Dekany
+```{r}
+dekany <- create_scale_table(harmonics = c(1, 3, 5, 7, 9), choose = 2)
+print(dekany)
+
+```
+
+
+## User scales and Eikosanies
+*User scales* retune the entire range of the device - MIDI note numbers zero
+through 127 - to any pitches, represented as an offset in cents from any
+standard 12EDO key. Since an Eikosany [@narushima2019microtonality, 161]
+has 20 notes to the octave, you can't retune a Minilogue XD / XD Module to
+an Eikosany with user octaves - you have to use user scales.
+
+## References
