@@ -8,9 +8,10 @@ Wilson’s Combination Product Sets (Narushima 2019, chap. 6). It’s meant
 to ***complement*** other microtonal composition tools, not replace any
 of them.
 
-About the name: the *Eikosany* is a 20-note scale derived by Erv Wilson
-from the first six odd harmonics in the harmonic series - 1, 3, 5, 7, 9
-and 11.
+About the name: an *Eikosany* is a 20-note scale derived by Erv Wilson
+from the six harmonic factors. Although any six factors can be used, the
+most commonly encounterered Eikosany uses the first six odd numbers: 1,
+3, 5, 7, 9 and 11.
 
 ## Other tools
 
@@ -38,6 +39,10 @@ and 11.
   Tuning Editor is an application for computing and visualizing
   microtonal scales and tunings, and includes tools to interface with
   hardware and software synthesizers.
+- [Leimma and Apotome](https://isartum.net/). These tools, by [Khyam
+  Allami](https://khyamallami.com/) and [Counterpoint](https://ctpt.co/)
+  are browser-based applications for creating microtonal scales and
+  making generative music with them.
 
 ## Some history
 
