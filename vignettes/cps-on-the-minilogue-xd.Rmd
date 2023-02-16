@@ -50,18 +50,18 @@ settings, expressed as offsets in cents from the standard 12 equal divisions
 of the octave (12EDO) tuning. Thus, you can tune a Minilogue XD or Minilogue
 XD Module to a Hexany [@narushima2019microtonality, 151] or Dekany
 [@narushima2019microtonality, 160] by user octaves, using the output of
-`create_scale_table`.
+`create_cps_scale_table`.
 
 ### 1-3-5-7 Hexany
 ```{r}
-hexany <- create_scale_table(harmonics = c(1, 3, 5, 7), choose = 2)
+hexany <- create_cps_scale_table(harmonics = c(1, 3, 5, 7), choose = 2)
 print(hexany)
 
 ```
 
 ### 1-3-5-7-9 2)5 Dekany
 ```{r}
-dekany <- create_scale_table(harmonics = c(1, 3, 5, 7, 9), choose = 2)
+dekany <- create_cps_scale_table(harmonics = c(1, 3, 5, 7, 9), choose = 2)
 print(dekany)
 
 ```

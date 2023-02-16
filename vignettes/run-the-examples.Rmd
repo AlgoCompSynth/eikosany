@@ -22,24 +22,24 @@ library(eikosany)
 This vignette just runs the examples. See @narushima2019microtonality for the
 details.
 
-## create_scale_table examples
+## create_cps_scale_table examples
 ```{r}
 
 # 12EDO scale table
 print(vanilla <- create_12edo_scale_table())
 
 # the defaults yield the 1-3-5-7-9-11 Eikosany
-print(eikosany <- create_scale_table())
+print(eikosany <- create_cps_scale_table())
 
 # the 1-3-5-7 Hexany
 hexany_harmonics <- c(1, 3, 5, 7)
 hexany_choose = 2
-print(hexany <- create_scale_table(hexany_harmonics, hexany_choose))
+print(hexany <- create_cps_scale_table(hexany_harmonics, hexany_choose))
 
 # the 1-7-9-11-13 2)5 Dekany
 dekany_harmonics <- c(1, 7, 9, 11, 13)
 dekany_choose <- 2
-print(dekany <- create_scale_table(dekany_harmonics, dekany_choose))
+print(dekany <- create_cps_scale_table(dekany_harmonics, dekany_choose))
 
 # We might want to print out sheet music for a conventional keyboard
 # player, since the synthesizer is mapping MIDI note numbers to pitches.
@@ -48,7 +48,7 @@ print(dekany <- create_scale_table(dekany_harmonics, dekany_choose))
 # seven harmonics taken three at a time.
 harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 choose_35 <- 3
-print(any_35 <- create_scale_table(harmonics_35, choose_35))
+print(any_35 <- create_cps_scale_table(harmonics_35, choose_35))
 
 ```
 
@@ -62,11 +62,11 @@ print(eikosany_interval_table <-create_interval_table(eikosany))
 ```{r}
 
 # compute the tetrads of the 1-3-5-7-9-11 Eikosany
-eikosany <- create_scale_table()
+eikosany <- create_cps_scale_table()
 print(eikosany_chords <- create_chord_table(eikosany))
 
 # compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany
-hebdomekontany <- create_scale_table(
+hebdomekontany <- create_cps_scale_table(
   harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
 )
 print(hebdomekontany_chords <- create_chord_table(hebdomekontany))
@@ -75,7 +75,7 @@ print(hebdomekontany_chords <- create_chord_table(hebdomekontany))
 
 ## Keyboard map examples
 ```{r}
-hexany <- create_scale_table(hexany_harmonics, hexany_choose)
+hexany <- create_cps_scale_table(hexany_harmonics, hexany_choose)
 print(hexany_keyboard_map <- create_keyboard_map(hexany))
 print(dekany_keyboard_map <- create_keyboard_map(dekany))
 print(vanilla_keyboard_map <- create_keyboard_map(vanilla))

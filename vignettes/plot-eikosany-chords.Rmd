@@ -19,7 +19,7 @@ library(eikosany)
 ```
 
 ```{r fig.width=11, fig.height=4.25}
-scale <- create_scale_table() # 1-3-5-7-9-11 Eikosany is the default
+scale <- create_cps_scale_table() # 1-3-5-7-9-11 Eikosany is the default
 scale_degrees <- length(scale$degree)
 map <- create_keyboard_map(scale)
 base_note_number = 48

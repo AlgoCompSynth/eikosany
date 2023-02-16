@@ -55,6 +55,11 @@
   )
 }
 
+.label2prod <- function(label, separator) {
+  unlist(lapply(lapply(strsplit(label, "x"), as.numeric), prod))
+
+}
+
 .label2harmonics <- function(label, separator) {
   unique(sort(unlist(lapply(strsplit(label, separator), as.numeric))))
 }
@@ -70,22 +75,26 @@
   return(degree_table)
 }
 
-.octave_reduce <- function(x) {
+.equave_reduce <- function(x, equave) {
   w <- as.numeric(x)
 
-  ix <- (w > 2)
+  ix <- (w > equave)
   while (any(ix)) {
-    w[ix] <- w[ix] / 2
-    ix <- (w > 2)
+    w[ix] <- w[ix] / equave
+    ix <- (w > equave)
   }
 
   ix <- (w < 1)
   while (any(ix)) {
-    w[ix] <- w[ix] * 2
+    w[ix] <- w[ix] * equave
     ix <- (w < 1)
   }
 
   return(w)
+}
+
+.octave_reduce <- function(x) {
+  return(.equave_reduce(x, 2))
 }
 
 .ratio2cents <- function(ratio) {
@@ -96,17 +105,41 @@
   return(2 ^ (cents / 1200))
 }
 
+.cps_label <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
+  return(.matrix2label(t(combn(harmonics, choose)), .NOTE_SEP))
+}
+
+.ratio_table <- function(label, equave = 2) {
+  num_product <- .label2prod(label, .NOTE_SEP)
+  normalizer <- min(num_product)
+  ratio <- .equave_reduce(num_product / normalizer, equave)
+  ratio_frac <- as.character(fractional::fractional(ratio))
+  ratio_cents <- .ratio2cents(ratio)
+  result_table <- data.table::data.table(
+    note_name = label,
+    ratio,
+    ratio_frac,
+    ratio_cents
+  )
+  data.table::setkey(result_table, ratio)
+  result_table <- result_table[, `:=`(
+    interval_cents = ratio_cents - data.table::shift(ratio_cents),
+    degree = .I - 1
+  )]
+}
+
 #' @title Create Scale Table
-#' @name create_scale_table
+#' @name create_cps_scale_table
 #' @description Creates a scale table from a combination product set definition
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
 #' @importFrom data.table ":="
 #' @importFrom data.table ".I"
+#' @importFrom data.table "shift"
 #' @importFrom fractional fractional
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
-#' @export create_scale_table
+#' @export create_cps_scale_table
 #' @param harmonics a vector of the harmonics to use - defaults to the first
 #' six odd numbers, the harmonics that define the 1-3-5-7-9-11 Eikosany.
 #' @param choose the number of harmonics to choose for each combination -
@@ -119,6 +152,7 @@
 #' 2
 #' \item `ratio_frac`: the ratio as a vulgar fraction (character)
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
+#' \item `interval_cents`: interval between this note and the previous note
 #' \item `degree`: scale degree from zero to (number of notes) - 1
 #' \item `key_12EDO`: note name for closest 12EDO note
 #' \item `offset_cents`: offset in cents from `key_12EDO`
@@ -138,18 +172,18 @@
 #' \dontrun{
 #'
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' print(eikosany <- create_scale_table())
+#' print(eikosany <- create_cps_scale_table())
 #'
 #' # the 1-3-5-7 Hexany
 #' hexany_harmonics <- c(1, 3, 5, 7)
 #' hexany_choose = 2
-#' print(hexany <- create_scale_table(hexany_harmonics, hexany_choose))
+#' print(hexany <- create_cps_scale_table(hexany_harmonics, hexany_choose))
 #'
 #' # the 1-7-9-11-13 2)5 Dekany
 #'
 #' dekany_harmonics <- c(1, 7, 9, 11, 13)
 #' dekany_choose <- 2
-#' print(dekany <- create_scale_table(dekany_harmonics, dekany_choose))
+#' print(dekany <- create_cps_scale_table(dekany_harmonics, dekany_choose))
 #'
 #' # We might want to print out sheet music for a conventional keyboard
 #' # player, since the synthesizer is mapping MIDI note numbers to pitches.
@@ -158,26 +192,14 @@
 #' # seven harmonics taken three at a time.
 #' harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 #' choose_35 <- 3
-#' print(any_35 <- create_scale_table(harmonics_35, choose_35))
+#' print(any_35 <- create_cps_scale_table(harmonics_35, choose_35))
 #'
 #' }
 
-create_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
-  result_table <- t(combn(harmonics, choose))
-  note_name <- .matrix2label(result_table, .NOTE_SEP)
-  num_product <- apply(result_table, 1, prod)
-  normalizer <- min(num_product)
-  ratio <- .octave_reduce(num_product / normalizer)
-  ratio_frac <- as.character(fractional::fractional(ratio))
-  ratio_cents <- .ratio2cents(ratio)
-  result_table <- data.table::data.table(
-    note_name,
-    ratio,
-    ratio_frac,
-    ratio_cents
-  )
-  data.table::setkey(result_table, ratio)
-  result_table <- result_table[, "degree" := .I - 1]
+create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
+                                   choose = 3) {
+  label <- .cps_label(harmonics, choose)
+  result_table <- .ratio_table(label, equave = 2)
 
   # compute pitch bend offsets
   index2name <- result_table$ratio_cents %/% 100
