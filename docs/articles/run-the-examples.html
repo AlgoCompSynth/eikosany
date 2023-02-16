@@ -284,8 +284,8 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hexany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span><span class="va">hexany_harmonics</span>, <span class="va">hexany_choose</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">hexany</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names</span></span>
-<span><span class="co">#&gt; = check.names, : Item 10 has 106 rows but longest item has 128; recycled with</span></span>
+<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names =</span></span>
+<span><span class="co">#&gt; check.names, : Item 10 has 106 rows but longest item has 128; recycled with</span></span>
 <span><span class="co">#&gt; remainder.</span></span>
 <span><span class="co">#&gt;      note_number key_name key_octave note_name ratio_frac degree octave</span></span>
 <span><span class="co">#&gt;   1:           0       C          -1       1x3          1      0     -6</span></span>
@@ -312,8 +312,8 @@
 <span><span class="co">#&gt; 127: 12543.853951 12700          D          16           0</span></span>
 <span><span class="co">#&gt; 128: 12543.853951 12700          D#         16         -33</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">dekany</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names</span></span>
-<span><span class="co">#&gt; = check.names, : Item 10 has 115 rows but longest item has 128; recycled with</span></span>
+<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names =</span></span>
+<span><span class="co">#&gt; check.names, : Item 10 has 115 rows but longest item has 128; recycled with</span></span>
 <span><span class="co">#&gt; remainder.</span></span>
 <span><span class="co">#&gt;      note_number key_name key_octave note_name ratio_frac degree octave</span></span>
 <span><span class="co">#&gt;   1:           0       C          -1       1x7          1      0     -2</span></span>
@@ -340,8 +340,8 @@
 <span><span class="co">#&gt; 127: 12543.853951 12700          D#         11         -18</span></span>
 <span><span class="co">#&gt; 128: 12543.853951 12700          D#         11          41</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vanilla_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">vanilla</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names</span></span>
-<span><span class="co">#&gt; = check.names, : Item 10 has 117 rows but longest item has 128; recycled with</span></span>
+<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names =</span></span>
+<span><span class="co">#&gt; check.names, : Item 10 has 117 rows but longest item has 128; recycled with</span></span>
 <span><span class="co">#&gt; remainder.</span></span>
 <span><span class="co">#&gt;      note_number key_name key_octave note_name ratio_frac degree octave</span></span>
 <span><span class="co">#&gt;   1:           0       C          -1        C           1      0     -1</span></span>
@@ -370,8 +370,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_keyboard_map_c3</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/create_keyboard_map.html">create_keyboard_map</a></span><span class="op">(</span><span class="va">eikosany</span>, middle_c_octave <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names</span></span>
-<span><span class="co">#&gt; = check.names, : Item 10 has 121 rows but longest item has 128; recycled with</span></span>
+<span><span class="co">#&gt; Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names =</span></span>
+<span><span class="co">#&gt; check.names, : Item 10 has 121 rows but longest item has 128; recycled with</span></span>
 <span><span class="co">#&gt; remainder.</span></span>
 <span><span class="co">#&gt;      note_number key_name key_octave note_name ratio_frac degree octave</span></span>
 <span><span class="co">#&gt;   1:           0       C          -2     1x3x5          1      0      0</span></span>
