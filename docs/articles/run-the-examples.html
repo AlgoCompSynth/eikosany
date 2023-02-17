@@ -289,6 +289,84 @@
 <span><span class="co">#&gt; 31:    61.290323</span></span>
 <span><span class="co">#&gt;     offset_cents</span></span>
 <span></span>
+<span><span class="va">nn22</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"C  "</span>,</span>
+<span>  <span class="st">"C+ "</span>,</span>
+<span>  <span class="st">"C++"</span>,</span>
+<span>  <span class="st">"D- "</span>,</span>
+<span>  <span class="st">"D  "</span>,</span>
+<span>  <span class="st">"D+ "</span>,</span>
+<span>  <span class="st">"D++"</span>,</span>
+<span>  <span class="st">"E- "</span>,</span>
+<span>  <span class="st">"E  "</span>,</span>
+<span>  <span class="st">"F  "</span>,</span>
+<span>  <span class="st">"F+ "</span>,</span>
+<span>  <span class="st">"F++"</span>,</span>
+<span>  <span class="st">"G- "</span>,</span>
+<span>  <span class="st">"G  "</span>,</span>
+<span>  <span class="st">"G+ "</span>,</span>
+<span>  <span class="st">"G++"</span>,</span>
+<span>  <span class="st">"A- "</span>,</span>
+<span>  <span class="st">"A  "</span>,</span>
+<span>  <span class="st">"A+ "</span>,</span>
+<span>  <span class="st">"A++"</span>,</span>
+<span>  <span class="st">"B- "</span>,</span>
+<span>  <span class="st">"B  "</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nn22</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 22</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">nn22</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "C  " "C+ " "C++" "D- " "D  " "D+ " "D++" "E- " "E  " "F  " "F+ " "F++"</span></span>
+<span><span class="co">#&gt; [13] "G- " "G  " "G+ " "G++" "A- " "A  " "A+ " "A++" "B- " "B  "</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">edo22</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_edo_scale_table.html">create_edo_scale_table</a></span><span class="op">(</span><span class="va">nn22</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span></span>
+<span><span class="co">#&gt;  1:       C   1.000000          1     0.00000             NA      0        C </span></span>
+<span><span class="co">#&gt;  2:       C+  1.032008    935/906    54.54545       54.54545      1        C#</span></span>
+<span><span class="co">#&gt;  3:       C++ 1.065041    131/123   109.09091       54.54545      2        C#</span></span>
+<span><span class="co">#&gt;  4:       D-  1.099131    632/575   163.63636       54.54545      3        D </span></span>
+<span><span class="co">#&gt;  5:       D   1.134313   1081/953   218.18182       54.54545      4        D </span></span>
+<span><span class="co">#&gt;  6:       D+  1.170620  1283/1096   272.72727       54.54545      5        D#</span></span>
+<span><span class="co">#&gt;  7:       D++ 1.208089  2270/1879   327.27273       54.54545      6        D#</span></span>
+<span><span class="co">#&gt;  8:       E-  1.246758  3173/2545   381.81818       54.54545      7        E </span></span>
+<span><span class="co">#&gt;  9:       E   1.286665  4834/3757   436.36364       54.54545      8        E </span></span>
+<span><span class="co">#&gt; 10:       F   1.327849   1049/790   490.90909       54.54545      9        F </span></span>
+<span><span class="co">#&gt; 11:       F+  1.370351  2616/1909   545.45455       54.54545     10        F </span></span>
+<span><span class="co">#&gt; 12:       F++ 1.414214   1393/985   600.00000       54.54545     11        F#</span></span>
+<span><span class="co">#&gt; 13:       G-  1.459480  1909/1308   654.54545       54.54545     12        G </span></span>
+<span><span class="co">#&gt; 14:       G   1.506196    851/565   709.09091       54.54545     13        G </span></span>
+<span><span class="co">#&gt; 15:       G+  1.554406  3757/2417   763.63636       54.54545     14        G#</span></span>
+<span><span class="co">#&gt; 16:       G++ 1.604160  5090/3173   818.18182       54.54545     15        G#</span></span>
+<span><span class="co">#&gt; 17:       A-  1.655507  1879/1135   872.72727       54.54545     16        A </span></span>
+<span><span class="co">#&gt; 18:       A   1.708496   1307/765   927.27273       54.54545     17        A </span></span>
+<span><span class="co">#&gt; 19:       A+  1.763183  1839/1043   981.81818       54.54545     18        A#</span></span>
+<span><span class="co">#&gt; 20:       A++ 1.819619  3914/2151  1036.36364       54.54545     19        A#</span></span>
+<span><span class="co">#&gt; 21:       B-  1.877862    246/131  1090.90909       54.54545     20        B </span></span>
+<span><span class="co">#&gt; 22:       B   1.937969   1031/532  1145.45455       54.54545     21        B </span></span>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span></span>
+<span><span class="co">#&gt;     offset_cents</span></span>
+<span><span class="co">#&gt;  1:     0.000000</span></span>
+<span><span class="co">#&gt;  2:   -45.454545</span></span>
+<span><span class="co">#&gt;  3:     9.090909</span></span>
+<span><span class="co">#&gt;  4:   -36.363636</span></span>
+<span><span class="co">#&gt;  5:    18.181818</span></span>
+<span><span class="co">#&gt;  6:   -27.272727</span></span>
+<span><span class="co">#&gt;  7:    27.272727</span></span>
+<span><span class="co">#&gt;  8:   -18.181818</span></span>
+<span><span class="co">#&gt;  9:    36.363636</span></span>
+<span><span class="co">#&gt; 10:    -9.090909</span></span>
+<span><span class="co">#&gt; 11:    45.454545</span></span>
+<span><span class="co">#&gt; 12:     0.000000</span></span>
+<span><span class="co">#&gt; 13:   -45.454545</span></span>
+<span><span class="co">#&gt; 14:     9.090909</span></span>
+<span><span class="co">#&gt; 15:   -36.363636</span></span>
+<span><span class="co">#&gt; 16:    18.181818</span></span>
+<span><span class="co">#&gt; 17:   -27.272727</span></span>
+<span><span class="co">#&gt; 18:    27.272727</span></span>
+<span><span class="co">#&gt; 19:   -18.181818</span></span>
+<span><span class="co">#&gt; 20:    36.363636</span></span>
+<span><span class="co">#&gt; 21:    -9.090909</span></span>
+<span><span class="co">#&gt; 22:    45.454545</span></span>
+<span><span class="co">#&gt;     offset_cents</span></span>
+<span></span>
 <span><span class="co"># the defaults yield the 1-3-5-7-9-11 Eikosany</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_cps_scale_table.html">create_cps_scale_table</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span></span>

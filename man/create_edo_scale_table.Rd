@@ -2,7 +2,7 @@
 % Please edit documentation in R/cps_functions.R
 \name{create_edo_scale_table}
 \alias{create_edo_scale_table}
-\title{Create EDO Scale Table}
+\title{Create Equal-Tempered Scale Table}
 \usage{
 create_edo_scale_table(
   note_names = c("C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#", "A ", "A#", "B ")
@@ -95,6 +95,33 @@ nn31 <- c(
 print(length(nn31))
 print(nn31)
 print(edo31 <- create_edo_scale_table(nn31))
+
+nn22 <- c(
+  "C  ",
+  "C+ ",
+  "C++",
+  "D- ",
+  "D  ",
+  "D+ ",
+  "D++",
+  "E- ",
+  "E  ",
+  "F  ",
+  "F+ ",
+  "F++",
+  "G- ",
+  "G  ",
+  "G+ ",
+  "G++",
+  "A- ",
+  "A  ",
+  "A+ ",
+  "A++",
+  "B- ",
+  "B  ")
+print(length(nn22))
+print(nn22)
+print(edo22 <- create_edo_scale_table(nn22))
 
 }
 }

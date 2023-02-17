@@ -2,7 +2,7 @@
 % Please edit documentation in R/cps_functions.R
 \name{create_cps_scale_table}
 \alias{create_cps_scale_table}
-\title{Create Scale Table}
+\title{Create Combination Product Set Scale Table}
 \usage{
 create_cps_scale_table(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3)
 }

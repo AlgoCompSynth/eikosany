@@ -128,7 +128,7 @@
   )]
 }
 
-#' @title Create Scale Table
+#' @title Create Combination Product Set Scale Table
 #' @name create_cps_scale_table
 #' @description Creates a scale table from a combination product set definition
 #' @importFrom data.table data.table
@@ -213,7 +213,7 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
   return(result_table)
 }
 
-#' @title Create EDO Scale Table
+#' @title Create Equal-Tempered Scale Table
 #' @name create_edo_scale_table
 #' @description Creates a scale table for equal divisions of the octave (EDO)
 #' @importFrom data.table data.table
@@ -305,6 +305,33 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
 #' print(length(nn31))
 #' print(nn31)
 #' print(edo31 <- create_edo_scale_table(nn31))
+#'
+#' nn22 <- c(
+#'   "C  ",
+#'   "C+ ",
+#'   "C++",
+#'   "D- ",
+#'   "D  ",
+#'   "D+ ",
+#'   "D++",
+#'   "E- ",
+#'   "E  ",
+#'   "F  ",
+#'   "F+ ",
+#'   "F++",
+#'   "G- ",
+#'   "G  ",
+#'   "G+ ",
+#'   "G++",
+#'   "A- ",
+#'   "A  ",
+#'   "A+ ",
+#'   "A++",
+#'   "B- ",
+#'   "B  ")
+#' print(length(nn22))
+#' print(nn22)
+#' print(edo22 <- create_edo_scale_table(nn22))
 #'
 #' }
 
