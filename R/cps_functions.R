@@ -128,6 +128,18 @@
   )]
 }
 
+.compute_pitch_bend_offsets <- function(scale_table) {
+  index2name <- scale_table$ratio_cents %/% 100
+  offset_cents <- scale_table$ratio_cents %% 100
+  index2increment <- offset_cents > 50 & (index2name + 1) < 12
+  index2name[index2increment] <- index2name[index2increment] + 1
+  offset_cents[index2increment] <- offset_cents[index2increment] - 100
+  temp <- scale_table
+  temp$key_12EDO <- .NAMES_12EDO[index2name + 1]
+  temp$offset_cents <- offset_cents
+  return(temp)
+}
+
 #' @title Create Combination Product Set Scale Table
 #' @name create_cps_scale_table
 #' @description Creates a scale table from a combination product set definition
@@ -199,18 +211,11 @@
 create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
                                    choose = 3) {
   label <- .cps_label(harmonics, choose)
-  result_table <- .ratio_table(label, equave = 2)
+  scale_table <- .ratio_table(label, equave = 2)
 
   # compute pitch bend offsets
-  index2name <- result_table$ratio_cents %/% 100
-  offset_cents <- result_table$ratio_cents %% 100
-  index2increment <- offset_cents > 50 & (index2name + 1) < 12
-  index2name[index2increment] <- index2name[index2increment] + 1
-  offset_cents[index2increment] <- offset_cents[index2increment] - 100
-  result_table$key_12EDO <- .NAMES_12EDO[index2name + 1]
-  result_table$offset_cents <- offset_cents
-
-  return(result_table)
+  scale_table <- .compute_pitch_bend_offsets(scale_table)
+  return(scale_table)
 }
 
 #' @title Create Equal-Tempered Scale Table
@@ -370,65 +375,7 @@ create_edo_scale_table <- function(note_names = c(
   )]
 
   # compute pitch bend offsets
-  index2name <- scale_table$ratio_cents %/% 100
-  offset_cents <- scale_table$ratio_cents %% 100
-  index2increment <- offset_cents > 50 & (index2name + 1) < 12
-  index2name[index2increment] <- index2name[index2increment] + 1
-  offset_cents[index2increment] <- offset_cents[index2increment] - 100
-  scale_table$key_12EDO <- .NAMES_12EDO[index2name + 1]
-  scale_table$offset_cents <- offset_cents
-
-  return(scale_table)
-}
-
-#' @title Create 12EDO Scale Table
-#' @name create_12edo_scale_table
-#' @description Creates a scale table for 12EDO
-#' @importFrom data.table data.table
-#' @importFrom data.table setkey
-#' @importFrom data.table ":="
-#' @importFrom data.table ".I"
-#' @importFrom data.table "shift"
-#' @importFrom fractional fractional
-#' @importFrom utils combn
-#' @importFrom utils globalVariables
-#' @export create_12edo_scale_table
-#' @return a `data.table` with ten columns:
-#' \itemize{
-#' \item `note_name`: the note name (character)
-#' \item `ratio`: the ratio that defines the note, as a number between 1 and
-#' 2
-#' \item `ratio_frac`: the ratio as a vulgar fraction (character). The ratios
-#' for 12EDO are irrational, so this is an approximation.
-#' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
-#' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `key_12EDO`: note name for nearest 12EDO note
-#' \item `offset_cents`: offset in cents from `key_12EDO`
-#' }
-#' @examples
-#' \dontrun{
-#'
-#' print(vanilla <- create_12edo_scale_table())
-#'
-#' }
-
-create_12edo_scale_table <- function() {
-  key_12EDO <- note_name <- .NAMES_12EDO
-  degree <- .DEGREES_12EDO
-  ratio_cents <- degree * 100
-  ratio <- .cents2ratio(ratio_cents)
-  ratio_frac <- as.character(fractional::fractional(ratio))
-  offset <- vector(mode = "numeric", length = 12); offset <- offset - offset
-  scale_table <- data.table::data.table(
-    note_name,
-    ratio,
-    ratio_frac,
-    ratio_cents,
-    degree,
-    key_12EDO,
-    offset
-  )
-  data.table::setkey(scale_table, ratio)
+  scale_table <- .compute_pitch_bend_offsets(scale_table)
   return(scale_table)
 }
 
