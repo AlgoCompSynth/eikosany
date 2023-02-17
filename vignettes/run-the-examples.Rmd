@@ -25,8 +25,68 @@ details.
 ## create_cps_scale_table examples
 ```{r}
 
-# 12EDO scale table
-print(vanilla <- create_12edo_scale_table())
+# EDO scale tables
+print(vanilla <- create_edo_scale_table()) # default is 12EDO, of course
+
+nn19 <- c(
+  "C ",
+  "C+",
+  "D-",
+  "D ",
+  "D+",
+  "E-",
+  "E ",
+  "E+",
+  "F ",
+  "F+",
+  "G-",
+  "G ",
+  "G+",
+  "A-",
+  "A ",
+  "A+",
+  "B-",
+  "B ",
+  "B+")
+print(length(nn19))
+print(nn19)
+print(edo19 <- create_edo_scale_table(nn19))
+
+nn31 <- c(
+  "C  ",
+  "C+ ",
+  "C++",
+  "D--",
+  "D- ",
+  "D  ",
+  "D+ ",
+  "D++",
+  "E--",
+  "E- ",
+  "E  ",
+  "F--",
+  "E++",
+  "F  ",
+  "F+ ",
+  "F++",
+  "G--",
+  "G- ",
+  "G  ",
+  "G+ ",
+  "G++",
+  "A--",
+  "A- ",
+  "A  ",
+  "A+ ",
+  "A++",
+  "B--",
+  "B- ",
+  "B  ",
+  "C--",
+  "B++")
+print(length(nn31))
+print(nn31)
+print(edo31 <- create_edo_scale_table(nn31))
 
 # the defaults yield the 1-3-5-7-9-11 Eikosany
 print(eikosany <- create_cps_scale_table())

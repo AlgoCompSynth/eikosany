@@ -15,7 +15,7 @@ defaults to 3, the number of harmonics for each combination in the
 Eikosany.}
 }
 \value{
-a \code{data.table} with ten columns:
+a \code{data.table} with eight columns:
 \itemize{
 \item \code{note_name}: the product of harmonics that defines the note (character)
 \item \code{ratio}: the ratio that defines the note, as a number between 1 and

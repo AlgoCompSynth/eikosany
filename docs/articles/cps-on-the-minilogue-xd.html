@@ -108,38 +108,56 @@ fewer notes per octave. Each octave in the whole range of the instrument
 is tuned to the same settings, expressed as offsets in cents from the
 standard 12 equal divisions of the octave (12EDO) tuning. Thus, you can
 tune a Minilogue XD or Minilogue XD Module to a Hexany <span class="citation">(Narushima 2019, 151)</span> or Dekany <span class="citation">(Narushima 2019, 160)</span> by user octaves, using the
-output of <code>create_scale_table</code>.</p>
+output of <code>create_cps_scale_table</code>.</p>
 <div class="section level3">
 <h3 id="hexany">1-3-5-7 Hexany<a class="anchor" aria-label="anchor" href="#hexany"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hexany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span>harmonics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span><span class="op">)</span>, choose <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">hexany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_cps_scale_table.html">create_cps_scale_table</a></span><span class="op">(</span>harmonics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span><span class="op">)</span>, choose <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hexany</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    note_name    ratio ratio_frac ratio_cents degree key_12EDO offset_cents</span></span>
-<span><span class="co">#&gt; 1:       1x3 1.000000          1      0.0000      0        C       0.00000</span></span>
-<span><span class="co">#&gt; 2:       1x7 1.166667        7/6    266.8709      1        D#    -33.12909</span></span>
-<span><span class="co">#&gt; 3:       3x5 1.250000        5/4    386.3137      2        E     -13.68629</span></span>
-<span><span class="co">#&gt; 4:       5x7 1.458333      35/24    653.1846      3        G     -46.81538</span></span>
-<span><span class="co">#&gt; 5:       1x5 1.666667        5/3    884.3587      4        A     -15.64129</span></span>
-<span><span class="co">#&gt; 6:       3x7 1.750000        7/4    968.8259      5        A#    -31.17409</span></span></code></pre></div>
+<span><span class="co">#&gt;    note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span></span>
+<span><span class="co">#&gt; 1:       1x3 1.000000          1      0.0000             NA      0        C </span></span>
+<span><span class="co">#&gt; 2:       1x7 1.166667        7/6    266.8709      266.87091      1        D#</span></span>
+<span><span class="co">#&gt; 3:       3x5 1.250000        5/4    386.3137      119.44281      2        E </span></span>
+<span><span class="co">#&gt; 4:       5x7 1.458333      35/24    653.1846      266.87091      3        G </span></span>
+<span><span class="co">#&gt; 5:       1x5 1.666667        5/3    884.3587      231.17409      4        A </span></span>
+<span><span class="co">#&gt; 6:       3x7 1.750000        7/4    968.8259       84.46719      5        A#</span></span>
+<span><span class="co">#&gt;    offset_cents</span></span>
+<span><span class="co">#&gt; 1:      0.00000</span></span>
+<span><span class="co">#&gt; 2:    -33.12909</span></span>
+<span><span class="co">#&gt; 3:    -13.68629</span></span>
+<span><span class="co">#&gt; 4:    -46.81538</span></span>
+<span><span class="co">#&gt; 5:    -15.64129</span></span>
+<span><span class="co">#&gt; 6:    -31.17409</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="dekany">1-3-5-7-9 2)5 Dekany<a class="anchor" aria-label="anchor" href="#dekany"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dekany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_scale_table.html">create_scale_table</a></span><span class="op">(</span>harmonics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span><span class="op">)</span>, choose <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">dekany</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_cps_scale_table.html">create_cps_scale_table</a></span><span class="op">(</span>harmonics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span><span class="op">)</span>, choose <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dekany</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents degree key_12EDO offset_cents</span></span>
-<span><span class="co">#&gt;  1:       1x3 1.000000          1      0.0000      0        C      0.000000</span></span>
-<span><span class="co">#&gt;  2:       3x9 1.125000        9/8    203.9100      1        D      3.910002</span></span>
-<span><span class="co">#&gt;  3:       1x7 1.166667        7/6    266.8709      2        D#   -33.129094</span></span>
-<span><span class="co">#&gt;  4:       3x5 1.250000        5/4    386.3137      3        E    -13.686286</span></span>
-<span><span class="co">#&gt;  5:       7x9 1.312500      21/16    470.7809      4        F    -29.219093</span></span>
-<span><span class="co">#&gt;  6:       5x7 1.458333      35/24    653.1846      5        G    -46.815381</span></span>
-<span><span class="co">#&gt;  7:       1x9 1.500000        3/2    701.9550      6        G      1.955001</span></span>
-<span><span class="co">#&gt;  8:       1x5 1.666667        5/3    884.3587      7        A    -15.641287</span></span>
-<span><span class="co">#&gt;  9:       3x7 1.750000        7/4    968.8259      8        A#   -31.174094</span></span>
-<span><span class="co">#&gt; 10:       5x9 1.875000       15/8   1088.2687      9        B    -11.731285</span></span></code></pre></div>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span></span>
+<span><span class="co">#&gt;  1:       1x3 1.000000          1      0.0000             NA      0        C </span></span>
+<span><span class="co">#&gt;  2:       3x9 1.125000        9/8    203.9100      203.91000      1        D </span></span>
+<span><span class="co">#&gt;  3:       1x7 1.166667        7/6    266.8709       62.96090      2        D#</span></span>
+<span><span class="co">#&gt;  4:       3x5 1.250000        5/4    386.3137      119.44281      3        E </span></span>
+<span><span class="co">#&gt;  5:       7x9 1.312500      21/16    470.7809       84.46719      4        F </span></span>
+<span><span class="co">#&gt;  6:       5x7 1.458333      35/24    653.1846      182.40371      5        G </span></span>
+<span><span class="co">#&gt;  7:       1x9 1.500000        3/2    701.9550       48.77038      6        G </span></span>
+<span><span class="co">#&gt;  8:       1x5 1.666667        5/3    884.3587      182.40371      7        A </span></span>
+<span><span class="co">#&gt;  9:       3x7 1.750000        7/4    968.8259       84.46719      8        A#</span></span>
+<span><span class="co">#&gt; 10:       5x9 1.875000       15/8   1088.2687      119.44281      9        B </span></span>
+<span><span class="co">#&gt;     offset_cents</span></span>
+<span><span class="co">#&gt;  1:     0.000000</span></span>
+<span><span class="co">#&gt;  2:     3.910002</span></span>
+<span><span class="co">#&gt;  3:   -33.129094</span></span>
+<span><span class="co">#&gt;  4:   -13.686286</span></span>
+<span><span class="co">#&gt;  5:   -29.219093</span></span>
+<span><span class="co">#&gt;  6:   -46.815381</span></span>
+<span><span class="co">#&gt;  7:     1.955001</span></span>
+<span><span class="co">#&gt;  8:   -15.641287</span></span>
+<span><span class="co">#&gt;  9:   -31.174094</span></span>
+<span><span class="co">#&gt; 10:   -11.731285</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

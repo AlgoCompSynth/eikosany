@@ -145,7 +145,7 @@
 #' @param choose the number of harmonics to choose for each combination -
 #' defaults to 3, the number of harmonics for each combination in the
 #' Eikosany.
-#' @return a `data.table` with ten columns:
+#' @return a `data.table` with eight columns:
 #' \itemize{
 #' \item `note_name`: the product of harmonics that defines the note (character)
 #' \item `ratio`: the ratio that defines the note, as a number between 1 and
@@ -213,6 +213,147 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
   return(result_table)
 }
 
+#' @title Create EDO Scale Table
+#' @name create_edo_scale_table
+#' @description Creates a scale table for equal divisions of the octave (EDO)
+#' @importFrom data.table data.table
+#' @importFrom data.table setkey
+#' @importFrom data.table ":="
+#' @importFrom data.table ".I"
+#' @importFrom data.table "shift"
+#' @importFrom fractional fractional
+#' @importFrom utils combn
+#' @importFrom utils globalVariables
+#' @export create_edo_scale_table
+#' @param note_names a character vector with the names of the notes in the
+#' scale. That's all you need to give it - it can figure out everything
+#' else!
+#' @return a `data.table` with eight columns:
+#' \itemize{
+#' \item `note_name`: the note name (character)
+#' \item `ratio`: the ratio that defines the note, as a number between 1 and
+#' 2
+#' \item `ratio_frac`: the ratio as a vulgar fraction (character). The ratios
+#' for most EDOs are irrational, so this is an approximation.
+#' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
+#' \item `interval_cents`: interval between this note and the previous note
+#' \item `degree`: scale degree from zero to (number of notes) - 1
+#' \item `key_12EDO`: note name for nearest 12EDO note
+#' \item `offset_cents`: offset in cents from `key_12EDO`
+#' }
+#' @examples
+#' \dontrun{
+#'
+#' print(vanilla <- create_edo_scale_table()) # default is 12EDO, of course
+#'
+#' nn19 <- c(
+#'   "C ",
+#'   "C+",
+#'   "D-",
+#'   "D ",
+#'   "D+",
+#'   "E-",
+#'   "E ",
+#'   "E+",
+#'   "F ",
+#'   "F+",
+#'   "G-",
+#'   "G ",
+#'   "G+",
+#'   "A-",
+#'   "A ",
+#'   "A+",
+#'   "B-",
+#'   "B ",
+#'   "B+")
+#' print(length(nn19))
+#' print(nn19)
+#' print(edo19 <- create_edo_scale_table(nn19))
+#'
+#' nn31 <- c(
+#'   "C  ",
+#'   "C+ ",
+#'   "C++",
+#'   "D--",
+#'   "D- ",
+#'   "D  ",
+#'   "D+ ",
+#'   "D++",
+#'   "E--",
+#'   "E- ",
+#'   "E  ",
+#'   "F--",
+#'   "E++",
+#'   "F  ",
+#'   "F+ ",
+#'   "F++",
+#'   "G--",
+#'   "G- ",
+#'   "G  ",
+#'   "G+ ",
+#'   "G++",
+#'   "A--",
+#'   "A- ",
+#'   "A  ",
+#'   "A+ ",
+#'   "A++",
+#'   "B--",
+#'   "B- ",
+#'   "B  ",
+#'   "C--",
+#'   "B++")
+#' print(length(nn31))
+#' print(nn31)
+#' print(edo31 <- create_edo_scale_table(nn31))
+#'
+#' }
+
+create_edo_scale_table <- function(note_names = c(
+  "C ",
+  "C#",
+  "D ",
+  "D#",
+  "E ",
+  "F ",
+  "F#",
+  "G ",
+  "G#",
+  "A ",
+  "A#",
+  "B "
+)) {
+  note_name <- note_names
+  degrees <- length(note_names)
+  degree <- seq(0, degrees - 1)
+  ratio_cents <- degree * 1200 / degrees
+  ratio <- .cents2ratio(ratio_cents)
+  ratio_frac <- as.character(fractional::fractional(ratio))
+  offset_cents <- vector(mode = "numeric", length = degrees)
+  key_12edo <- vector(mode = "character", length = degrees)
+  scale_table <- data.table::data.table(
+    note_name,
+    ratio,
+    ratio_frac,
+    ratio_cents
+  )
+  data.table::setkey(scale_table, ratio)
+  scale_table <- scale_table[, `:=`(
+    interval_cents = ratio_cents - data.table::shift(ratio_cents),
+    degree = .I - 1
+  )]
+
+  # compute pitch bend offsets
+  index2name <- scale_table$ratio_cents %/% 100
+  offset_cents <- scale_table$ratio_cents %% 100
+  index2increment <- offset_cents > 50 & (index2name + 1) < 12
+  index2name[index2increment] <- index2name[index2increment] + 1
+  offset_cents[index2increment] <- offset_cents[index2increment] - 100
+  scale_table$key_12EDO <- .NAMES_12EDO[index2name + 1]
+  scale_table$offset_cents <- offset_cents
+
+  return(scale_table)
+}
+
 #' @title Create 12EDO Scale Table
 #' @name create_12edo_scale_table
 #' @description Creates a scale table for 12EDO
@@ -220,6 +361,7 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
 #' @importFrom data.table setkey
 #' @importFrom data.table ":="
 #' @importFrom data.table ".I"
+#' @importFrom data.table "shift"
 #' @importFrom fractional fractional
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
