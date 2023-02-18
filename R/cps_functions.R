@@ -140,8 +140,107 @@
   return(temp)
 }
 
+#' @title Create Product Set Scale Table
+#' @name ps_scale_table
+#' @description Creates a scale table from a product set definition
+#' @importFrom data.table data.table
+#' @importFrom data.table setkey
+#' @importFrom data.table ":="
+#' @importFrom data.table ".I"
+#' @importFrom data.table "shift"
+#' @importFrom fractional fractional
+#' @importFrom utils combn
+#' @importFrom utils globalVariables
+#' @export ps_scale_table
+#' @param ps_def the product set scale definition. This is a character
+#' vector of products. Each product is a set of any number of integers
+#' separated by a lower-case "x". For example, the `ps_def` of the 1-3-5-7
+#' Hexany is
+#'
+#'   `c("1x3", "1x5", "1x7", "3x5", "3x7", "5x7")`
+#'
+#' The default is the `ps_def` for the 1-3-5-7-9-11 Eikosany.
+#' @return a `data.table` with eight columns:
+#' \itemize{
+#' \item `note_name`: the given product set definition, re-ordered by the
+#' degrees of the resulting scale (character)
+#' \item `ratio`: the ratio that defines the note, as a number between 1 and
+#' 2
+#' \item `ratio_frac`: the ratio as a vulgar fraction (character)
+#' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
+#' \item `interval_cents`: interval between this note and the previous note
+#' \item `degree`: scale degree from zero to (number of notes) - 1
+#' \item `key_12EDO`: note name for closest 12EDO note
+#' \item `offset_cents`: offset in cents from `key_12EDO`
+#' }
+#' @examples
+#' \dontrun{
+#'
+#' # the default yields the 1-3-5-7-9-11 Eikosany
+#' print(eikosany <- ps_scale_table())
+#'
+#' # Kraig Grady's Eikosany as two complementary extended Dekanies
+#' print(grady_a <- ps_scale_table(c(
+#'   "1x3x11",
+#'   "1x9",
+#'   "3x9x11",
+#'   "1x7x11",
+#'   "1x3x7",
+#'   "7x9x11",
+#'   "3x7x9",
+#'   "1x9x11",
+#'   "1x3x9",
+#'   "1x7",
+#'   "3x7x11",
+#'   "1x7x9"
+#' )))
+#' print(grady_b <- ps_scale_table(c(
+#'   "3x5x11",
+#'   "1x5x9",
+#'   "3x5x9x11",
+#'   "5x7x11",
+#'   "3x5x7",
+#'   "1x5x11",
+#'   "1x3x5",
+#'   "5x9x11",
+#'   "3x5x9",
+#'   "1x5x7",
+#'   "3x5x7x11",
+#'   "5x7x9"
+#' )))
+#' }
+
+ps_scale_table <- function(ps_def = c(
+  "1x3x5",
+  "5x9x11",
+  "1x7x9",
+  "1x3x11",
+  "3x5x9",
+  "1x5x7",
+  "3x9x11",
+  "1x7x11",
+  "5x7x9",
+  "3x5x11",
+  "1x3x7",
+  "7x9x11",
+  "1x5x9",
+  "3x7x9",
+  "5x7x11",
+  "1x9x11",
+  "3x5x7",
+  "1x3x9",
+  "1x5x11",
+  "3x7x11"
+)) {
+  scale_table <- .ratio_table(ps_def, equave = 2)
+
+  # compute pitch bend offsets
+  scale_table <- .compute_pitch_bend_offsets(scale_table)
+  return(scale_table)
+}
+
 #' @title Create Combination Product Set Scale Table
-#' @name create_cps_scale_table
+#' @name cps_scale_table
 #' @description Creates a scale table from a combination product set definition
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
@@ -151,7 +250,7 @@
 #' @importFrom fractional fractional
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
-#' @export create_cps_scale_table
+#' @export cps_scale_table
 #' @param harmonics a vector of the harmonics to use - defaults to the first
 #' six odd numbers, the harmonics that define the 1-3-5-7-9-11 Eikosany.
 #' @param choose the number of harmonics to choose for each combination -
@@ -169,33 +268,22 @@
 #' \item `key_12EDO`: note name for closest 12EDO note
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
-#' @details The Dirtywave M8
-#' (https://cdn.shopify.com/s/files/1/0455/0485/6229/files/m8_operation_manual_v20220621.pdf?v=1655861519,
-#' page 24) can use arbitrary scales defined by offsets in cents from a 12EDO
-#' note. For scales with 12 or fewer notes per octave, you can just define
-#' the scale using `key_12EDO` and `offset_cents` from this table. For scales
-#' with more than 12 notes per octave, you need to allocate multiple scales in
-#' the M8.
-#'
-#' There may be other synthesizers that can be tuned this way, but the M8 is
-#' the only one I have.
-#'
 #' @examples
 #' \dontrun{
 #'
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' print(eikosany <- create_cps_scale_table())
+#' print(eikosany <- cps_scale_table())
 #'
 #' # the 1-3-5-7 Hexany
 #' hexany_harmonics <- c(1, 3, 5, 7)
-#' hexany_choose = 2
-#' print(hexany <- create_cps_scale_table(hexany_harmonics, hexany_choose))
+#' hexany_choose <- 2
+#' print(hexany <- cps_scale_table(hexany_harmonics, hexany_choose))
 #'
 #' # the 1-7-9-11-13 2)5 Dekany
 #'
 #' dekany_harmonics <- c(1, 7, 9, 11, 13)
 #' dekany_choose <- 2
-#' print(dekany <- create_cps_scale_table(dekany_harmonics, dekany_choose))
+#' print(dekany <- cps_scale_table(dekany_harmonics, dekany_choose))
 #'
 #' # We might want to print out sheet music for a conventional keyboard
 #' # player, since the synthesizer is mapping MIDI note numbers to pitches.
@@ -204,23 +292,20 @@
 #' # seven harmonics taken three at a time.
 #' harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 #' choose_35 <- 3
-#' print(any_35 <- create_cps_scale_table(harmonics_35, choose_35))
+#' print(any_35 <- cps_scale_table(harmonics_35, choose_35))
 #'
 #' }
 
-create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
-                                   choose = 3) {
+cps_scale_table <-
+  function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
   label <- .cps_label(harmonics, choose)
-  scale_table <- .ratio_table(label, equave = 2)
-
-  # compute pitch bend offsets
-  scale_table <- .compute_pitch_bend_offsets(scale_table)
-  return(scale_table)
+  return(ps_scale_table(ps_def = label))
 }
 
 #' @title Create Equal-Tempered Scale Table
-#' @name create_edo_scale_table
-#' @description Creates a scale table for equal divisions of the octave (EDO)
+#' @name et_scale_table
+#' @description Creates a scale table for equal divisions of a period,
+#' called the _equave_
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
 #' @importFrom data.table ":="
@@ -229,15 +314,16 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
 #' @importFrom fractional fractional
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
-#' @export create_edo_scale_table
+#' @export et_scale_table
 #' @param note_names a character vector with the names of the notes in the
-#' scale. That's all you need to give it - it can figure out everything
-#' else!
+#' scale. The default is the names of the standard 12 equal divisions of the
+#' octave.
+#' @param equave The period - default is 2, for an octave
 #' @return a `data.table` with eight columns:
 #' \itemize{
 #' \item `note_name`: the note name (character)
 #' \item `ratio`: the ratio that defines the note, as a number between 1 and
-#' 2
+#' `equave`
 #' \item `ratio_frac`: the ratio as a vulgar fraction (character). The ratios
 #' for most EDOs are irrational, so this is an approximation.
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
@@ -246,11 +332,15 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
 #' \item `key_12EDO`: note name for nearest 12EDO note
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
+#'
+#' _Note: offsets are meaningless if `equave` is greater than 2, so in _
+#' _that case they are not computed!_
 #' @examples
 #' \dontrun{
 #'
-#' print(vanilla <- create_edo_scale_table()) # default is 12EDO, of course
+#' print(vanilla <- et_scale_table()) # default is 12EDO, of course
 #'
+#' #19-EDO
 #' nn19 <- c(
 #'   "C ",
 #'   "C+",
@@ -273,8 +363,9 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
 #'   "B+")
 #' print(length(nn19))
 #' print(nn19)
-#' print(edo19 <- create_edo_scale_table(nn19))
+#' print(edo19 <- et_scale_table(nn19))
 #'
+#' # 31-EDO
 #' nn31 <- c(
 #'   "C  ",
 #'   "C+ ",
@@ -309,8 +400,9 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
 #'   "B++")
 #' print(length(nn31))
 #' print(nn31)
-#' print(edo31 <- create_edo_scale_table(nn31))
+#' print(edo31 <- et_scale_table(nn31))
 #'
+#' # 22-EDO
 #' nn22 <- c(
 #'   "C  ",
 #'   "C+ ",
@@ -336,11 +428,30 @@ create_cps_scale_table <- function(harmonics = c(1, 3, 5, 7, 9, 11),
 #'   "B  ")
 #' print(length(nn22))
 #' print(nn22)
-#' print(edo22 <- create_edo_scale_table(nn22))
+#' print(edo22 <- et_scale_table(nn22))
+#'
+#' # Bohlen-Pierce - 13 equal divisions of the "tritave"
+#' nnbp <- c(
+#'   "bp00",
+#'   "bp01",
+#'   "bp02",
+#'   "bp03",
+#'   "bp04",
+#'   "bp05",
+#'   "bp06",
+#'   "bp07",
+#'   "bp08",
+#'   "bp09",
+#'   "bp10",
+#'   "bp11",
+#'   "bp12")
+#' print(length(nnbp))
+#' print(nnbp)
+#' print(bohlen_pierce <- et_scale_table(nnbp, equave = 3))
 #'
 #' }
 
-create_edo_scale_table <- function(note_names = c(
+et_scale_table <- function(note_names = c(
   "C ",
   "C#",
   "D ",
@@ -353,11 +464,11 @@ create_edo_scale_table <- function(note_names = c(
   "A ",
   "A#",
   "B "
-)) {
+), equave = 2) {
   note_name <- note_names
   degrees <- length(note_names)
   degree <- seq(0, degrees - 1)
-  ratio_cents <- degree * 1200 / degrees
+  ratio_cents <- degree * .ratio2cents(equave) / degrees
   ratio <- .cents2ratio(ratio_cents)
   ratio_frac <- as.character(fractional::fractional(ratio))
   offset_cents <- vector(mode = "numeric", length = degrees)
@@ -374,19 +485,22 @@ create_edo_scale_table <- function(note_names = c(
     degree = .I - 1
   )]
 
-  # compute pitch bend offsets
-  scale_table <- .compute_pitch_bend_offsets(scale_table)
+  # compute pitch bend offsets if they are valid
+  if (equave <= 2) {
+    scale_table <- .compute_pitch_bend_offsets(scale_table)
+  }
   return(scale_table)
 }
 
 #' @title Create Interval Table
-#' @name create_interval_table
+#' @name interval_table
 #' @description Creates an interval table from a scale table
 #' @importFrom fractional fractional
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
-#' @export create_interval_table
-#' @param scale_table a scale table from `create_scale_table`
+#' @export interval_table
+#' @param scale_table a scale table from `ps_scale_table`,
+#' `cps_scale_table`, or `et_scale_table`
 #' @return an interval table. This is a data.table with seven columns
 #' \itemize{
 #' \item `from` name of "from" note
@@ -401,12 +515,12 @@ create_edo_scale_table <- function(note_names = c(
 #' \dontrun{
 #'
 #' # default is the 1-3-5-7-9-11 Eikosany
-#' eikosany <- create_scale_table()
-#' print(eikosany_interval_table <-create_interval_table(eikosany))
+#' eikosany <- cps_scale_table()
+#' print(eikosany_interval_table <-interval_table(eikosany))
 #'
 #' }
 
-create_interval_table <- function(scale_table) {
+interval_table <- function(scale_table) {
 
   # get dimensions
   scale_degrees <- length(scale_table$degree)
@@ -447,17 +561,17 @@ create_interval_table <- function(scale_table) {
   return(result)
 }
 
-#' @title Create Chord Table
-#' @name create_chord_table
+#' @title Create CPS Chord Table
+#' @name cps_chord_table
 #' @description Creates a chord table for a combination product set scale
 #' based on an *even* number of harmonic factors.
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
 #' @importFrom utils combn
 #' @importFrom utils globalVariables
-#' @export create_chord_table
-#' @param scale_table a scale table based on an *even* number of harmonic
-#' factors. It will abort via
+#' @export cps_chord_table
+#' @param scale_table a CPS scale table based on an *even* number of
+#' harmonic factors. It will abort via
 #'
 #'   `stop("number of harmonic factors must be even!")`
 #'
@@ -481,23 +595,23 @@ create_interval_table <- function(scale_table) {
 #' is the number of harmonic factors, the resulting chords will have
 #' `choose <- n_harmonics / 2 + 1` notes. There will be
 #' `choose)n_harmonics` "harmonic" chords and `choose)n_harmonics`
-#' "sub-harmonic" chords. T
+#' "sub-harmonic" chords.
 #'
 #' @examples
 #' \dontrun{
 #'
 #' # compute the tetrads of the 1-3-5-7-9-11 Eikosany
-#' eikosany <- create_scale_table()
-#' print(eikosany_chords <- create_chord_table(eikosany))
+#' eikosany <- cps_scale_table()
+#' print(eikosany_chords <- cps_chord_table(eikosany))
 #'
 #' # compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany
-#' hebdomekontany <- create_scale_table(
+#' hebdomekontany <- cps_scale_table(
 #'   harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
 #' )
-#' print(hebdomekontany_chords <- create_chord_table(hebdomekontany))
+#' print(hebdomekontany_chords <- cps_chord_table(hebdomekontany))
 #' }
 
-create_chord_table <- function(scale_table) {
+cps_chord_table <- function(scale_table) {
   harmonics <- .label2harmonics(scale_table$note_name, .NOTE_SEP)
   n_harmonics <- length(harmonics)
   if (n_harmonics %% 2 == 1) {
@@ -561,13 +675,14 @@ create_chord_table <- function(scale_table) {
 }
 
 #' @title Create Keyboard Map
-#' @name create_keyboard_map
+#' @name keyboard_map
 #' @description Creates a keyboard map
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
 #' @importFrom data.table ":="
-#' @export create_keyboard_map
-#' @param scale_table an output of `create_scale_table`
+#' @export keyboard_map
+#' @param scale_table a scale table from `ps_scale_table`,
+#' `cps_scale_table`, or `et_scale_table`
 #' @param middle_c_octave octave number for middle C. There are varying
 #' conventions for the octave number for middle C. The default for this
 #' function is 4, but other software can use 3 or even some other number
@@ -595,27 +710,45 @@ create_chord_table <- function(scale_table) {
 #' `.NN_MIDDLE_C` and scale degree 0. With the current constants this is the
 #' same as it is on 12EDO with A440 on note 69. This note is 6000 cents above
 #' MIDI note number 0.
+#'
+#' Normally you would only use this to remap a keyboard to a scale with
+#' more than 12 notes per octave. For scales with 12 or fewer notes to the
+#' octave, it's easier to remap all octaves using the offsets provided in
+#' the scale table.
 #' @examples
 #' \dontrun{
 #'
-#' hexany_harmonics <- c(1, 3, 5, 7)
-#' hexany_choose = 2
-#' hexany <- create_scale_table(hexany_harmonics, hexany_choose)
-#' print(hexany_keyboard_map <- create_keyboard_map(hexany))
-#' dekany_harmonics <- c(1, 7, 9, 11, 13)
-#' dekany_choose <- 2
-#' dekany <- create_scale_table(dekany_harmonics, dekany_choose)
-#' print(dekany_keyboard_map <- create_keyboard_map(dekany))
-#' print(
-#'   vanilla_keyboard_map <- create_keyboard_map(create_12edo_scale_table())
-#' )
+#' eikosany <- cps_scale_table()
+#' print(eikosany_keyboard_map <- keyboard_map(eikosany))
+#'
+#' # 12-EDO for sanity check
+#' print(vanilla_keyboard_map <- keyboard_map(et_scale_table()))
+#'
+#' # check middle C setting
 #' print(
 #'   eikosany_keyboard_map_c3 <-
-#'     create_keyboard_map(create_scale_table(), middle_c_octave = 3)
-#' )
+#'     keyboard_map(cps_scale_table(), middle_c_octave = 3)
+#'
+#' # Bohlen-Pierce - 13 equal divisions of the "tritave"
+#' nnbp <- c(
+#'   "bp00",
+#'   "bp01",
+#'   "bp02",
+#'   "bp03",
+#'   "bp04",
+#'   "bp05",
+#'   "bp06",
+#'   "bp07",
+#'   "bp08",
+#'   "bp09",
+#'   "bp10",
+#'   "bp11",
+#'   "bp12")
+#' bohlen_pierce <- et_scale_table(nnbp, equave = 3)
+#' print(bohlen_pierce_keyboard_map <- keyboard_map(bohlen_pierce))
 #' }
 
-create_keyboard_map <- function(scale_table, middle_c_octave = 4) {
+keyboard_map <- function(scale_table, middle_c_octave = 4) {
 
   # create note number vector
   note_number <- .NN_RANGE
