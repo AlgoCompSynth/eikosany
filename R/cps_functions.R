@@ -75,26 +75,22 @@
   return(degree_table)
 }
 
-.equave_reduce <- function(x, equave) {
+.period_reduce <- function(x, period) {
   w <- as.numeric(x)
 
-  ix <- (w > equave)
+  ix <- (w > period)
   while (any(ix)) {
-    w[ix] <- w[ix] / equave
-    ix <- (w > equave)
+    w[ix] <- w[ix] / period
+    ix <- (w > period)
   }
 
   ix <- (w < 1)
   while (any(ix)) {
-    w[ix] <- w[ix] * equave
+    w[ix] <- w[ix] * period
     ix <- (w < 1)
   }
 
   return(w)
-}
-
-.octave_reduce <- function(x) {
-  return(.equave_reduce(x, 2))
 }
 
 .ratio2cents <- function(ratio) {
@@ -109,10 +105,10 @@
   return(.matrix2label(t(combn(harmonics, choose)), .NOTE_SEP))
 }
 
-.ratio_table <- function(label, equave = 2) {
+.ratio_table <- function(label, period = 2) {
   num_product <- .label2prod(label, .NOTE_SEP)
   normalizer <- min(num_product)
-  ratio <- .equave_reduce(num_product / normalizer, equave)
+  ratio <- .period_reduce(num_product / normalizer, period)
   ratio_frac <- as.character(fractional::fractional(ratio))
   ratio_cents <- .ratio2cents(ratio)
   result_table <- data.table::data.table(
@@ -232,7 +228,7 @@ ps_scale_table <- function(ps_def = c(
   "1x5x11",
   "3x7x11"
 )) {
-  scale_table <- .ratio_table(ps_def, equave = 2)
+  scale_table <- .ratio_table(ps_def, period = 2)
 
   # compute pitch bend offsets
   scale_table <- .compute_pitch_bend_offsets(scale_table)
@@ -304,8 +300,8 @@ cps_scale_table <-
 
 #' @title Create Equal-Tempered Scale Table
 #' @name et_scale_table
-#' @description Creates a scale table for equal divisions of a period,
-#' called the _equave_
+#' @description Creates a scale table for equal divisions of a
+#' specified period.
 #' @importFrom data.table data.table
 #' @importFrom data.table setkey
 #' @importFrom data.table ":="
@@ -318,12 +314,12 @@ cps_scale_table <-
 #' @param note_names a character vector with the names of the notes in the
 #' scale. The default is the names of the standard 12 equal divisions of the
 #' octave.
-#' @param equave The period - default is 2, for an octave
+#' @param period The period - default is 2, for an octave
 #' @return a `data.table` with eight columns:
 #' \itemize{
 #' \item `note_name`: the note name (character)
 #' \item `ratio`: the ratio that defines the note, as a number between 1 and
-#' `equave`
+#' `period`
 #' \item `ratio_frac`: the ratio as a vulgar fraction (character). The ratios
 #' for most EDOs are irrational, so this is an approximation.
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
@@ -333,7 +329,7 @@ cps_scale_table <-
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #'
-#' _Note: offsets are meaningless if `equave` is greater than 2, so in _
+#' _Note: offsets are meaningless if `period` is greater than 2, so in _
 #' _that case they are not computed!_
 #' @examples
 #' \dontrun{
@@ -402,53 +398,6 @@ cps_scale_table <-
 #' print(nn31)
 #' print(edo31 <- et_scale_table(nn31))
 #'
-#' # 22-EDO
-#' nn22 <- c(
-#'   "C  ",
-#'   "C+ ",
-#'   "C++",
-#'   "D- ",
-#'   "D  ",
-#'   "D+ ",
-#'   "D++",
-#'   "E- ",
-#'   "E  ",
-#'   "F  ",
-#'   "F+ ",
-#'   "F++",
-#'   "G- ",
-#'   "G  ",
-#'   "G+ ",
-#'   "G++",
-#'   "A- ",
-#'   "A  ",
-#'   "A+ ",
-#'   "A++",
-#'   "B- ",
-#'   "B  ")
-#' print(length(nn22))
-#' print(nn22)
-#' print(edo22 <- et_scale_table(nn22))
-#'
-#' # Bohlen-Pierce - 13 equal divisions of the "tritave"
-#' nnbp <- c(
-#'   "bp00",
-#'   "bp01",
-#'   "bp02",
-#'   "bp03",
-#'   "bp04",
-#'   "bp05",
-#'   "bp06",
-#'   "bp07",
-#'   "bp08",
-#'   "bp09",
-#'   "bp10",
-#'   "bp11",
-#'   "bp12")
-#' print(length(nnbp))
-#' print(nnbp)
-#' print(bohlen_pierce <- et_scale_table(nnbp, equave = 3))
-#'
 #' }
 
 et_scale_table <- function(note_names = c(
@@ -464,11 +413,11 @@ et_scale_table <- function(note_names = c(
   "A ",
   "A#",
   "B "
-), equave = 2) {
+), period = 2) {
   note_name <- note_names
   degrees <- length(note_names)
   degree <- seq(0, degrees - 1)
-  ratio_cents <- degree * .ratio2cents(equave) / degrees
+  ratio_cents <- degree * .ratio2cents(period) / degrees
   ratio <- .cents2ratio(ratio_cents)
   ratio_frac <- as.character(fractional::fractional(ratio))
   offset_cents <- vector(mode = "numeric", length = degrees)
@@ -486,7 +435,7 @@ et_scale_table <- function(note_names = c(
   )]
 
   # compute pitch bend offsets if they are valid
-  if (equave <= 2) {
+  if (period <= 2) {
     scale_table <- .compute_pitch_bend_offsets(scale_table)
   }
   return(scale_table)
@@ -729,23 +678,6 @@ cps_chord_table <- function(scale_table) {
 #'   eikosany_keyboard_map_c3 <-
 #'     keyboard_map(cps_scale_table(), middle_c_octave = 3)
 #'
-#' # Bohlen-Pierce - 13 equal divisions of the "tritave"
-#' nnbp <- c(
-#'   "bp00",
-#'   "bp01",
-#'   "bp02",
-#'   "bp03",
-#'   "bp04",
-#'   "bp05",
-#'   "bp06",
-#'   "bp07",
-#'   "bp08",
-#'   "bp09",
-#'   "bp10",
-#'   "bp11",
-#'   "bp12")
-#' bohlen_pierce <- et_scale_table(nnbp, equave = 3)
-#' print(bohlen_pierce_keyboard_map <- keyboard_map(bohlen_pierce))
 #' }
 
 keyboard_map <- function(scale_table, middle_c_octave = 4) {
