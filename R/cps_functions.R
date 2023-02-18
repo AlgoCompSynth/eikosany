@@ -170,7 +170,6 @@
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #' @examples
-#' \dontrun{
 #'
 #' # the default yields the 1-3-5-7-9-11 Eikosany
 #' print(eikosany <- ps_scale_table())
@@ -204,7 +203,6 @@
 #'   "3x5x7x11",
 #'   "5x7x9"
 #' )))
-#' }
 
 ps_scale_table <- function(ps_def = c(
   "1x3x5",
@@ -265,7 +263,6 @@ ps_scale_table <- function(ps_def = c(
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #' @examples
-#' \dontrun{
 #'
 #' # the defaults yield the 1-3-5-7-9-11 Eikosany
 #' print(eikosany <- cps_scale_table())
@@ -289,8 +286,6 @@ ps_scale_table <- function(ps_def = c(
 #' harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 #' choose_35 <- 3
 #' print(any_35 <- cps_scale_table(harmonics_35, choose_35))
-#'
-#' }
 
 cps_scale_table <-
   function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
@@ -332,7 +327,6 @@ cps_scale_table <-
 #' _Note: offsets are meaningless if `period` is greater than 2, so in _
 #' _that case they are not computed!_
 #' @examples
-#' \dontrun{
 #'
 #' print(vanilla <- et_scale_table()) # default is 12EDO, of course
 #'
@@ -397,8 +391,6 @@ cps_scale_table <-
 #' print(length(nn31))
 #' print(nn31)
 #' print(edo31 <- et_scale_table(nn31))
-#'
-#' }
 
 et_scale_table <- function(note_names = c(
   "C ",
@@ -461,13 +453,10 @@ et_scale_table <- function(note_names = c(
 #' \item `ratio_cents` interval in cents
 #' }
 #' @examples
-#' \dontrun{
 #'
 #' # default is the 1-3-5-7-9-11 Eikosany
 #' eikosany <- cps_scale_table()
 #' print(eikosany_interval_table <-interval_table(eikosany))
-#'
-#' }
 
 interval_table <- function(scale_table) {
 
@@ -547,7 +536,6 @@ interval_table <- function(scale_table) {
 #' "sub-harmonic" chords.
 #'
 #' @examples
-#' \dontrun{
 #'
 #' # compute the tetrads of the 1-3-5-7-9-11 Eikosany
 #' eikosany <- cps_scale_table()
@@ -558,7 +546,6 @@ interval_table <- function(scale_table) {
 #'   harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
 #' )
 #' print(hebdomekontany_chords <- cps_chord_table(hebdomekontany))
-#' }
 
 cps_chord_table <- function(scale_table) {
   harmonics <- .label2harmonics(scale_table$note_name, .NOTE_SEP)
@@ -665,7 +652,6 @@ cps_chord_table <- function(scale_table) {
 #' octave, it's easier to remap all octaves using the offsets provided in
 #' the scale table.
 #' @examples
-#' \dontrun{
 #'
 #' eikosany <- cps_scale_table()
 #' print(eikosany_keyboard_map <- keyboard_map(eikosany))
@@ -677,8 +663,6 @@ cps_chord_table <- function(scale_table) {
 #' print(
 #'   eikosany_keyboard_map_c3 <-
 #'     keyboard_map(cps_scale_table(), middle_c_octave = 3)
-#'
-#' }
 
 keyboard_map <- function(scale_table, middle_c_octave = 4) {
 
