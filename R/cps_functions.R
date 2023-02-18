@@ -662,7 +662,7 @@ cps_chord_table <- function(scale_table) {
 #' # check middle C setting
 #' print(
 #'   eikosany_keyboard_map_c3 <-
-#'     keyboard_map(cps_scale_table(), middle_c_octave = 3)
+#'     keyboard_map(cps_scale_table(), middle_c_octave = 3))
 
 keyboard_map <- function(scale_table, middle_c_octave = 4) {
 
@@ -703,7 +703,7 @@ keyboard_map <- function(scale_table, middle_c_octave = 4) {
   index2overflow <- ref_degree == degrees_12edo
   ref_octave[index2overflow] <- ref_octave[index2overflow] + 1
   ref_degree[index2overflow] <- 0
-  ref_keyname <- .NAMES_12EDO[ref_degree]
+  ref_keyname <- .NAMES_12EDO[ref_degree + 1]
 
   # fix octave numbers
   octave <- octave + middle_c_octave

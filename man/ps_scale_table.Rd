@@ -39,7 +39,6 @@ degrees of the resulting scale (character)
 Creates a scale table from a product set definition
 }
 \examples{
-\dontrun{
 
 # the default yields the 1-3-5-7-9-11 Eikosany
 print(eikosany <- ps_scale_table())
@@ -73,5 +72,4 @@ print(grady_b <- ps_scale_table(c(
   "3x5x7x11",
   "5x7x9"
 )))
-}
 }

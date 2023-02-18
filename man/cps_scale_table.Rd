@@ -32,7 +32,6 @@ a \code{data.table} with eight columns:
 Creates a scale table from a combination product set definition
 }
 \examples{
-\dontrun{
 
 # the defaults yield the 1-3-5-7-9-11 Eikosany
 print(eikosany <- cps_scale_table())
@@ -56,6 +55,4 @@ print(dekany <- cps_scale_table(dekany_harmonics, dekany_choose))
 harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 choose_35 <- 3
 print(any_35 <- cps_scale_table(harmonics_35, choose_35))
-
-}
 }

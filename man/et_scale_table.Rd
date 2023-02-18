@@ -6,7 +6,7 @@
 \usage{
 et_scale_table(
   note_names = c("C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#", "A ", "A#", "B "),
-  equave = 2
+  period = 2
 )
 }
 \arguments{
@@ -14,14 +14,14 @@ et_scale_table(
 scale. The default is the names of the standard 12 equal divisions of the
 octave.}
 
-\item{equave}{The period - default is 2, for an octave}
+\item{period}{The period - default is 2, for an octave}
 }
 \value{
 a \code{data.table} with eight columns:
 \itemize{
 \item \code{note_name}: the note name (character)
 \item \code{ratio}: the ratio that defines the note, as a number between 1 and
-\code{equave}
+\code{period}
 \item \code{ratio_frac}: the ratio as a vulgar fraction (character). The ratios
 for most EDOs are irrational, so this is an approximation.
 \item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
@@ -31,15 +31,14 @@ for most EDOs are irrational, so this is an approximation.
 \item \code{offset_cents}: offset in cents from \code{key_12EDO}
 }
 
-_Note: offsets are meaningless if \code{equave} is greater than 2, so in _
+_Note: offsets are meaningless if \code{period} is greater than 2, so in _
 \emph{that case they are not computed!}
 }
 \description{
-Creates a scale table for equal divisions of a period,
-called the \emph{equave}
+Creates a scale table for equal divisions of a
+specified period.
 }
 \examples{
-\dontrun{
 
 print(vanilla <- et_scale_table()) # default is 12EDO, of course
 
@@ -104,53 +103,4 @@ nn31 <- c(
 print(length(nn31))
 print(nn31)
 print(edo31 <- et_scale_table(nn31))
-
-# 22-EDO
-nn22 <- c(
-  "C  ",
-  "C+ ",
-  "C++",
-  "D- ",
-  "D  ",
-  "D+ ",
-  "D++",
-  "E- ",
-  "E  ",
-  "F  ",
-  "F+ ",
-  "F++",
-  "G- ",
-  "G  ",
-  "G+ ",
-  "G++",
-  "A- ",
-  "A  ",
-  "A+ ",
-  "A++",
-  "B- ",
-  "B  ")
-print(length(nn22))
-print(nn22)
-print(edo22 <- et_scale_table(nn22))
-
-# Bohlen-Pierce - 13 equal divisions of the "tritave"
-nnbp <- c(
-  "bp00",
-  "bp01",
-  "bp02",
-  "bp03",
-  "bp04",
-  "bp05",
-  "bp06",
-  "bp07",
-  "bp08",
-  "bp09",
-  "bp10",
-  "bp11",
-  "bp12")
-print(length(nnbp))
-print(nnbp)
-print(bohlen_pierce <- et_scale_table(nnbp, equave = 3))
-
-}
 }

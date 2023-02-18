@@ -51,7 +51,6 @@ octave, it's easier to remap all octaves using the offsets provided in
 the scale table.
 }
 \examples{
-\dontrun{
 
 eikosany <- cps_scale_table()
 print(eikosany_keyboard_map <- keyboard_map(eikosany))
@@ -62,24 +61,5 @@ print(vanilla_keyboard_map <- keyboard_map(et_scale_table()))
 # check middle C setting
 print(
   eikosany_keyboard_map_c3 <-
-    keyboard_map(cps_scale_table(), middle_c_octave = 3)
-
-# Bohlen-Pierce - 13 equal divisions of the "tritave"
-nnbp <- c(
-  "bp00",
-  "bp01",
-  "bp02",
-  "bp03",
-  "bp04",
-  "bp05",
-  "bp06",
-  "bp07",
-  "bp08",
-  "bp09",
-  "bp10",
-  "bp11",
-  "bp12")
-bohlen_pierce <- et_scale_table(nnbp, equave = 3)
-print(bohlen_pierce_keyboard_map <- keyboard_map(bohlen_pierce))
-}
+    keyboard_map(cps_scale_table(), middle_c_octave = 3))
 }

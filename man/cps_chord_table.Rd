@@ -43,7 +43,6 @@ is the number of harmonic factors, the resulting chords will have
 "sub-harmonic" chords.
 }
 \examples{
-\dontrun{
 
 # compute the tetrads of the 1-3-5-7-9-11 Eikosany
 eikosany <- cps_scale_table()
@@ -54,5 +53,4 @@ hebdomekontany <- cps_scale_table(
   harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
 )
 print(hebdomekontany_chords <- cps_chord_table(hebdomekontany))
-}
 }
