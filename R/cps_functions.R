@@ -118,20 +118,29 @@
     ratio_cents
   )
   data.table::setkey(result_table, ratio)
+  last_row <- data.table::data.table(
+    note_name = paste(result_table$note_name[1], "'", sep = ""),
+    ratio = period,
+    ratio_frac = as.character(fractional::fractional(period)),
+    ratio_cents = .ratio2cents(period)
+  )
+  result_table <- data.table::rbindlist(list(result_table, last_row))
   result_table <- result_table[, `:=`(
     interval_cents = ratio_cents - data.table::shift(ratio_cents),
-    degree = .I - 1
+    degree = (.I - 1) %% length(label)
   )]
+  return(result_table)
 }
 
 .compute_pitch_bend_offsets <- function(scale_table) {
-  index2name <- scale_table$ratio_cents %/% 100
-  offset_cents <- scale_table$ratio_cents %% 100
-  index2increment <- offset_cents > 50 & (index2name + 1) < 12
+  index2name <- scale_table$ratio_cents %/% 100 + 1
+  index2name[index2name > 12] <- 12
+  offset_cents <- scale_table$ratio_cents - 100 * (index2name - 1)
+  index2increment <- offset_cents > 50 & index2name < 12
   index2name[index2increment] <- index2name[index2increment] + 1
   offset_cents[index2increment] <- offset_cents[index2increment] - 100
   temp <- scale_table
-  temp$key_12EDO <- .NAMES_12EDO[index2name + 1]
+  temp$key_12EDO <- .NAMES_12EDO[index2name]
   temp$offset_cents <- offset_cents
   return(temp)
 }
@@ -156,7 +165,7 @@
 #'   `c("1x3", "1x5", "1x7", "3x5", "3x7", "5x7")`
 #'
 #' The default is the `ps_def` for the 1-3-5-7-9-11 Eikosany.
-#' @return a `data.table` with eight columns:
+#' @returns a `data.table` with eight columns:
 #' \itemize{
 #' \item `note_name`: the given product set definition, re-ordered by the
 #' degrees of the resulting scale (character)
@@ -166,7 +175,9 @@
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `interval_cents`: interval between this note and the previous note
 #' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `key_12EDO`: note name for closest 12EDO note
+#' \item `key_12EDO`: note name for closest 12EDO note. Note that because
+#' most synthesizers do not allow returning relative to the C in the next
+#' octave up, the offset will be above B for such a note.
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #' @examples
@@ -259,7 +270,9 @@ ps_scale_table <- function(ps_def = c(
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `interval_cents`: interval between this note and the previous note
 #' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `key_12EDO`: note name for closest 12EDO note
+#' \item `key_12EDO`: note name for closest 12EDO note. Note that because
+#' most synthesizers do not allow returning relative to the C in the next
+#' octave up, the offset will be above B for such a note.
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #' @examples
@@ -320,7 +333,9 @@ cps_scale_table <-
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `interval_cents`: interval between this note and the previous note
 #' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `key_12EDO`: note name for nearest 12EDO note
+#' \item `key_12EDO`: note name for closest 12EDO note. Note that because
+#' most synthesizers do not allow returning relative to the C in the next
+#' octave up, the offset will be above B for such a note.
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #'
@@ -351,8 +366,6 @@ cps_scale_table <-
 #'   "B-",
 #'   "B ",
 #'   "B+")
-#' print(length(nn19))
-#' print(nn19)
 #' print(edo19 <- et_scale_table(nn19))
 #'
 #' # 31-EDO
@@ -388,8 +401,6 @@ cps_scale_table <-
 #'   "B  ",
 #'   "C--",
 #'   "B++")
-#' print(length(nn31))
-#' print(nn31)
 #' print(edo31 <- et_scale_table(nn31))
 
 et_scale_table <- function(note_names = c(
@@ -421,6 +432,13 @@ et_scale_table <- function(note_names = c(
     ratio_cents
   )
   data.table::setkey(scale_table, ratio)
+  last_row <- data.table::data.table(
+    note_name = paste(scale_table$note_name[1], "'", sep = ""),
+    ratio = period,
+    ratio_frac = as.character(fractional::fractional(period)),
+    ratio_cents = .ratio2cents(period)
+  )
+  scale_table <- data.table::rbindlist(list(scale_table, last_row))
   scale_table <- scale_table[, `:=`(
     interval_cents = ratio_cents - data.table::shift(ratio_cents),
     degree = .I - 1

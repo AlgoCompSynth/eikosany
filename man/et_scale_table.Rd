@@ -27,7 +27,9 @@ for most EDOs are irrational, so this is an approximation.
 \item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
 \item \code{interval_cents}: interval between this note and the previous note
 \item \code{degree}: scale degree from zero to (number of notes) - 1
-\item \code{key_12EDO}: note name for nearest 12EDO note
+\item \code{key_12EDO}: note name for closest 12EDO note. Note that because
+most synthesizers do not allow returning relative to the C in the next
+octave up, the offset will be above B for such a note.
 \item \code{offset_cents}: offset in cents from \code{key_12EDO}
 }
 
@@ -63,8 +65,6 @@ nn19 <- c(
   "B-",
   "B ",
   "B+")
-print(length(nn19))
-print(nn19)
 print(edo19 <- et_scale_table(nn19))
 
 # 31-EDO
@@ -100,7 +100,5 @@ nn31 <- c(
   "B  ",
   "C--",
   "B++")
-print(length(nn31))
-print(nn31)
 print(edo31 <- et_scale_table(nn31))
 }
