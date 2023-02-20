@@ -16,18 +16,18 @@
 .FREQ_MIDDLE_C <- .nn2freq(.NN_MIDDLE_C)
 
 .NAMES_12EDO <- c(
-  "C ",
+  "C",
   "C#",
-  "D ",
+  "D",
   "D#",
-  "E ",
-  "F ",
+  "E",
+  "F",
   "F#",
-  "G ",
+  "G",
   "G#",
-  "A ",
+  "A",
   "A#",
-  "B "
+  "B"
 )
 .DEGREES_12EDO <- seq(0, 11)
 .CENTS_12EDO <- 100 * .DEGREES_12EDO
@@ -127,7 +127,7 @@
   result_table <- data.table::rbindlist(list(result_table, last_row))
   result_table <- result_table[, `:=`(
     interval_cents = ratio_cents - data.table::shift(ratio_cents),
-    degree = (.I - 1) %% length(label)
+    degree = (.I - 1)
   )]
   return(result_table)
 }
@@ -144,6 +144,11 @@
   temp$offset_cents <- offset_cents
   return(temp)
 }
+
+.drop_last_row <- function(scale_table) {
+  return(scale_table[degree < nrow(scale_table) - 1])
+}
+
 
 #' @title Create Product Set Scale Table
 #' @name ps_scale_table
@@ -339,83 +344,93 @@ cps_scale_table <-
 #' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #'
-#' _Note: offsets are meaningless if `period` is greater than 2, so in _
-#' _that case they are not computed!_
+#' _Note: offsets are meaningless if `period` is greater than 2, so in that case they are not computed!_
 #' @examples
 #'
 #' print(vanilla <- et_scale_table()) # default is 12EDO, of course
 #'
-#' #19-EDO
+#' # 19-EDO
+#' # About the note names: even in 2023, code often breaks when given
+#' # characters outside the 7-bit international standard. So we don't even
+#' # have flats, let alone half-flats, half-sharps, naturals, or any of the
+#' # other symbols alternate tuning theorists have proposed.
+#'
+#' # So outside of 12EDO, where sharps do double-duty, and product set
+#' # scales, where we can use the product label as a note name, we use a
+#' # "/b" for a half-flat, "b" for a flat, "/#" for a half-sharp, and "#"
+#' # for a sharp. Thanks in advance for your understanding.
+#'
 #' nn19 <- c(
-#'   "C ",
-#'   "C+",
-#'   "D-",
-#'   "D ",
-#'   "D+",
-#'   "E-",
-#'   "E ",
-#'   "E+",
-#'   "F ",
-#'   "F+",
-#'   "G-",
-#'   "G ",
-#'   "G+",
-#'   "A-",
-#'   "A ",
-#'   "A+",
-#'   "B-",
-#'   "B ",
-#'   "B+")
+#'   "C",
+#'   "C#",
+#'   "Db",
+#'   "D",
+#'   "D#",
+#'   "Eb",
+#'   "E",
+#'   "E#",
+#'   "F",
+#'   "F#",
+#'   "Gb",
+#'   "G",
+#'   "G#",
+#'   "Ab",
+#'   "A",
+#'   "A#",
+#'   "Bb",
+#'   "B",
+#'   "B#")
+#'
 #' print(edo19 <- et_scale_table(nn19))
 #'
 #' # 31-EDO
 #' nn31 <- c(
-#'   "C  ",
-#'   "C+ ",
-#'   "C++",
-#'   "D--",
-#'   "D- ",
-#'   "D  ",
-#'   "D+ ",
-#'   "D++",
-#'   "E--",
-#'   "E- ",
-#'   "E  ",
-#'   "F--",
-#'   "E++",
-#'   "F  ",
-#'   "F+ ",
-#'   "F++",
-#'   "G--",
-#'   "G- ",
-#'   "G  ",
-#'   "G+ ",
-#'   "G++",
-#'   "A--",
-#'   "A- ",
-#'   "A  ",
-#'   "A+ ",
-#'   "A++",
-#'   "B--",
-#'   "B- ",
-#'   "B  ",
-#'   "C--",
-#'   "B++")
+#'   "C",
+#'   "C/#",
+#'   "C#",
+#'   "Db",
+#'   "D/b",
+#'   "D",
+#'   "D/#",
+#'   "D#",
+#'   "Eb",
+#'   "E/b",
+#'   "E",
+#'   "Fb",
+#'   "E#",
+#'   "F",
+#'   "F/#",
+#'   "F#",
+#'   "Gb",
+#'   "G/b",
+#'   "G",
+#'   "G/#",
+#'   "G#",
+#'   "Ab",
+#'   "A/b",
+#'   "A",
+#'   "A/#",
+#'   "A#",
+#'   "Bb",
+#'   "B/b",
+#'   "B",
+#'   "Cb",
+#'   "B#")
 #' print(edo31 <- et_scale_table(nn31))
 
 et_scale_table <- function(note_names = c(
-  "C ",
+  "C",
   "C#",
-  "D ",
+  "D",
   "D#",
-  "E ",
-  "F ",
+  "E",
+  "F",
   "F#",
-  "G ",
+  "G",
   "G#",
-  "A ",
+  "A",
   "A#",
-  "B "
+  "B"
 ), period = 2) {
   note_name <- note_names
   degrees <- length(note_names)
@@ -479,16 +494,16 @@ et_scale_table <- function(note_names = c(
 interval_table <- function(scale_table) {
 
   # get dimensions
-  scale_degrees <- length(scale_table$degree)
-  out_rows <- scale_degrees * (scale_degrees - 1) / 2
+  input_rows <- length(scale_table$degree)
+  out_rows <- input_rows * (input_rows - 1) / 2
   # allocate output vectors
   from_name <- to_name <- vector(mode = "character", length = out_rows)
   from_degree <- to_degree <- vector(mode = "integer", length = out_rows)
   ratio <- vector(mode = "numeric", length = out_rows)
 
   out_ix <- 0
-  for (ix_from in 1:(scale_degrees - 1)) {
-    for (ix_to in (ix_from + 1):scale_degrees) {
+  for (ix_from in 1:(input_rows - 1)) {
+    for (ix_to in (ix_from + 1):input_rows) {
 
       out_ix <- out_ix + 1
       ratio[out_ix] <-
@@ -566,7 +581,11 @@ interval_table <- function(scale_table) {
 #' print(hebdomekontany_chords <- cps_chord_table(hebdomekontany))
 
 cps_chord_table <- function(scale_table) {
-  harmonics <- .label2harmonics(scale_table$note_name, .NOTE_SEP)
+
+  # drop last row of scale table
+  temp <- .drop_last_row(scale_table)
+
+  harmonics <- .label2harmonics(temp$note_name, .NOTE_SEP)
   n_harmonics <- length(harmonics)
   if (n_harmonics %% 2 == 1) {
     stop("number of harmonic factors must be even!")
@@ -592,7 +611,7 @@ cps_chord_table <- function(scale_table) {
     harm_note_matrix <- t(apply(harm_note_matrix, MARGIN = 1, FUN = sort))
 
     # harmonic note degree
-    harm_note_degree <- .matrix2degree(harm_note_matrix, scale_table)
+    harm_note_degree <- .matrix2degree(harm_note_matrix, temp)
     harm_matrix[, icol] <- harm_note_degree$degree
 
     # subharmonic note matrix
@@ -602,7 +621,7 @@ cps_chord_table <- function(scale_table) {
     subharm_note_matrix <- t(apply(subharm_note_matrix, MARGIN = 1, FUN = sort))
 
     # subharmonic note degree
-    subharm_note_degree <- .matrix2degree(subharm_note_matrix, scale_table)
+    subharm_note_degree <- .matrix2degree(subharm_note_matrix, temp)
     subharm_matrix[, icol] <- subharm_note_degree$degree
 
   }
@@ -688,8 +707,11 @@ keyboard_map <- function(scale_table, middle_c_octave = 4) {
   note_number <- .NN_RANGE
   note_numbers <- length(note_number)
 
+  # drop last row of scale table
+  temp <- .drop_last_row(scale_table)
+
   # create indices
-  degrees <- nrow(scale_table)
+  degrees <- nrow(temp)
   degrees_12edo <- 12
   octave <- (note_number - .NN_MIDDLE_C) %/% degrees
   key_octave <- (note_number - .NN_MIDDLE_C) %/% degrees_12edo
@@ -699,13 +721,13 @@ keyboard_map <- function(scale_table, middle_c_octave = 4) {
   # note names
   note_name <- key_name <- ratio_frac <-
     vector(mode = "character", length = note_numbers)
-  note_name[note_number + 1] <- scale_table$note_name[degree + 1]
-  ratio_frac[note_number + 1] <- scale_table$ratio_frac[degree + 1]
+  note_name[note_number + 1] <- temp$note_name[degree + 1]
+  ratio_frac[note_number + 1] <- temp$ratio_frac[degree + 1]
   key_name[note_number + 1] <- .NAMES_12EDO[degree_12EDO + 1]
 
   # cents and frequencies
   cents <-
-    scale_table$ratio_cents[degree + 1] + octave * 1200 + .CENTS_MIDDLE_C
+    temp$ratio_cents[degree + 1] + octave * 1200 + .CENTS_MIDDLE_C
   freq <- .cents2ratio(cents) * .FREQ_MIN
 
   # reference keys and offsets

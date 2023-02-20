@@ -5,7 +5,7 @@
 \title{Create Equal-Tempered Scale Table}
 \usage{
 et_scale_table(
-  note_names = c("C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#", "A ", "A#", "B "),
+  note_names = c("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"),
   period = 2
 )
 }
@@ -33,8 +33,7 @@ octave up, the offset will be above B for such a note.
 \item \code{offset_cents}: offset in cents from \code{key_12EDO}
 }
 
-_Note: offsets are meaningless if \code{period} is greater than 2, so in _
-\emph{that case they are not computed!}
+\emph{Note: offsets are meaningless if \code{period} is greater than 2, so in that case they are not computed!}
 }
 \description{
 Creates a scale table for equal divisions of a
@@ -44,61 +43,72 @@ specified period.
 
 print(vanilla <- et_scale_table()) # default is 12EDO, of course
 
-#19-EDO
+# 19-EDO
+# About the note names: even in 2023, code often breaks when given
+# characters outside the 7-bit international standard. So we don't even
+# have flats, let alone half-flats, half-sharps, naturals, or any of the
+# other symbols alternate tuning theorists have proposed.
+
+# So outside of 12EDO, where sharps do double-duty, and product set
+# scales, where we can use the product label as a note name, we use a
+# "/b" for a half-flat, "b" for a flat, "/#" for a half-sharp, and "#"
+# for a sharp. Thanks in advance for your understanding.
+
 nn19 <- c(
-  "C ",
-  "C+",
-  "D-",
-  "D ",
-  "D+",
-  "E-",
-  "E ",
-  "E+",
-  "F ",
-  "F+",
-  "G-",
-  "G ",
-  "G+",
-  "A-",
-  "A ",
-  "A+",
-  "B-",
-  "B ",
-  "B+")
+  "C",
+  "C#",
+  "Db",
+  "D",
+  "D#",
+  "Eb",
+  "E",
+  "E#",
+  "F",
+  "F#",
+  "Gb",
+  "G",
+  "G#",
+  "Ab",
+  "A",
+  "A#",
+  "Bb",
+  "B",
+  "B#")
+
 print(edo19 <- et_scale_table(nn19))
 
 # 31-EDO
 nn31 <- c(
-  "C  ",
-  "C+ ",
-  "C++",
-  "D--",
-  "D- ",
-  "D  ",
-  "D+ ",
-  "D++",
-  "E--",
-  "E- ",
-  "E  ",
-  "F--",
-  "E++",
-  "F  ",
-  "F+ ",
-  "F++",
-  "G--",
-  "G- ",
-  "G  ",
-  "G+ ",
-  "G++",
-  "A--",
-  "A- ",
-  "A  ",
-  "A+ ",
-  "A++",
-  "B--",
-  "B- ",
-  "B  ",
-  "C--",
-  "B++")
+  "C",
+  "C/#",
+  "C#",
+  "Db",
+  "D/b",
+  "D",
+  "D/#",
+  "D#",
+  "Eb",
+  "E/b",
+  "E",
+  "Fb",
+  "E#",
+  "F",
+  "F/#",
+  "F#",
+  "Gb",
+  "G/b",
+  "G",
+  "G/#",
+  "G#",
+  "Ab",
+  "A/b",
+  "A",
+  "A/#",
+  "A#",
+  "Bb",
+  "B/b",
+  "B",
+  "Cb",
+  "B#")
 print(edo31 <- et_scale_table(nn31))
 }
