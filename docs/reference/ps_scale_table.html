@@ -24,6 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/tetrads-on-37-key-synth.html">Tetrads of the 1-3-5-7-9-11 Eikosany on a 37-key Synthesizer</a>
     <a class="dropdown-item" href="../articles/introduction-to-combination-product-sets.html">Introduction to Combination Product Sets</a>
     <a class="dropdown-item" href="../articles/tuning-the-korg-minilogue-xd-to-the-eikosany.html">Tuning the Korg Minilogue XD to the 1-3-5-7-9-11 Eikosany</a>
   </div>
@@ -85,7 +86,9 @@ degrees of the resulting scale (character)</p></li>
 <li><p><code>ratio_cents</code>: the ratio in cents (hundredths of a semitone)</p></li>
 <li><p><code>interval_cents</code>: interval between this note and the previous note</p></li>
 <li><p><code>degree</code>: scale degree from zero to (number of notes) - 1</p></li>
-<li><p><code>key_12EDO</code>: note name for closest 12EDO note</p></li>
+<li><p><code>key_12EDO</code>: note name for closest 12EDO note. Note that because
+most synthesizers do not allow returning relative to the C in the next
+octave up, the offset will be above B for such a note.</p></li>
 <li><p><code>offset_cents</code>: offset in cents from <code>key_12EDO</code></p></li>
 </ul></div>
 
@@ -95,26 +98,28 @@ degrees of the resulting scale (character)</p></li>
 <span class="r-in"><span><span class="co"># the default yields the 1-3-5-7-9-11 Eikosany</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu">ps_scale_table</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:     1x3x5 1.000000          1     0.00000             NA      0        C </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:     1x3x5 1.000000          1     0.00000             NA      0         C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:    5x9x11 1.031250      33/32    53.27294       53.27294      1        C#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3:     1x7x9 1.050000      21/20    84.46719       31.19425      2        C#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4:    1x3x11 1.100000      11/10   165.00423       80.53704      3        D </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5:     3x5x9 1.125000        9/8   203.91000       38.90577      4        D </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4:    1x3x11 1.100000      11/10   165.00423       80.53704      3         D</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:     3x5x9 1.125000        9/8   203.91000       38.90577      4         D</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  6:     1x5x7 1.166667        7/6   266.87091       62.96090      5        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7:    3x9x11 1.237500      99/80   368.91423      102.04332      6        E </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:    1x7x11 1.283333      77/60   431.87513       62.96090      7        E </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9:     5x7x9 1.312500      21/16   470.78091       38.90577      8        F </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:    3x9x11 1.237500      99/80   368.91423      102.04332      6         E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:    1x7x11 1.283333      77/60   431.87513       62.96090      7         E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:     5x7x9 1.312500      21/16   470.78091       38.90577      8         F</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10:    3x5x11 1.375000       11/8   551.31794       80.53704      9        F#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11:     1x3x7 1.400000        7/5   582.51219       31.19425     10        F#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12:    7x9x11 1.443750    231/160   635.78514       53.27294     11        F#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13:     1x5x9 1.500000        3/2   701.95500       66.16987     12        G </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:     1x5x9 1.500000        3/2   701.95500       66.16987     12         G</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14:     3x7x9 1.575000      63/40   786.42219       84.46719     13        G#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15:    5x7x11 1.604167      77/48   818.18885       31.76665     14        G#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16:    1x9x11 1.650000      33/20   866.95923       48.77038     15        A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16:    1x9x11 1.650000      33/20   866.95923       48.77038     15         A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 17:     3x5x7 1.750000        7/4   968.82591      101.86668     16        A#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18:     1x3x9 1.800000        9/5  1017.59629       48.77038     17        A#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19:    1x5x11 1.833333       11/6  1049.36294       31.76665     18        A#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20:    3x7x11 1.925000      77/40  1133.83013       84.46719     19        B </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20:    3x7x11 1.925000      77/40  1133.83013       84.46719     19         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21:    1x3x5' 2.000000          2  1200.00000       66.16987     20         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     offset_cents</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1:     0.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:   -46.727057</span>
@@ -136,6 +141,8 @@ degrees of the resulting scale (character)</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18:    17.596288</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19:    49.362941</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20:    33.830135</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21:   100.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     offset_cents</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Kraig Grady's Eikosany as two complementary extended Dekanies</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">grady_a</span> <span class="op">&lt;-</span> <span class="fu">ps_scale_table</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
@@ -153,18 +160,19 @@ degrees of the resulting scale (character)</p></li>
 <span class="r-in"><span>  <span class="st">"1x7x9"</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:       1x7 1.000000          1     0.00000             NA      0        C </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:       1x7 1.000000          1     0.00000             NA      0         C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:    3x7x11 1.031250      33/32    53.27294       53.27294      1        C#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3:     1x7x9 1.125000        9/8   203.91000      150.63706      2        D </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:     1x7x9 1.125000        9/8   203.91000      150.63706      2         D</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  4:    1x3x11 1.178571      33/28   284.44704       80.53704      3        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5:       1x9 1.285714        9/7   435.08410      150.63706      4        E </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6:    3x9x11 1.325893    297/224   488.35704       53.27294      5        F </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:       1x9 1.285714        9/7   435.08410      150.63706      4         E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:    3x9x11 1.325893    297/224   488.35704       53.27294      5         F</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  7:    1x7x11 1.375000       11/8   551.31794       62.96090      6        F#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:     1x3x7 1.500000        3/2   701.95500      150.63706      7        G </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:     1x3x7 1.500000        3/2   701.95500      150.63706      7         G</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  9:    7x9x11 1.546875      99/64   755.22794       53.27294      8        G#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10:     3x7x9 1.687500      27/16   905.86500      150.63706      9        A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:     3x7x9 1.687500      27/16   905.86500      150.63706      9         A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11:    1x9x11 1.767857      99/56   986.40204       80.53704     10        A#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12:     1x3x9 1.928571      27/14  1137.03910      150.63706     11        B </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:     1x3x9 1.928571      27/14  1137.03910      150.63706     11         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:      1x7' 2.000000          2  1200.00000       62.96090     12         B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     offset_cents</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1:     0.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:   -46.727057</span>
@@ -178,6 +186,7 @@ degrees of the resulting scale (character)</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10:     5.865003</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11:   -13.597962</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12:    37.039096</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:   100.000000</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">grady_b</span> <span class="op">&lt;-</span> <span class="fu">ps_scale_table</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"3x5x11"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"1x5x9"</span>,</span></span>
@@ -193,18 +202,19 @@ degrees of the resulting scale (character)</p></li>
 <span class="r-in"><span>  <span class="st">"5x7x9"</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:     1x3x5 1.000000          1     0.00000             NA      0        C </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:     1x3x5 1.000000          1     0.00000             NA      0         C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:    5x9x11 1.031250      33/32    53.27294       53.27294      1        C#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3:     3x5x9 1.125000        9/8   203.91000      150.63706      2        D </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:     3x5x9 1.125000        9/8   203.91000      150.63706      2         D</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  4:     1x5x7 1.166667        7/6   266.87091       62.96090      3        D#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  5:  3x5x7x11 1.203125      77/64   320.14385       53.27294      4        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6:     5x7x9 1.312500      21/16   470.78091      150.63706      5        F </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:     5x7x9 1.312500      21/16   470.78091      150.63706      5         F</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  7:    3x5x11 1.375000       11/8   551.31794       80.53704      6        F#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:     1x5x9 1.500000        3/2   701.95500      150.63706      7        G </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:     1x5x9 1.500000        3/2   701.95500      150.63706      7         G</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  9:  3x5x9x11 1.546875      99/64   755.22794       53.27294      8        G#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10:    5x7x11 1.604167      77/48   818.18885       62.96090      9        G#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11:     3x5x7 1.750000        7/4   968.82591      150.63706     10        A#</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12:    1x5x11 1.833333       11/6  1049.36294       80.53704     11        A#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:    1x3x5' 2.000000          2  1200.00000      150.63706     12         B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     offset_cents</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1:     0.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:   -46.727057</span>
@@ -218,6 +228,7 @@ degrees of the resulting scale (character)</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10:    18.188848</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11:   -31.174094</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12:    49.362941</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:   100.000000</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

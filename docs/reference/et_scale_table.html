@@ -26,6 +26,7 @@ specified period."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aja
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/tetrads-on-37-key-synth.html">Tetrads of the 1-3-5-7-9-11 Eikosany on a 37-key Synthesizer</a>
     <a class="dropdown-item" href="../articles/introduction-to-combination-product-sets.html">Introduction to Combination Product Sets</a>
     <a class="dropdown-item" href="../articles/tuning-the-korg-minilogue-xd-to-the-eikosany.html">Tuning the Korg Minilogue XD to the 1-3-5-7-9-11 Eikosany</a>
   </div>
@@ -59,7 +60,7 @@ specified period.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">et_scale_table</span><span class="op">(</span></span>
-<span>  note_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C "</span>, <span class="st">"C#"</span>, <span class="st">"D "</span>, <span class="st">"D#"</span>, <span class="st">"E "</span>, <span class="st">"F "</span>, <span class="st">"F#"</span>, <span class="st">"G "</span>, <span class="st">"G#"</span>, <span class="st">"A "</span>, <span class="st">"A#"</span>, <span class="st">"B "</span><span class="op">)</span>,</span>
+<span>  note_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="st">"C#"</span>, <span class="st">"D"</span>, <span class="st">"D#"</span>, <span class="st">"E"</span>, <span class="st">"F"</span>, <span class="st">"F#"</span>, <span class="st">"G"</span>, <span class="st">"G#"</span>, <span class="st">"A"</span>, <span class="st">"A#"</span>, <span class="st">"B"</span><span class="op">)</span>,</span>
 <span>  period <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -88,10 +89,11 @@ for most EDOs are irrational, so this is an approximation.</p></li>
 <li><p><code>ratio_cents</code>: the ratio in cents (hundredths of a semitone)</p></li>
 <li><p><code>interval_cents</code>: interval between this note and the previous note</p></li>
 <li><p><code>degree</code>: scale degree from zero to (number of notes) - 1</p></li>
-<li><p><code>key_12EDO</code>: note name for nearest 12EDO note</p></li>
+<li><p><code>key_12EDO</code>: note name for closest 12EDO note. Note that because
+most synthesizers do not allow returning relative to the C in the next
+octave up, the offset will be above B for such a note.</p></li>
 <li><p><code>offset_cents</code>: offset in cents from <code>key_12EDO</code></p></li>
-</ul><p>_Note: offsets are meaningless if <code>period</code> is greater than 2, so in _
-<em>that case they are not computed!</em></p>
+</ul><p><em>Note: offsets are meaningless if <code>period</code> is greater than 2, so in that case they are not computed!</em></p>
 
 
     </div>
@@ -101,18 +103,19 @@ for most EDOs are irrational, so this is an approximation.</p></li>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vanilla</span> <span class="op">&lt;-</span> <span class="fu">et_scale_table</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># default is 12EDO, of course</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:        C  1.000000          1           0             NA      0        C </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:         C 1.000000          1           0             NA      0         C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:        C# 1.059463  1461/1379         100            100      1        C#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3:        D  1.122462  1714/1527         200            100      2        D </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:         D 1.122462  1714/1527         200            100      2         D</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  4:        D# 1.189207  1785/1501         300            100      3        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5:        E  1.259921    635/504         400            100      4        E </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6:        F  1.334840  3249/2434         500            100      5        F </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:         E 1.259921    635/504         400            100      4         E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:         F 1.334840  3249/2434         500            100      5         F</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  7:        F# 1.414214   1393/985         600            100      6        F#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:        G  1.498307  2213/1477         700            100      7        G </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:         G 1.498307  2213/1477         700            100      7         G</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  9:        G# 1.587401   1008/635         800            100      8        G#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        A  1.681793  3002/1785         900            100      9        A </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:         A 1.681793  3002/1785         900            100      9         A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11:        A# 1.781797   1527/857        1000            100     10        A#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12:        B  1.887749  2943/1559        1100            100     11        B </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:         B 1.887749  2943/1559        1100            100     11         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:        C' 2.000000          2        1200            100     12         B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     offset_cents</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1:            0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:            0</span>
@@ -126,54 +129,62 @@ for most EDOs are irrational, so this is an approximation.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10:            0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11:            0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12:            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:          100</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#19-EDO</span></span></span>
+<span class="r-in"><span><span class="co"># 19-EDO</span></span></span>
+<span class="r-in"><span><span class="co"># About the note names: even in 2023, code often breaks when given</span></span></span>
+<span class="r-in"><span><span class="co"># characters outside the 7-bit international standard. So we don't even</span></span></span>
+<span class="r-in"><span><span class="co"># have flats, let alone half-flats, half-sharps, naturals, or any of the</span></span></span>
+<span class="r-in"><span><span class="co"># other symbols alternate tuning theorists have proposed.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># So outside of 12EDO, where sharps do double-duty, and product set</span></span></span>
+<span class="r-in"><span><span class="co"># scales, where we can use the product label as a note name, we use a</span></span></span>
+<span class="r-in"><span><span class="co"># "/b" for a half-flat, "b" for a flat, "/#" for a half-sharp, and "#"</span></span></span>
+<span class="r-in"><span><span class="co"># for a sharp. Thanks in advance for your understanding.</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">nn19</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"C "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"C+"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"D-"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"D "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"D+"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"E-"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"E "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"E+"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"F "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"F+"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"G-"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"G "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"G+"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"A-"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"A "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"A+"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"B-"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"B "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"B+"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nn19</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 19</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">nn19</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "C " "C+" "D-" "D " "D+" "E-" "E " "E+" "F " "F+" "G-" "G " "G+" "A-" "A "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "A+" "B-" "B " "B+"</span>
+<span class="r-in"><span>  <span class="st">"C"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"C#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Db"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"D"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"D#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Eb"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"E"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"E#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"F"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"F#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Gb"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"G"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"G#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Ab"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"A"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"A#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Bb"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"B"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"B#"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">edo19</span> <span class="op">&lt;-</span> <span class="fu">et_scale_table</span><span class="op">(</span><span class="va">nn19</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:        C  1.000000          1     0.00000             NA      0        C </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2:        C+ 1.037155    977/942    63.15789       63.15789      1        C#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3:        D- 1.075691    739/687   126.31579       63.15789      2        C#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4:        D  1.115658    627/562   189.47368       63.15789      3        D </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5:        D+ 1.157110   1009/872   252.63158       63.15789      4        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6:        E- 1.200103  2333/1944   315.78947       63.15789      5        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7:        E  1.244693   1114/895   378.94737       63.15789      6        E </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:        E+ 1.290939  1553/1203   442.10526       63.15789      7        E </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9:        F  1.338904  1442/1077   505.26316       63.15789      8        F </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        F+ 1.388651   1297/934   568.42105       63.15789      9        F#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11:        G- 1.440247  1639/1138   631.57895       63.15789     10        F#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12:        G  1.493759   1077/721   694.73684       63.15789     11        G </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13:        G+ 1.549260  2406/1553   757.89474       63.15789     12        G#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14:        A- 1.606822    895/557   821.05263       63.15789     13        G#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15:        A  1.666524  3893/2336   884.21053       63.15789     14        A </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16:        A+ 1.728444  1744/1009   947.36842       63.15789     15        A </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17:        B- 1.792664   1124/627  1010.52632       63.15789     16        A#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18:        B  1.859271   1123/604  1073.68421       63.15789     17        B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19:        B+ 1.928352   1884/977  1136.84211       63.15789     18        B </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:         C 1.000000          1     0.00000             NA      0         C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2:        C# 1.037155    977/942    63.15789       63.15789      1        C#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:        Db 1.075691    739/687   126.31579       63.15789      2        C#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4:         D 1.115658    627/562   189.47368       63.15789      3         D</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:        D# 1.157110   1009/872   252.63158       63.15789      4        D#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:        Eb 1.200103  2333/1944   315.78947       63.15789      5        D#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:         E 1.244693   1114/895   378.94737       63.15789      6         E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:        E# 1.290939  1553/1203   442.10526       63.15789      7         E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:         F 1.338904  1442/1077   505.26316       63.15789      8         F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        F# 1.388651   1297/934   568.42105       63.15789      9        F#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:        Gb 1.440247  1639/1138   631.57895       63.15789     10        F#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:         G 1.493759   1077/721   694.73684       63.15789     11         G</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:        G# 1.549260  2406/1553   757.89474       63.15789     12        G#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14:        Ab 1.606822    895/557   821.05263       63.15789     13        G#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15:         A 1.666524  3893/2336   884.21053       63.15789     14         A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16:        A# 1.728444  1744/1009   947.36842       63.15789     15         A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17:        Bb 1.792664   1124/627  1010.52632       63.15789     16        A#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18:         B 1.859271   1123/604  1073.68421       63.15789     17         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19:        B# 1.928352   1884/977  1136.84211       63.15789     18         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20:        C' 2.000000          2  1200.00000       63.15789     19         B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     offset_cents</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1:     0.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:   -36.842105</span>
@@ -194,79 +205,75 @@ for most EDOs are irrational, so this is an approximation.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 17:    10.526316</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18:   -26.315789</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19:    36.842105</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20:   100.000000</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 31-EDO</span></span></span>
 <span class="r-in"><span><span class="va">nn31</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"C  "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"C+ "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"C++"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"D--"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"D- "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"D  "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"D+ "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"D++"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"E--"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"E- "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"E  "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"F--"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"E++"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"F  "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"F+ "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"F++"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"G--"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"G- "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"G  "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"G+ "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"G++"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"A--"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"A- "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"A  "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"A+ "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"A++"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"B--"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"B- "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"B  "</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"C--"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"B++"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nn31</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 31</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">nn31</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "C  " "C+ " "C++" "D--" "D- " "D  " "D+ " "D++" "E--" "E- " "E  " "F--"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "E++" "F  " "F+ " "F++" "G--" "G- " "G  " "G+ " "G++" "A--" "A- " "A  "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "A+ " "A++" "B--" "B- " "B  " "C--" "B++"</span>
+<span class="r-in"><span>  <span class="st">"C"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"C/#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"C#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Db"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"D/b"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"D"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"D/#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"D#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Eb"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"E/b"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"E"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Fb"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"E#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"F"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"F/#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"F#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Gb"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"G/b"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"G"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"G/#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"G#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Ab"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"A/b"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"A"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"A/#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"A#"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Bb"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"B/b"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"B"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Cb"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"B#"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">edo31</span> <span class="op">&lt;-</span> <span class="fu">et_scale_table</span><span class="op">(</span><span class="va">nn31</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:       C   1.000000          1     0.00000             NA      0        C </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2:       C+  1.022611  1402/1371    38.70968       38.70968      1        C </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3:       C++ 1.045734  1189/1137    77.41935       38.70968      2        C#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4:       D-- 1.069380  1156/1081   116.12903       38.70968      3        C#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5:       D-  1.093560    900/823   154.83871       38.70968      4        D </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6:       D   1.118287  1645/1471   193.54839       38.70968      5        D </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7:       D+  1.143573    685/599   232.25806       38.70968      6        D </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:       D++ 1.169431    987/844   270.96774       38.70968      7        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9:       E-- 1.195873  3999/3344   309.67742       38.70968      8        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10:       E-  1.222914    982/803   348.38710       38.70968      9        D#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11:       E   1.250566  2211/1768   387.09677       38.70968     10        E </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12:       F-- 1.278843  3403/2661   425.80645       38.70968     11        E </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13:       E++ 1.307759  1500/1147   464.51613       38.70968     12        F </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14:       F   1.337329    781/584   503.22581       38.70968     13        F </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15:       F+  1.367568    253/185   541.93548       38.70968     14        F </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16:       F++ 1.398491  1853/1325   580.64516       38.70968     15        F#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17:       G-- 1.430113  2783/1946   619.35484       38.70968     16        F#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18:       G-  1.462450    370/253   658.06452       38.70968     17        G </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19:       G   1.495518   1168/781   696.77419       38.70968     18        G </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20:       G+  1.529334   1147/750   735.48387       38.70968     19        G </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21:       G++ 1.563914  2557/1635   774.19355       38.70968     20        G#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22:       A-- 1.599276  3536/2211   812.90323       38.70968     21        G#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23:       A-  1.635438    803/491   851.61290       38.70968     22        A </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24:       A   1.672418  6785/4057   890.32258       38.70968     23        A </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25:       A+  1.710234   1387/811   929.03226       38.70968     24        A </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26:       A++ 1.748905   1198/685   967.74194       38.70968     25        A#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27:       B-- 1.788450  2942/1645  1006.45161       38.70968     26        A#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28:       B-  1.828889    823/450  1045.16129       38.70968     27        A#</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29:       B   1.870243   1081/578  1083.87097       38.70968     28        B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30:       C-- 1.912532   1465/766  1122.58065       38.70968     29        B </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31:       B++ 1.955777   1371/701  1161.29032       38.70968     30        B </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:         C 1.000000          1     0.00000             NA      0         C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2:       C/# 1.022611  1402/1371    38.70968       38.70968      1         C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:        C# 1.045734  1189/1137    77.41935       38.70968      2        C#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4:        Db 1.069380  1156/1081   116.12903       38.70968      3        C#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:       D/b 1.093560    900/823   154.83871       38.70968      4         D</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:         D 1.118287  1645/1471   193.54839       38.70968      5         D</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:       D/# 1.143573    685/599   232.25806       38.70968      6         D</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:        D# 1.169431    987/844   270.96774       38.70968      7        D#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:        Eb 1.195873  3999/3344   309.67742       38.70968      8        D#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:       E/b 1.222914    982/803   348.38710       38.70968      9        D#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:         E 1.250566  2211/1768   387.09677       38.70968     10         E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:        Fb 1.278843  3403/2661   425.80645       38.70968     11         E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:        E# 1.307759  1500/1147   464.51613       38.70968     12         F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14:         F 1.337329    781/584   503.22581       38.70968     13         F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15:       F/# 1.367568    253/185   541.93548       38.70968     14         F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16:        F# 1.398491  1853/1325   580.64516       38.70968     15        F#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17:        Gb 1.430113  2783/1946   619.35484       38.70968     16        F#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18:       G/b 1.462450    370/253   658.06452       38.70968     17         G</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19:         G 1.495518   1168/781   696.77419       38.70968     18         G</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20:       G/# 1.529334   1147/750   735.48387       38.70968     19         G</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21:        G# 1.563914  2557/1635   774.19355       38.70968     20        G#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22:        Ab 1.599276  3536/2211   812.90323       38.70968     21        G#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23:       A/b 1.635438    803/491   851.61290       38.70968     22         A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24:         A 1.672418  6785/4057   890.32258       38.70968     23         A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25:       A/# 1.710234   1387/811   929.03226       38.70968     24         A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26:        A# 1.748905   1198/685   967.74194       38.70968     25        A#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27:        Bb 1.788450  2942/1645  1006.45161       38.70968     26        A#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28:       B/b 1.828889    823/450  1045.16129       38.70968     27        A#</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29:         B 1.870243   1081/578  1083.87097       38.70968     28         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30:        Cb 1.912532   1465/766  1122.58065       38.70968     29         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31:        B# 1.955777   1371/701  1161.29032       38.70968     30         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32:        C' 2.000000          2  1200.00000       38.70968     31         B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     note_name    ratio ratio_frac ratio_cents interval_cents degree key_12EDO</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     offset_cents</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1:     0.000000</span>
@@ -300,6 +307,7 @@ for most EDOs are irrational, so this is an approximation.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 29:   -16.129032</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 30:    22.580645</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 31:    61.290323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32:   100.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     offset_cents</span>
 </code></pre></div>
     </div>
