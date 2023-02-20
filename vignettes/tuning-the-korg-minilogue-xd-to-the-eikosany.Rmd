@@ -1,0 +1,19 @@
+---
+title: "Tuning the Korg Minilogue XD to the 1-3-5-7-9-11 Eikosany"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tuning the Korg Minilogue XD to the 1-3-5-7-9-11 Eikosany}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(eikosany)
+```
