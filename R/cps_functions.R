@@ -466,6 +466,58 @@ et_scale_table <- function(note_names = c(
   return(scale_table)
 }
 
+#' @title Create Offset Matrix
+#' @name offset_matrix
+#' @description Creates an offset matrix from a scale table. An offset
+#' matrix is used to retune an octave for synthesizers that support such
+#' retunings.
+#' @export offset_matrix
+#' @param scale_table a scale table
+#' @return the offset matrix. Columns represent key names in 12-tone
+#' equal temperament. Rows represent note names from the scale table. The
+#' value of a matrix cell is the offset in cents you need to apply to the
+#' column name's key to get the row name's scale note.
+#'
+#' For example, if the value in row `3x9` and column `C#`is 104, you
+#' would tune the `C#` key up 104 cents to have it play `3x9`. If the
+#' value in row `1x7`, column D#` is is -33, you would tune the `D#` key
+#' down 33 cents.
+#'
+#' @examples
+#' dekany <- cps_scale_table(
+#'   harmonics = c(1, 3, 5, 7, 9),
+#'   choose = 2
+#' )
+#' print(dekany_offsets <- offset_matrix(dekany))
+#'
+#' # This shows that to get the note "3x9" in the dekany, you can tune "C#" up
+#' # 104 cents, "D up 4 cents or "D#" down 96 cents. Keep in mind that you
+#' # can only use each 12-TET key once and you have to end up with a key for
+#' # all ten notes in the dekany.
+#'
+#' # The strategy I use is as follows:
+#'
+#' # For scales with seven or fewer notes, I retune the white keys starting
+#' # with C, and retune any left-over white keys to the last note. For a
+#' # hexany, it's fun to stick an extra note in somewhere.
+#'
+#' # For scales with 8 to 12 notes, I retune the keys from left to right,
+#' # again sometimes adding notes to fill up to 12. There's an example of this
+#' # in _Microtonality and the Tuning Systems of Erv Wilson_, pages 127 - 131.
+#' # The result of that process is examples `grady_a` and `grady_b` for
+#' # function `ps_scale_table`.
+offset_matrix <- function(scale_table) {
+  scale_length <- nrow(scale_table) - 1
+  matrix <- round(outer(
+    scale_table$ratio_cents[1:scale_length],
+    .CENTS_12EDO,
+    FUN = "-"
+  ), 0)
+  colnames(matrix) <- .NAMES_12EDO
+  rownames(matrix) <- scale_table$note_name[1:scale_length]
+  return(matrix)
+}
+
 #' @title Create Interval Table
 #' @name interval_table
 #' @description Creates an interval table from a scale table
