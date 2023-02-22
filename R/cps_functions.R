@@ -132,23 +132,57 @@
   return(result_table)
 }
 
-.compute_pitch_bend_offsets <- function(scale_table) {
-  index2name <- scale_table$ratio_cents %/% 100 + 1
-  index2name[index2name > 12] <- 12
-  offset_cents <- scale_table$ratio_cents - 100 * (index2name - 1)
-  index2increment <- offset_cents > 50 & index2name < 12
-  index2name[index2increment] <- index2name[index2increment] + 1
-  offset_cents[index2increment] <- offset_cents[index2increment] - 100
-  temp <- scale_table
-  temp$key_12EDO <- .NAMES_12EDO[index2name]
-  temp$offset_cents <- offset_cents
-  return(temp)
-}
-
 .drop_last_row <- function(scale_table) {
   return(scale_table[degree < nrow(scale_table) - 1])
 }
 
+#' @title Create Offset Matrix
+#' @name offset_matrix
+#' @description Creates an offset matrix from a scale table. An offset
+#' matrix is used to retune an octave for synthesizers that support such
+#' retunings, like the Korg Minilogue XD and the Dirtywave M8 tracker.
+#' @details The columns of an offset matrix represent key names in 12-tone
+#' equal temperament. Rows represent note names from a scale table. The
+#' value of a matrix cell is the offset in cents you need to apply to the
+#' column name's key to get the row name's scale note.
+#'
+#' For example, if the value in row "3x9" and column "C#" is 104, you
+#' would tune the "C#" key up 104 cents to have it play "3x9". If the
+#' value in row "1x7", column "D#" is -33, you would tune the "D#" key
+#' down 33 cents.
+#'
+#' Keep in mind that you can only use each 12-TET key once, and you have
+#' to end up with a key for all the notes in the scale. The strategy I
+#' use is:
+#'
+#' For scales with seven or fewer notes, I retune the white keys starting
+#' with C, and retune any left-over white keys to the last note in the
+#' scale. For a hexany, it's fun to stick an extra note in somewhere.
+#'
+#' For scales with 8 to 12 notes, I retune the keys from left to right,
+#' again sometimes adding notes to fill up to 12. There's an example of this
+#' in _Microtonality and the Tuning Systems of Erv Wilson_, pages 127 - 131.
+#' This example is worked out in examples `grady_a` and `grady_b` for the
+#' function `ps_scale_table`.
+#' @seealso [ps_scale_table()]
+#' @export offset_matrix
+#' @param scale_table a scale table
+#' @returns the offset matrix. Columns represent key names in 12-tone
+#' equal temperament. Rows represent note names from the scale table. The
+#' value of a matrix cell is the offset in cents you need to apply to the
+#' column name's key to get the row name's scale note.
+
+offset_matrix <- function(scale_table) {
+  scale_length <- nrow(scale_table) - 1
+  matrix <- round(outer(
+    scale_table$ratio_cents[1:scale_length],
+    .CENTS_12EDO,
+    FUN = "-"
+  ), 0)
+  colnames(matrix) <- .NAMES_12EDO
+  rownames(matrix) <- scale_table$note_name[1:scale_length]
+  return(matrix)
+}
 
 #' @title Create Product Set Scale Table
 #' @name ps_scale_table
@@ -170,7 +204,7 @@
 #'   `c("1x3", "1x5", "1x7", "3x5", "3x7", "5x7")`
 #'
 #' The default is the `ps_def` for the 1-3-5-7-9-11 Eikosany.
-#' @returns a `data.table` with eight columns:
+#' @returns a `data.table` with six columns:
 #' \itemize{
 #' \item `note_name`: the given product set definition, re-ordered by the
 #' degrees of the resulting scale (character)
@@ -180,17 +214,16 @@
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `interval_cents`: interval between this note and the previous note
 #' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `key_12EDO`: note name for closest 12EDO note. Note that because
-#' most synthesizers do not allow returning relative to the C in the next
-#' octave up, the offset will be above B for such a note.
-#' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
+#' @seealso [offset_matrix()]
 #' @examples
 #'
 #' # the default yields the 1-3-5-7-9-11 Eikosany
 #' print(eikosany <- ps_scale_table())
 #'
 #' # Kraig Grady's Eikosany as two complementary extended Dekanies
+#' # See _Microtonality and the Tuning Systems of Erv Wilson_, pages 127 - 131
+#' # for the process used to create these scales
 #' print(grady_a <- ps_scale_table(c(
 #'   "1x3x11",
 #'   "1x9",
@@ -205,6 +238,7 @@
 #'   "3x7x11",
 #'   "1x7x9"
 #' )))
+#' print(grady_a_offsets <- offset_matrix(grady_a))
 #' print(grady_b <- ps_scale_table(c(
 #'   "3x5x11",
 #'   "1x5x9",
@@ -219,6 +253,7 @@
 #'   "3x5x7x11",
 #'   "5x7x9"
 #' )))
+#' print(grady_b_offsets <- offset_matrix(grady_b))
 
 ps_scale_table <- function(ps_def = c(
   "1x3x5",
@@ -243,10 +278,6 @@ ps_scale_table <- function(ps_def = c(
   "3x7x11"
 )) {
   scale_table <- .ratio_table(ps_def, period = 2)
-
-  # compute pitch bend offsets
-  scale_table <- .compute_pitch_bend_offsets(scale_table)
-  return(scale_table)
 }
 
 #' @title Create Combination Product Set Scale Table
@@ -266,7 +297,7 @@ ps_scale_table <- function(ps_def = c(
 #' @param choose the number of harmonics to choose for each combination -
 #' defaults to 3, the number of harmonics for each combination in the
 #' Eikosany.
-#' @return a `data.table` with eight columns:
+#' @returns a `data.table` with six columns:
 #' \itemize{
 #' \item `note_name`: the product of harmonics that defines the note (character)
 #' \item `ratio`: the ratio that defines the note, as a number between 1 and
@@ -275,10 +306,6 @@ ps_scale_table <- function(ps_def = c(
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `interval_cents`: interval between this note and the previous note
 #' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `key_12EDO`: note name for closest 12EDO note. Note that because
-#' most synthesizers do not allow returning relative to the C in the next
-#' octave up, the offset will be above B for such a note.
-#' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
 #' @examples
 #'
@@ -328,7 +355,7 @@ cps_scale_table <-
 #' scale. The default is the names of the standard 12 equal divisions of the
 #' octave.
 #' @param period The period - default is 2, for an octave
-#' @return a `data.table` with eight columns:
+#' @returns a `data.table` with six columns:
 #' \itemize{
 #' \item `note_name`: the note name (character)
 #' \item `ratio`: the ratio that defines the note, as a number between 1 and
@@ -338,13 +365,7 @@ cps_scale_table <-
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `interval_cents`: interval between this note and the previous note
 #' \item `degree`: scale degree from zero to (number of notes) - 1
-#' \item `key_12EDO`: note name for closest 12EDO note. Note that because
-#' most synthesizers do not allow returning relative to the C in the next
-#' octave up, the offset will be above B for such a note.
-#' \item `offset_cents`: offset in cents from `key_12EDO`
 #' }
-#'
-#' _Note: offsets are meaningless if `period` is greater than 2, so in that case they are not computed!_
 #' @examples
 #'
 #' print(vanilla <- et_scale_table()) # default is 12EDO, of course
@@ -438,8 +459,6 @@ et_scale_table <- function(note_names = c(
   ratio_cents <- degree * .ratio2cents(period) / degrees
   ratio <- .cents2ratio(ratio_cents)
   ratio_frac <- as.character(fractional::fractional(ratio))
-  offset_cents <- vector(mode = "numeric", length = degrees)
-  key_12edo <- vector(mode = "character", length = degrees)
   scale_table <- data.table::data.table(
     note_name,
     ratio,
@@ -459,63 +478,7 @@ et_scale_table <- function(note_names = c(
     degree = .I - 1
   )]
 
-  # compute pitch bend offsets if they are valid
-  if (period <= 2) {
-    scale_table <- .compute_pitch_bend_offsets(scale_table)
-  }
   return(scale_table)
-}
-
-#' @title Create Offset Matrix
-#' @name offset_matrix
-#' @description Creates an offset matrix from a scale table. An offset
-#' matrix is used to retune an octave for synthesizers that support such
-#' retunings.
-#' @export offset_matrix
-#' @param scale_table a scale table
-#' @return the offset matrix. Columns represent key names in 12-tone
-#' equal temperament. Rows represent note names from the scale table. The
-#' value of a matrix cell is the offset in cents you need to apply to the
-#' column name's key to get the row name's scale note.
-#'
-#' For example, if the value in row `3x9` and column `C#`is 104, you
-#' would tune the `C#` key up 104 cents to have it play `3x9`. If the
-#' value in row `1x7`, column D#` is is -33, you would tune the `D#` key
-#' down 33 cents.
-#'
-#' @examples
-#' dekany <- cps_scale_table(
-#'   harmonics = c(1, 3, 5, 7, 9),
-#'   choose = 2
-#' )
-#' print(dekany_offsets <- offset_matrix(dekany))
-#'
-#' # This shows that to get the note "3x9" in the dekany, you can tune "C#" up
-#' # 104 cents, "D up 4 cents or "D#" down 96 cents. Keep in mind that you
-#' # can only use each 12-TET key once and you have to end up with a key for
-#' # all ten notes in the dekany.
-#'
-#' # The strategy I use is as follows:
-#'
-#' # For scales with seven or fewer notes, I retune the white keys starting
-#' # with C, and retune any left-over white keys to the last note. For a
-#' # hexany, it's fun to stick an extra note in somewhere.
-#'
-#' # For scales with 8 to 12 notes, I retune the keys from left to right,
-#' # again sometimes adding notes to fill up to 12. There's an example of this
-#' # in _Microtonality and the Tuning Systems of Erv Wilson_, pages 127 - 131.
-#' # The result of that process is examples `grady_a` and `grady_b` for
-#' # function `ps_scale_table`.
-offset_matrix <- function(scale_table) {
-  scale_length <- nrow(scale_table) - 1
-  matrix <- round(outer(
-    scale_table$ratio_cents[1:scale_length],
-    .CENTS_12EDO,
-    FUN = "-"
-  ), 0)
-  colnames(matrix) <- .NAMES_12EDO
-  rownames(matrix) <- scale_table$note_name[1:scale_length]
-  return(matrix)
 }
 
 #' @title Create Interval Table
@@ -527,7 +490,7 @@ offset_matrix <- function(scale_table) {
 #' @export interval_table
 #' @param scale_table a scale table from `ps_scale_table`,
 #' `cps_scale_table`, or `et_scale_table`
-#' @return an interval table. This is a data.table with seven columns
+#' @returns an interval table. This is a data.table with seven columns
 #' \itemize{
 #' \item `from` name of "from" note
 #' \item `from_degree` scale degree of "from" note
@@ -599,7 +562,7 @@ interval_table <- function(scale_table) {
 #'   `stop("number of harmonic factors must be even!")`
 #'
 #' if it receives one with an odd number.
-#' @return a data.table with four columns:
+#' @returns a data.table with four columns:
 #' \itemize{
 #' \item `chord`: the chord expressed as colon-separated harmonics. A
 #' subharmonic chord is prefixed with a "~".
@@ -711,7 +674,7 @@ cps_chord_table <- function(scale_table) {
 #' @param middle_c_octave octave number for middle C. There are varying
 #' conventions for the octave number for middle C. The default for this
 #' function is 4, but other software can use 3 or even some other number
-#' @return the keyboard map. This is a data.table with eight columns:
+#' @returns the keyboard map. This is a data.table with eight columns:
 #' \itemize{
 #' \item `note_number`: the MIDI note number from `.NN_MIN` through `.NN_MAX`
 #' \item `key_name`: note name of the key in 12EDO. This is the key you'd

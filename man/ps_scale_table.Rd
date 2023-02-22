@@ -21,7 +21,7 @@ Hexany is
 The default is the \code{ps_def} for the 1-3-5-7-9-11 Eikosany.}
 }
 \value{
-a \code{data.table} with eight columns:
+a \code{data.table} with six columns:
 \itemize{
 \item \code{note_name}: the given product set definition, re-ordered by the
 degrees of the resulting scale (character)
@@ -31,10 +31,6 @@ degrees of the resulting scale (character)
 \item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
 \item \code{interval_cents}: interval between this note and the previous note
 \item \code{degree}: scale degree from zero to (number of notes) - 1
-\item \code{key_12EDO}: note name for closest 12EDO note. Note that because
-most synthesizers do not allow returning relative to the C in the next
-octave up, the offset will be above B for such a note.
-\item \code{offset_cents}: offset in cents from \code{key_12EDO}
 }
 }
 \description{
@@ -46,6 +42,8 @@ Creates a scale table from a product set definition
 print(eikosany <- ps_scale_table())
 
 # Kraig Grady's Eikosany as two complementary extended Dekanies
+# See _Microtonality and the Tuning Systems of Erv Wilson_, pages 127 - 131
+# for the process used to create these scales
 print(grady_a <- ps_scale_table(c(
   "1x3x11",
   "1x9",
@@ -60,6 +58,7 @@ print(grady_a <- ps_scale_table(c(
   "3x7x11",
   "1x7x9"
 )))
+print(grady_a_offsets <- offset_matrix(grady_a))
 print(grady_b <- ps_scale_table(c(
   "3x5x11",
   "1x5x9",
@@ -74,4 +73,8 @@ print(grady_b <- ps_scale_table(c(
   "3x5x7x11",
   "5x7x9"
 )))
+print(grady_b_offsets <- offset_matrix(grady_b))
+}
+\seealso{
+\code{\link[=offset_matrix]{offset_matrix()}}
 }

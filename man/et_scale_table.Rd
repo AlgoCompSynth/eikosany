@@ -17,7 +17,7 @@ octave.}
 \item{period}{The period - default is 2, for an octave}
 }
 \value{
-a \code{data.table} with eight columns:
+a \code{data.table} with six columns:
 \itemize{
 \item \code{note_name}: the note name (character)
 \item \code{ratio}: the ratio that defines the note, as a number between 1 and
@@ -27,13 +27,7 @@ for most EDOs are irrational, so this is an approximation.
 \item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
 \item \code{interval_cents}: interval between this note and the previous note
 \item \code{degree}: scale degree from zero to (number of notes) - 1
-\item \code{key_12EDO}: note name for closest 12EDO note. Note that because
-most synthesizers do not allow returning relative to the C in the next
-octave up, the offset will be above B for such a note.
-\item \code{offset_cents}: offset in cents from \code{key_12EDO}
 }
-
-\emph{Note: offsets are meaningless if \code{period} is greater than 2, so in that case they are not computed!}
 }
 \description{
 Creates a scale table for equal divisions of a
