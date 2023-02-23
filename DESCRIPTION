@@ -31,3 +31,4 @@ Depends:
     R (>= 3.5.0)
 Remotes: 
     AlgoCompSynth/pichor
+LazyData: true
