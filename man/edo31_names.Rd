@@ -3,7 +3,7 @@
 \docType{data}
 \name{edo31_names}
 \alias{edo31_names}
-\title{Note names for 31EDO:}
+\title{Note names for 31EDO}
 \format{
 \subsection{\code{edo31_names}}{
 
