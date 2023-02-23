@@ -5,7 +5,8 @@
 \title{Create Equal-Tempered Scale Table}
 \usage{
 et_scale_table(
-  note_names = c("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"),
+  note_names = c("C", "C#|Db", "D", "D#|Eb", "E", "F", "F#|Gb", "G", "G#|Ab", "A",
+    "A#|Bb", "B"),
   period = 2
 )
 }

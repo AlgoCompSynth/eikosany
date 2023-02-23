@@ -3,7 +3,7 @@
 \docType{data}
 \name{edo12_names}
 \alias{edo12_names}
-\title{Note name datasets}
+\title{Note names for 12EDO}
 \format{
 \subsection{\code{edo12_names}}{
 
@@ -22,7 +22,7 @@ specify note names. As a convenience, the \code{eikosany} package includes
 data sets for \verb{12EDO}, \verb{19EDO}, and \verb{31EDO}.
 }
 \details{
-About the note names: even in 2023, code often breaks when given
+Even in 2023, code often breaks when given
 characters outside the 7-bit international standard. So we don't even
 have flats, let alone half-flats, half-sharps, naturals, or any of the
 other symbols alternate tuning theorists have proposed.
@@ -31,7 +31,5 @@ So for scales created with equal divisions of the octave, we use a
 "/b" for a half-flat, "b" for a flat, "bb" for a double-flat, /#"
 for a half-sharp, "#" for a sharp. and "##" for a double-sharp. Thanks
 in advance for your understanding.
-
-Note names for 12EDO:
 }
 \keyword{datasets}
