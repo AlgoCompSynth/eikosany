@@ -1,6 +1,6 @@
 Package: eikosany
 Title: Algorithmic Composition With Erv Wilson's Combination Product Sets
-Version: 0.0.0.9000
+Version: 0.4.9.9000
 Authors@R: 
     person("M. Edward (Ed)", "Borasky", , "znmeb@algocompsynth.com",
     role = c("aut", "cre"))
