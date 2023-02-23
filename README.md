@@ -1,5 +1,7 @@
 
-# eikosany - Algorithmic Composition With Erv Wilson’s Combination Product Sets
+# eikosany - Algorithmic Composition With Erv Wilson’s Combination Product
+
+Sets
 
 ## Overview
 
@@ -9,9 +11,9 @@ to ***complement*** other microtonal composition tools, not replace any
 of them.
 
 About the name: an *Eikosany* is a 20-note scale derived by Erv Wilson
-from the six harmonic factors. Although any six factors can be used, the
-most commonly encounterered Eikosany uses the first six odd numbers: 1,
-3, 5, 7, 9 and 11.
+from six harmonic factors. Although any six factors can be used, the
+most commonly encountered Eikosany uses the first six odd numbers: 1, 3,
+5, 7, 9 and 11.
 
 ## Other tools
 
@@ -24,9 +26,9 @@ most commonly encounterered Eikosany uses the first six odd numbers: 1,
   This is a web-based tool for working with musical scales.
 
 - [Leimma and Apotome](https://isartum.net/). These tools, by [Khyam
-  Allami](https://khyamallami.com/) and [Counterpoint](https://ctpt.co/)
-  are browser-based applications for creating microtonal scales and
-  making generative music with them.
+  Allami](https://khyamallami.com/) and
+  [Counterpoint](https://ctpt.co/), are browser-based applications for
+  creating microtonal scales and making generative music with them.
 
 - [ODDSound
   MTS-ESP](https://oddsound.com/mtsespsuite.phphttps://oddsound.com/mtsespsuite.php).
@@ -99,7 +101,7 @@ I have two main motivations:
     For example, much of Wilson’s work consists of multi-dimensional
     graph structures drawn on flat paper. He did build physical
     three-dimensional models of some of them, but some can’t even be
-    rendered in three dimension. And the graph theory operations that
+    rendered in three dimensions. And the graph theory operations that
     generated them and musical ways to traverse them are not at all
     obvious.
 
@@ -136,31 +138,39 @@ I have two main motivations:
 ## Milestones
 
 The ultimate goal of this package is to compose music using Combination
-Product Set (CPS) scales. There are three milestones on that path:
+Product Set (CPS) scales and other Wilsonic constructs. There are three
+milestones on that path:
 
 - [v0.5.0](https://github.com/AlgoCompSynth/eikosany/milestone/1):
-  synthesizing tones in a CPS scale to WAV files that can be used in a
-  sample-based workflow,
+  - computing scale tables, interval tables, keyboard maps and chord
+    tables from definitions of combination product sets and
+    equal-tempered scales,
+  - creating full-keyboard `.scl` files for synthesizers that can use
+    them, like the Korg Minilogue XD,
+  - plotting keyboard maps of chords for retuned synthesizers, and
+  - capturing samples from retuned synthesizers and publishing them on
+    [Bandcamp](https://algocompsynth.bandcamp.com/).
 - [v0.7.5](https://github.com/AlgoCompSynth/eikosany/milestone/2):
-  creating MIDI files that can be imported into a DAW for editing and
-  music production, and
-- [v0.9.0](https://github.com/AlgoCompSynth/eikosany/milestone/3): tools
-  for creating and traversing diagrams of CPS scales and chords, using
-  DiagrammeR (Iannone 2022).
+  coding the full range of Erv Wilson’s concepts and graphics - keyboard
+  layouts, lattice diagrams, the scale tree, moments of symmetry, etc.
+- [v0.9.0](https://github.com/AlgoCompSynth/eikosany/milestone/3):
+  algorithms for musical composition by traversing Wilsonic graph
+  structures and emitting scores in computer-readable formats such as
+  MIDI and Open Sound Control as well as human-readable formats.
 
-## Update 2023-02-19
+## Update 2023-02-23
 
 Mostly because of some hassles getting the Minilogue XD retuned to the
 1-3-5-7-9-11 Eikosany, the contents of the v0.5.0 milestone have changed
-rather drastically. But there is now a due date - Friday, 2023-02-24, a
+rather drastically. But there is now a due date - Friday, 2023-03-03, a
 feature freeze is in place and I’m wrapping up the documentation. The
 `pkgdown` site is active and you can watch things happen at
 <https://algocompsynth.github.io/eikosany/>.
 
 Much of the good stuff - the diagrams, and the algorithms for exploring
-Wilson scales and generating scores that use them - will be in the
-v0.7.5 release. I don’t have a firm release date yet but I’m aiming for
-the end of May.
+Wilson scales and generating scores that use them - will be in future
+releases. I don’t have firm release dates yet but I’m aiming for the
+beginning of May for v0.9.0.
 
 ## References
 
@@ -170,13 +180,6 @@ the end of May.
 
 Borasky, M. Edward (Ed). 2021. “When Harry Met Iannis.”
 <https://algocompsynth.bandcamp.com/album/when-harry-met-iannis>.
-
-</div>
-
-<div id="ref-Iannone2022a" class="csl-entry">
-
-Iannone, Richard. 2022. *DiagrammeR: Graph/Network Visualization*.
-<https://CRAN.R-project.org/package=DiagrammeR>.
 
 </div>
 
