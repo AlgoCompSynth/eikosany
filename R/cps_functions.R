@@ -441,16 +441,16 @@ cps_scale_table <-
 
 et_scale_table <- function(note_names = c(
   "C",
-  "C#",
+  "C#|Db",
   "D",
-  "D#",
+  "D#|Eb",
   "E",
   "F",
-  "F#",
+  "F#|Gb",
   "G",
-  "G#",
+  "G#|Ab",
   "A",
-  "A#",
+  "A#|Bb",
   "B"
 ), period = 2) {
   note_name <- note_names
