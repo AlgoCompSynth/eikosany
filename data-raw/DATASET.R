@@ -12,8 +12,7 @@ edo12_names <- c(
   "G#|Ab",
   "A",
   "A#|Bb",
-  "B",
-  "C"
+  "B"
 )
 usethis::use_data(edo12_names, overwrite = TRUE)
 
@@ -75,7 +74,7 @@ edo31_names <- c(
 )
 usethis::use_data(edo31_names, overwrite = TRUE)
 
-et_bohlen_pierce_names <- c(
+bohlen_pierce_et_names <- c(
   "C",
   "C#|Db",
   "D",
@@ -88,7 +87,6 @@ et_bohlen_pierce_names <- c(
   "J",
   "A",
   "A#|Bb",
-  "B",
-  "C"
+  "B"
 )
-usethis::use_data(et_bohlen_pierce_names, overwrite = TRUE)
+usethis::use_data(bohlen_pierce_et_names, overwrite = TRUE)

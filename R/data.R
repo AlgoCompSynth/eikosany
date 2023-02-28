@@ -78,7 +78,7 @@
 #' for a half-sharp, "#" for a sharp. and "##" for a double-sharp. Thanks
 #' in advance for your understanding.
 #'
-#' @format ## `et_bohlen_pierce_names`
+#' @format ## `bohlen_pierce_et_names`
 #' A character vector with 13 elements
 #' @source <https://en.wikipedia.org/wiki/Bohlen%E2%80%93Pierce_scale#Intervals_and_scale_diagrams>
-"et_bohlen_pierce_names"
+"bohlen_pierce_et_names"
