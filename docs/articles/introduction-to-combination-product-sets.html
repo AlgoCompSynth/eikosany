@@ -81,7 +81,144 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://algocompsynth.github.io/eikosany/" class="external-link">eikosany</a></span><span class="op">)</span></span></code></pre></div>
-  </main>
+<div class="section level2">
+<h2 id="alternative-tunings-overview">Alternative Tunings Overview<a class="anchor" aria-label="anchor" href="#alternative-tunings-overview"></a>
+</h2>
+<p>Unless you’re into alternative tunings, your first question is
+probably “Alternative to what?” Of course, that depends on what culture
+you call home. But for most Americans and other native English speakers,
+most Europeans, and mass-market popular music creators and audiences
+nearly everywhere, music is tuned to 12-tone equal temperament,
+abbreviated as “<em>12-TET</em>”. You will also see this tuning referred
+to as “<em>12-EDO</em>”, which stands for “twelve equal divisions of the
+octave.”</p>
+<div class="section level3">
+<h3 id="other-cultures">Other cultures<a class="anchor" aria-label="anchor" href="#other-cultures"></a>
+</h3>
+<p>So what are the alternatives? First, there are tunings from music
+that evolved in cultures other than the ancient Greek / Italian / French
+/ German mainstream (with nationalist enhancements) that now uses
+12-EDO. Notable examples are Indonesian <a href="https://en.wikipedia.org/wiki/Gamelan" title="Gamelan on Wikipedia" class="external-link"><em>gamelan</em></a>, South Indian <a href="https://en.wikipedia.org/wiki/Carnatic_music" title="Carnatic music on Wikipedia" class="external-link"><em>carnatic</em> music</a>, and
+various <a href="https://en.wikipedia.org/wiki/List_of_makams" title="List of makams on Wikipedia" class="external-link"><em>makams</em></a> from <a href="https://en.wikipedia.org/wiki/Ottoman_music" title="Ottoman music on Wikipedia" class="external-link">Ottoman music</a>.</p>
+<p>You can find detailed analyses of gamelan tunings, as well as Thai
+classical tunings and numerous theoretical and practical tunings in
+<span class="citation">(Sethares 2013)</span>. The first edition of this
+book <span class="citation">(Sethares 1998)</span> is the book that sent
+me down the alternate tunings rabbit hole in 2001.</p>
+</div>
+<div class="section level3">
+<h3 id="theorists-composers-and-performers">Theorists, composers and performers<a class="anchor" aria-label="anchor" href="#theorists-composers-and-performers"></a>
+</h3>
+<p>The other alternative tunings have been derived by theorists,
+composers, and performers over time, first as steps along the same path
+from ancient Greek music to 12-EDO claiming the dominant market share it
+has today, and since then, as a counter to said market share. There are
+two main types of such alternative tunings in use today.</p>
+<p>The first is equal divisions of the octave with more than twelve
+notes, generally called “N-TET” or “N-EDO”. For example, quarter-tone
+tunings are <em>24-EDO</em>. Musicians create tunings of this kind for a
+variety of reasons, most often to provide more harmonic possibilities
+without giving up the ability to modulate to different keys.</p>
+<p>Two such tunings that have achieved serious usage are <a href="https://en.wikipedia.org/wiki/19_equal_temperament" title="19 equal temperament on Wikipedia" class="external-link"><em>19-EDO</em></a> and <a href="https://en.wikipedia.org/wiki/31_equal_temperament" title="31 equal temperament on Wikipedia" class="external-link"><em>31-EDO</em></a>. If you’re
+curious about such tunings, function <code>et_scale_table</code> in this
+package can create scale tables for them, and function
+<code>keyboard_map</code> can create a mapping for such a scale to a
+synthesizer keyboard.</p>
+<p>Here’s what the 19-EDO scale table and keyboard map look like:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"edo19_names"</span><span class="op">)</span></span>
+<span><span class="va">edo19_scale_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/et_scale_table.html">et_scale_table</a></span><span class="op">(</span><span class="va">edo19_names</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">edo19_scale_table</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     note_name    ratio ratio_frac ratio_cents interval_cents degree</span></span>
+<span><span class="co">#&gt;  1:         C 1.000000          1     0.00000             NA      0</span></span>
+<span><span class="co">#&gt;  2:        C# 1.037155    977/942    63.15789       63.15789      1</span></span>
+<span><span class="co">#&gt;  3:        Db 1.075691    739/687   126.31579       63.15789      2</span></span>
+<span><span class="co">#&gt;  4:         D 1.115658    627/562   189.47368       63.15789      3</span></span>
+<span><span class="co">#&gt;  5:        D# 1.157110   1009/872   252.63158       63.15789      4</span></span>
+<span><span class="co">#&gt;  6:        Eb 1.200103  2333/1944   315.78947       63.15789      5</span></span>
+<span><span class="co">#&gt;  7:         E 1.244693   1114/895   378.94737       63.15789      6</span></span>
+<span><span class="co">#&gt;  8:     E#|Fb 1.290939  1553/1203   442.10526       63.15789      7</span></span>
+<span><span class="co">#&gt;  9:         F 1.338904  1442/1077   505.26316       63.15789      8</span></span>
+<span><span class="co">#&gt; 10:        F# 1.388651   1297/934   568.42105       63.15789      9</span></span>
+<span><span class="co">#&gt; 11:        Gb 1.440247  1639/1138   631.57895       63.15789     10</span></span>
+<span><span class="co">#&gt; 12:         G 1.493759   1077/721   694.73684       63.15789     11</span></span>
+<span><span class="co">#&gt; 13:        G# 1.549260  2406/1553   757.89474       63.15789     12</span></span>
+<span><span class="co">#&gt; 14:        Ab 1.606822    895/557   821.05263       63.15789     13</span></span>
+<span><span class="co">#&gt; 15:         A 1.666524  3893/2336   884.21053       63.15789     14</span></span>
+<span><span class="co">#&gt; 16:        A# 1.728444  1744/1009   947.36842       63.15789     15</span></span>
+<span><span class="co">#&gt; 17:        Bb 1.792664   1124/627  1010.52632       63.15789     16</span></span>
+<span><span class="co">#&gt; 18:         B 1.859271   1123/604  1073.68421       63.15789     17</span></span>
+<span><span class="co">#&gt; 19:     B#|Cb 1.928352   1884/977  1136.84211       63.15789     18</span></span>
+<span><span class="co">#&gt; 20:        C' 2.000000          2  1200.00000       63.15789     19</span></span>
+<span><span class="va">edo19_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/keyboard_map.html">keyboard_map</a></span><span class="op">(</span><span class="va">edo19_scale_table</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">edo19_keyboard_map</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      note_number key_name key_octave note_name ratio_frac degree octave</span></span>
+<span><span class="co">#&gt;   1:           0        C         -1        Bb   1124/627     16      0</span></span>
+<span><span class="co">#&gt;   2:           1       C#         -1         B   1123/604     17      0</span></span>
+<span><span class="co">#&gt;   3:           2        D         -1     B#|Cb   1884/977     18      0</span></span>
+<span><span class="co">#&gt;   4:           3       D#         -1         C          1      0      1</span></span>
+<span><span class="co">#&gt;   5:           4        E         -1        C#    977/942      1      1</span></span>
+<span><span class="co">#&gt;  ---                                                                   </span></span>
+<span><span class="co">#&gt; 124:         123       D#          9         E   1114/895      6      7</span></span>
+<span><span class="co">#&gt; 125:         124        E          9     E#|Fb  1553/1203      7      7</span></span>
+<span><span class="co">#&gt; 126:         125        F          9         F  1442/1077      8      7</span></span>
+<span><span class="co">#&gt; 127:         126       F#          9        F#   1297/934      9      7</span></span>
+<span><span class="co">#&gt; 128:         127        G          9        Gb  1639/1138     10      7</span></span>
+<span><span class="co">#&gt;            freq     cents ref_keyname ref_octave ref_offsets</span></span>
+<span><span class="co">#&gt;   1:   29.31292  2210.526          A#          1          11</span></span>
+<span><span class="co">#&gt;   2:   30.40205  2273.684           B          1         -26</span></span>
+<span><span class="co">#&gt;   3:   31.53164  2336.842           B          1          37</span></span>
+<span><span class="co">#&gt;   4:   32.70320  2400.000           C          2           0</span></span>
+<span><span class="co">#&gt;   5:   33.91828  2463.158          C#          2         -37</span></span>
+<span><span class="co">#&gt;  ---                                                        </span></span>
+<span><span class="co">#&gt; 124: 2605.14722  9978.947           E          8         -21</span></span>
+<span><span class="co">#&gt; 125: 2701.94158 10042.105           E          8          42</span></span>
+<span><span class="co">#&gt; 126: 2802.33234 10105.263           F          8           5</span></span>
+<span><span class="co">#&gt; 127: 2906.45312 10168.421          F#          8         -32</span></span>
+<span><span class="co">#&gt; 128: 3014.44252 10231.579          F#          8          32</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="just-intonation">Just intonation<a class="anchor" aria-label="anchor" href="#just-intonation"></a>
+</h3>
+<p>The other main class of derived tunings is called <a href="https://en.wikipedia.org/wiki/Just_intonation" title="Just intonation on Wikipedia" class="external-link"><em>just intonation</em></a>. Just
+intonation attempts to create perfect harmonies by dividing the octave
+into unequal intervals using ratios of small integers. For example, the
+just perfect fifth is 3/2, the just perfect fourth is 4/3, and the just
+major third is 5/4.</p>
+<p>If you’ve heard a barbershop quartet, you’ve heard just intonation.
+Combination product sets are a form of just intonation.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="combination-product-sets">Combination Product Sets<a class="anchor" aria-label="anchor" href="#combination-product-sets"></a>
+</h2>
+<p>Combination product sets <span class="citation">(Narushima 2019,
+chap. 6)</span> are just one of theoretician Erv Wilson’s tuning
+constructs. The current release, v0.5.0, is focused on them, and the
+ability to play music with them on synthesizers that can be retuned,
+such as the <a href="https://www.korg.com/us/products/synthesizers/minilogue_xd/" title="Korg Minilogue XD web page" class="external-link">Korg Minilogue XD</a>, the <a href="https://aodyo.com/anyma-phi/" title="Aodyo Anyma Phi web page" class="external-link">Aodyo Anyma Phi</a>, and the <a href="https://www.ashunsoundmachines.com/" title="Ashun Sound Machines home page" class="external-link">Ashun Sound Machines</a>
+Hydrasynth.</p>
+</div>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-narushima2019microtonality" class="csl-entry">
+Narushima, T. 2019. <em>Microtonality and the Tuning Systems of Erv
+Wilson</em>. Routledge Studies in Music Theory. Taylor &amp; Francis
+Limited.
+</div>
+<div id="ref-sethares1998tuning" class="csl-entry">
+Sethares, W. A. 1998. <em>Tuning, Timbre, Spectrum, Scale</em>. Springer
+London.
+</div>
+<div id="ref-sethares2013tuning" class="csl-entry">
+———. 2013. <em>Tuning, Timbre, Spectrum, Scale</em>. Springer London.
+</div>
+</div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
