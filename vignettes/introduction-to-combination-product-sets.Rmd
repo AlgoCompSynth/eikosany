@@ -1,10 +1,14 @@
 ---
 title: "Introduction to Combination Product Sets"
 output: rmarkdown::html_vignette
+bibliography: eikosany.bibtex
 vignette: >
   %\VignetteIndexEntry{Introduction to Combination Product Sets}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, include = FALSE}
@@ -17,3 +21,40 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(eikosany)
 ```
+
+## Alternative Tunings Overview
+
+Unless you're into alternative tunings, your first question is probably
+"Alternative to what?" Of course, that depends on what culture you call
+home. But for most Americans and other native English speakers, most
+Europeans, and mass-market popular music performers and audiences nearly
+everywhere, music is tuned to 12-tone equal temperament, abbreviated as
+"*12-TET*". You will also see this tuning referred to as "*12-EDO*",
+which stands for "twelve equal divisions of the octave."
+
+So what are the alternatives? First, there are tunings from music that
+evolved in cultures other than the ancient Greek / Italian / French /
+German mainstream (with nationalist enhancements) that now use 12-EDO.
+Notable examples are Indonesian
+[*gamelan*](https://en.wikipedia.org/wiki/Gamelan "Gamelan on Wikipedia"),
+South Indian [*carnatic*
+music](https://en.wikipedia.org/wiki/Carnatic_music "Carnatic music on Wikipedia"),
+and various
+[*makams*](https://en.wikipedia.org/wiki/List_of_makams "List of makams on Wikipedia")
+from [Ottoman
+music](https://en.wikipedia.org/wiki/Ottoman_music "Ottoman music on Wikipedia").
+
+The other alternative tunings have been derived by theorists, composers,
+and performers over time, first on the path from ancient Greek music to
+12-EDO claiming the dominant market share it has today, and since then,
+as a counter to said market share. There are two main types of such
+alternative tunings in use today.
+
+The first is equal divisions of the octave with more than twelve notes,
+generally called "N-TET" or "N-EDO". For example, quarter-tone scales
+are *24-EDO*. Musicians create scales of this kind for a variety of
+reasons, most often to provide more harmonic possibilities without
+giving up the ability to modulate to different keys. Two such scales
+that have achieved serious usage are
+[*19-EDO*](https://en.wikipedia.org/wiki/19_equal_temperament "19 equal temperament on Wikipedia")and
+[*31-EDO*](https://en.wikipedia.org/wiki/31_equal_temperament "31 equal temperament on Wikipedia").
