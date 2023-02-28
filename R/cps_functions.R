@@ -377,7 +377,7 @@ cps_scale_table <-
 #' print(edo31 <- et_scale_table(edo31_names))
 #'
 #' # equal-tempered Bohlen-Pierce
-#' print(bohlen_pierce <- et_scale_table(bohlen_pierce_et_names, period = 3))
+#' print(bohlen_pierce_et <- et_scale_table(bohlen_pierce_et_names, period = 3))
 
 et_scale_table <- function(note_names = c(
   "C",
