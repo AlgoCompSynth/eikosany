@@ -27,14 +27,16 @@ library(eikosany)
 Unless you're into alternative tunings, your first question is probably
 "Alternative to what?" Of course, that depends on what culture you call
 home. But for most Americans and other native English speakers, most
-Europeans, and mass-market popular music performers and audiences nearly
+Europeans, and mass-market popular music creators and audiences nearly
 everywhere, music is tuned to 12-tone equal temperament, abbreviated as
 "*12-TET*". You will also see this tuning referred to as "*12-EDO*",
 which stands for "twelve equal divisions of the octave."
 
+### Other cultures
+
 So what are the alternatives? First, there are tunings from music that
 evolved in cultures other than the ancient Greek / Italian / French /
-German mainstream (with nationalist enhancements) that now use 12-EDO.
+German mainstream (with nationalist enhancements) that now uses 12-EDO.
 Notable examples are Indonesian
 [*gamelan*](https://en.wikipedia.org/wiki/Gamelan "Gamelan on Wikipedia"),
 South Indian [*carnatic*
@@ -44,17 +46,67 @@ and various
 from [Ottoman
 music](https://en.wikipedia.org/wiki/Ottoman_music "Ottoman music on Wikipedia").
 
+You can find detailed analyses of gamelan tunings, as well as Thai
+classical tunings and numerous theoretical and practical tunings in
+[@sethares2013tuning]. The first edition of this book
+[@sethares1998tuning] is the book that sent me down the alternate
+tunings rabbit hole in 2001.
+
+### Theorists, composers and performers
+
 The other alternative tunings have been derived by theorists, composers,
-and performers over time, first on the path from ancient Greek music to
-12-EDO claiming the dominant market share it has today, and since then,
-as a counter to said market share. There are two main types of such
-alternative tunings in use today.
+and performers over time, first as steps along the same path from
+ancient Greek music to 12-EDO claiming the dominant market share it has
+today, and since then, as a counter to said market share. There are two
+main types of such alternative tunings in use today.
 
 The first is equal divisions of the octave with more than twelve notes,
-generally called "N-TET" or "N-EDO". For example, quarter-tone scales
-are *24-EDO*. Musicians create scales of this kind for a variety of
+generally called "N-TET" or "N-EDO". For example, quarter-tone tunings
+are *24-EDO*. Musicians create tunings of this kind for a variety of
 reasons, most often to provide more harmonic possibilities without
-giving up the ability to modulate to different keys. Two such scales
-that have achieved serious usage are
-[*19-EDO*](https://en.wikipedia.org/wiki/19_equal_temperament "19 equal temperament on Wikipedia")and
+giving up the ability to modulate to different keys.
+
+Two such tunings that have achieved serious usage are
+[*19-EDO*](https://en.wikipedia.org/wiki/19_equal_temperament "19 equal temperament on Wikipedia")
+and
 [*31-EDO*](https://en.wikipedia.org/wiki/31_equal_temperament "31 equal temperament on Wikipedia").
+If you're curious about such tunings, function `et_scale_table` in this
+package can create scale tables for them, and function `keyboard_map`
+can create a mapping for such a scale to a synthesizer keyboard.
+
+Here's what the 19-EDO scale table and keyboard map look like:
+
+```{r}
+data("edo19_names")
+edo19_scale_table <- et_scale_table(edo19_names)
+print(edo19_scale_table)
+edo19_keyboard_map <- keyboard_map(edo19_scale_table)
+print(edo19_keyboard_map)
+```
+
+### Just intonation
+
+The other main class of derived tunings is called [*just
+intonation*](https://en.wikipedia.org/wiki/Just_intonation "Just intonation on Wikipedia").
+Just intonation attempts to create perfect harmonies by dividing the
+octave into unequal intervals using ratios of small integers. For
+example, the just perfect fifth is 3/2, the just perfect fourth is 4/3,
+and the just major third is 5/4.
+
+If you've heard a barbershop quartet, you've heard just intonation.
+Combination product sets are a form of just intonation.
+
+## Combination Product Sets
+
+Combination product sets [@narushima2019microtonality, chapter 6] are
+just one of theoretician Erv Wilson's tuning constructs. The current
+release, v0.5.0, is focused on them, and the ability to play music with
+them on synthesizers that can be retuned, such as the [Korg Minilogue
+XD](https://www.korg.com/us/products/synthesizers/minilogue_xd/ "Korg Minilogue XD web page"),
+the [Aodyo Anyma
+Phi](https://aodyo.com/anyma-phi/ "Aodyo Anyma Phi web page"), and the
+[Ashun Sound
+Machines](https://www.ashunsoundmachines.com/ "Ashun Sound Machines home page")
+Hydrasynth.
+
+## References
