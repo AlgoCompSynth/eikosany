@@ -617,15 +617,17 @@ cps_chord_table <- function(scale_table) {
 #' @returns the keyboard map. This is a data.table with eight columns:
 #' \itemize{
 #' \item `note_number`: the MIDI note number from `.NN_MIN` through `.NN_MAX`
-#' \item `key_name`: note name of the key in 12EDO. This is the key you'd
+#' \item `name_12edo`: note name of the key in 12EDO. This is the key you'd
 #' normally press to play this note number
-#' \item `key_octave`: the octave the key normally plays
+#' \item `octave_12edo`: the octave the key normally plays
 #' \item `note_name`: the note name from the scale table
-#' \item `ratio_frac`: ratio for the note as a vulgar fraction
+#' \item `ratio_frac`: ratio for the note as a vulgar fraction. Note that for
+#' equal tempered scales this is usually an approximation to an irrational
+#' number. The algorithm used appears to give six decimal places of accuracy.
 #' \item `degree`: the scale degree of the note
 #' \item `octave`: the octave number of the note
 #' \item `freq`: the frequency in Hz
-#' \item `cents`: cents above default MIDI note `.NN_MIN`, which has frequency
+#' \item `cents`: cents above lowest MIDI note `.NN_MIN`, which has frequency
 #' `.FREQ_MIN`.
 #' \item `ref_keyname`: some synthesizers, including the Korg Minilogue XD,
 #' let you retune a key as an offset in cents from another reference key.
@@ -637,72 +639,82 @@ cps_chord_table <- function(scale_table) {
 #' middle C with frequency `.FREQ_MIDDLE_C`is mapped to MIDI note number
 #' `.NN_MIDDLE_C` and scale degree 0. With the current constants this is the
 #' same as it is on 12EDO with A440 on note 69. This note is 6000 cents above
-#' MIDI note number 0.
+#' MIDI note number 0 in 12EDO.
 #'
 #' Normally you would only use this to remap a keyboard to a scale with
 #' more than 12 notes per octave. For scales with 12 or fewer notes to the
-#' octave, it's easier to remap all octaves using the offsets provided in
-#' the scale table.
+#' octave, it's easier to remap all octaves using the offsets computed with
+#' offset_matrix!
 #' @examples
 #'
+#' # make sure we can print a whole keyboard map
+#' options(max.print = 2000)
+#'
 #' eikosany <- cps_scale_table()
-#' print(eikosany_keyboard_map <- keyboard_map(eikosany))
+#' print(eikosany_keyboard_map <- keyboard_map(eikosany), nrows = 128)
 #'
 #' # 12-EDO for sanity check
-#' print(vanilla_keyboard_map <- keyboard_map(et_scale_table()))
+#' print(vanilla_keyboard_map <- keyboard_map(et_scale_table()), nrows = 128)
 #'
 #' # check middle C setting
 #' print(
 #'   eikosany_keyboard_map_c3 <-
-#'     keyboard_map(cps_scale_table(), middle_c_octave = 3))
+#'     keyboard_map(cps_scale_table(), middle_c_octave = 3), nrows = 128)
+#'
+#' # Bohlen-Pierce (13 equal divisions of a perfect twelfth aka "tritave")
+#' bohlen_pierce_et_scale <- et_scale_table(bohlen_pierce_et_names, period = 3)
+#' print(bohlen_pierce_et_map <-
+#'   keyboard_map(bohlen_pierce_et_scale), nrows = 128)
 
 keyboard_map <- function(scale_table, middle_c_octave = 4) {
+
+  # get scale period in cents
+  period_cents <- scale_table$ratio_cents[nrow(scale_table)]
+
+  # drop last row of scale table
+  temp <- .drop_last_row(scale_table)
 
   # create note number vector
   note_number <- .NN_RANGE
   note_numbers <- length(note_number)
 
-  # drop last row of scale table
-  temp <- .drop_last_row(scale_table)
-
   # create indices
   degrees <- nrow(temp)
   degrees_12edo <- 12
-  octave <- (note_number - .NN_MIDDLE_C) %/% degrees
-  key_octave <- (note_number - .NN_MIDDLE_C) %/% degrees_12edo
+  period_number <- (note_number - .NN_MIDDLE_C) %/% degrees
+  octave_12edo <- (note_number - .NN_MIDDLE_C) %/% degrees_12edo
   degree <- (note_number - .NN_MIDDLE_C) %% degrees
   degree_12EDO <- (note_number - .NN_MIDDLE_C) %% degrees_12edo
 
   # note names
-  note_name <- key_name <- ratio_frac <-
+  note_name <- name_12edo <- ratio_frac <-
     vector(mode = "character", length = note_numbers)
   note_name[note_number + 1] <- temp$note_name[degree + 1]
   ratio_frac[note_number + 1] <- temp$ratio_frac[degree + 1]
-  key_name[note_number + 1] <- .NAMES_12EDO[degree_12EDO + 1]
+  name_12edo[note_number + 1] <- .NAMES_12EDO[degree_12EDO + 1]
 
   # cents and frequencies
   cents <-
-    temp$ratio_cents[degree + 1] + octave * 1200 + .CENTS_MIDDLE_C
+    temp$ratio_cents[degree + 1] + period_number * period_cents + .CENTS_MIDDLE_C
   freq <- .cents2ratio(cents) * .FREQ_MIN
 
   # reference keys and offsets
   rcents <- round(cents, 0) # round for printing / offset calculations
   ref_semitones <- rcents %/% 100
-  ref_offsets <- rcents %% 100
+  ref_offset <- rcents %% 100
   ref_octave <- ref_semitones %/% degrees_12edo
   ref_degree <- ref_semitones %% degrees_12edo
 
-  index2increment <- ref_offsets > 50
-  ref_offsets[index2increment] <- ref_offsets[index2increment] - 100
+  index2increment <- ref_offset > 50
+  ref_offset[index2increment] <- ref_offset[index2increment] - 100
   ref_degree[index2increment] <- ref_degree[index2increment] + 1
   index2overflow <- ref_degree == degrees_12edo
   ref_octave[index2overflow] <- ref_octave[index2overflow] + 1
   ref_degree[index2overflow] <- 0
   ref_keyname <- .NAMES_12EDO[ref_degree + 1]
 
-  # fix octave numbers
-  octave <- octave + middle_c_octave
-  key_octave <- key_octave + middle_c_octave
+  # fix reference octave numbers
+  octave_12edo <- octave_12edo + middle_c_octave
 
   # replace out of range values
   index_low <- cents < .CENTS_MIN
@@ -715,17 +727,17 @@ keyboard_map <- function(scale_table, middle_c_octave = 4) {
   # build and return the map
   keyboard_map <- data.table::data.table(
     note_number,
-    key_name,
-    key_octave,
+    name_12edo,
+    octave_12edo,
     note_name,
     ratio_frac,
     degree,
-    octave,
+    period_number,
     freq,
     cents,
     ref_keyname,
     ref_octave,
-    ref_offsets
+    ref_offset
   )
   data.table::setkey(keyboard_map, note_number)
 

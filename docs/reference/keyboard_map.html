@@ -77,15 +77,17 @@ function is 4, but other software can use 3 or even some other number</p></dd>
     
 
 <p>the keyboard map. This is a data.table with eight columns:</p><ul><li><p><code>note_number</code>: the MIDI note number from <code>.NN_MIN</code> through <code>.NN_MAX</code></p></li>
-<li><p><code>key_name</code>: note name of the key in 12EDO. This is the key you'd
+<li><p><code>name_12edo</code>: note name of the key in 12EDO. This is the key you'd
 normally press to play this note number</p></li>
-<li><p><code>key_octave</code>: the octave the key normally plays</p></li>
+<li><p><code>octave_12edo</code>: the octave the key normally plays</p></li>
 <li><p><code>note_name</code>: the note name from the scale table</p></li>
-<li><p><code>ratio_frac</code>: ratio for the note as a vulgar fraction</p></li>
+<li><p><code>ratio_frac</code>: ratio for the note as a vulgar fraction. Note that for
+equal tempered scales this is usually an approximation to an irrational
+number. The algorithm used appears to give six decimal places of accuracy.</p></li>
 <li><p><code>degree</code>: the scale degree of the note</p></li>
 <li><p><code>octave</code>: the octave number of the note</p></li>
 <li><p><code>freq</code>: the frequency in Hz</p></li>
-<li><p><code>cents</code>: cents above default MIDI note <code>.NN_MIN</code>, which has frequency
+<li><p><code>cents</code>: cents above lowest MIDI note <code>.NN_MIN</code>, which has frequency
 <code>.FREQ_MIN</code>.</p></li>
 <li><p><code>ref_keyname</code>: some synthesizers, including the Korg Minilogue XD,
 let you retune a key as an offset in cents from another reference key.
@@ -99,98 +101,1074 @@ This column is the name of that reference key.</p></li>
 middle C with frequency <code>.FREQ_MIDDLE_C</code>is mapped to MIDI note number
 <code>.NN_MIDDLE_C</code> and scale degree 0. With the current constants this is the
 same as it is on 12EDO with A440 on note 69. This note is 6000 cents above
-MIDI note number 0.</p>
+MIDI note number 0 in 12EDO.</p>
 <p>Normally you would only use this to remap a keyboard to a scale with
 more than 12 notes per octave. For scales with 12 or fewer notes to the
-octave, it's easier to remap all octaves using the offsets provided in
-the scale table.</p>
+octave, it's easier to remap all octaves using the offsets computed with
+offset_matrix!</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># make sure we can print a whole keyboard map</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>max.print <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="cps_scale_table.html">cps_scale_table</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu">keyboard_map</span><span class="op">(</span><span class="va">eikosany</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number key_name key_octave note_name ratio_frac degree octave</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:           0        C         -1     1x3x5          1      0      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:           1       C#         -1    5x9x11      33/32      1      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:           2        D         -1     1x7x9      21/20      2      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:           3       D#         -1    1x3x11      11/10      3      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:           4        E         -1     3x5x9        9/8      4      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124:         123       D#          9    1x3x11      11/10      3      7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125:         124        E          9     3x5x9        9/8      4      7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126:         125        F          9     1x5x7        7/6      5      7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127:         126       F#          9    3x9x11      99/80      6      7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128:         127        G          9    1x7x11      77/60      7      7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            freq     cents ref_keyname ref_octave ref_offsets</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:   32.70320  2400.000           C          2           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:   33.72517  2453.273          C#          2         -47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:   34.33836  2484.467          C#          2         -16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   35.97352  2565.004           D          2         -35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   36.79110  2603.910           D          2           4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124: 2302.30497  9765.004           D          8         -35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125: 2354.63009  9803.910           D          8           4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126: 2441.83861  9866.871          D#          8         -33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127: 2590.09310  9968.914           E          8         -31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128: 2686.02247 10031.875           E          8          32</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu">keyboard_map</span><span class="op">(</span><span class="va">eikosany</span><span class="op">)</span>, nrows <span class="op">=</span> <span class="fl">128</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number name_12edo octave_12edo note_name ratio_frac degree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:           0          C           -1     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:           1         C#           -1    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:           2          D           -1     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:           3         D#           -1    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:           4          E           -1     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6:           5          F           -1     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7:           6         F#           -1    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8:           7          G           -1    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9:           8         G#           -1     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  10:           9          A           -1    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  11:          10         A#           -1     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12:          11          B           -1    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  13:          12          C            0     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  14:          13         C#            0     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15:          14          D            0    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16:          15         D#            0    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17:          16          E            0     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18:          17          F            0     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19:          18         F#            0    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20:          19          G            0    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21:          20         G#            0     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22:          21          A            0    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  23:          22         A#            0     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  24:          23          B            0    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  25:          24          C            1     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  26:          25         C#            1     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  27:          26          D            1    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  28:          27         D#            1    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  29:          28          E            1     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  30:          29          F            1    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  31:          30         F#            1     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  32:          31          G            1    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  33:          32         G#            1     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  34:          33          A            1     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  35:          34         A#            1    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  36:          35          B            1    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  37:          36          C            2     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  38:          37         C#            2     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  39:          38          D            2    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  40:          39         D#            2    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  41:          40          E            2     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  42:          41          F            2    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  43:          42         F#            2     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  44:          43          G            2    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  45:          44         G#            2     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  46:          45          A            2     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  47:          46         A#            2    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  48:          47          B            2    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  49:          48          C            3     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  50:          49         C#            3    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  51:          50          D            3     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  52:          51         D#            3    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  53:          52          E            3     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  54:          53          F            3     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  55:          54         F#            3    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  56:          55          G            3    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  57:          56         G#            3     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  58:          57          A            3     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  59:          58         A#            3    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  60:          59          B            3    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  61:          60          C            4     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  62:          61         C#            4    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  63:          62          D            4     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  64:          63         D#            4    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  65:          64          E            4     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  66:          65          F            4     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  67:          66         F#            4    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  68:          67          G            4    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  69:          68         G#            4     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  70:          69          A            4    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  71:          70         A#            4     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  72:          71          B            4    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73:          72          C            5     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  74:          73         C#            5     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  75:          74          D            5    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  76:          75         D#            5    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  77:          76          E            5     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  78:          77          F            5     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79:          78         F#            5    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  80:          79          G            5    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  81:          80         G#            5     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  82:          81          A            5    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  83:          82         A#            5     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  84:          83          B            5    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  85:          84          C            6     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  86:          85         C#            6     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  87:          86          D            6    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  88:          87         D#            6    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  89:          88          E            6     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  90:          89          F            6    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  91:          90         F#            6     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  92:          91          G            6    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  93:          92         G#            6     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  94:          93          A            6     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95:          94         A#            6    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  96:          95          B            6    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:          96          C            7     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:          97         C#            7     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:          98          D            7    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:          99         D#            7    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:         100          E            7     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102:         101          F            7    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103:         102         F#            7     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104:         103          G            7    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105:         104         G#            7     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106:         105          A            7     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107:         106         A#            7    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108:         107          B            7    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109:         108          C            8     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110:         109         C#            8    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111:         110          D            8     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112:         111         D#            8    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113:         112          E            8     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114:         113          F            8     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115:         114         F#            8    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116:         115          G            8    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117:         116         G#            8     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118:         117          A            8     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119:         118         A#            8    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120:         119          B            8    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121:         120          C            9     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122:         121         C#            9    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123:         122          D            9     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124:         123         D#            9    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125:         124          E            9     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126:         125          F            9     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127:         126         F#            9    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128:         127          G            9    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number name_12edo octave_12edo note_name ratio_frac degree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      period_number       freq     cents ref_keyname ref_octave ref_offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:            -3   32.70320  2400.000           C          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:            -3   33.72517  2453.273          C#          2        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:            -3   34.33836  2484.467          C#          2        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:            -3   35.97352  2565.004           D          2        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:            -3   36.79110  2603.910           D          2          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6:            -3   38.15373  2666.871          D#          2        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7:            -3   40.47020  2768.914           E          2        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8:            -3   41.96910  2831.875           E          2         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9:            -3   42.92294  2870.781           F          2        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  10:            -3   44.96689  2951.318          F#          2        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  11:            -3   45.78447  2982.512          F#          2        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12:            -3   47.21524  3035.785          F#          2         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  13:            -3   49.05479  3101.955           G          2          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  14:            -3   51.50753  3186.422          G#          2        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15:            -3   52.46138  3218.189          G#          2         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16:            -3   53.96027  3266.959           A          2        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17:            -3   57.23059  3368.826          A#          2        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18:            -3   58.86575  3417.596          A#          2         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19:            -3   59.95586  3449.363          A#          2         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20:            -3   62.95365  3533.830           B          2         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21:            -2   65.40639  3600.000           C          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22:            -2   67.45034  3653.273          C#          3        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  23:            -2   68.67671  3684.467          C#          3        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  24:            -2   71.94703  3765.004           D          3        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  25:            -2   73.58219  3803.910           D          3          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  26:            -2   76.30746  3866.871          D#          3        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  27:            -2   80.94041  3968.914           E          3        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  28:            -2   83.93820  4031.875           E          3         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  29:            -2   85.84589  4070.781           F          3        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  30:            -2   89.93379  4151.318          F#          3        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  31:            -2   91.56895  4182.512          F#          3        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  32:            -2   94.43048  4235.785          F#          3         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  33:            -2   98.10959  4301.955           G          3          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  34:            -2  103.01507  4386.422          G#          3        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  35:            -2  104.92275  4418.189          G#          3         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  36:            -2  107.92055  4466.959           A          3        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  37:            -2  114.46118  4568.826          A#          3        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  38:            -2  117.73150  4617.596          A#          3         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  39:            -2  119.91172  4649.363          A#          3         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  40:            -2  125.90730  4733.830           B          3         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  41:            -1  130.81278  4800.000           C          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  42:            -1  134.90068  4853.273          C#          4        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  43:            -1  137.35342  4884.467          C#          4        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  44:            -1  143.89406  4965.004           D          4        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  45:            -1  147.16438  5003.910           D          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  46:            -1  152.61491  5066.871          D#          4        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  47:            -1  161.88082  5168.914           E          4        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  48:            -1  167.87640  5231.875           E          4         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  49:            -1  171.69178  5270.781           F          4        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  50:            -1  179.86758  5351.318          F#          4        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  51:            -1  183.13790  5382.512          F#          4        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  52:            -1  188.86095  5435.785          F#          4         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  53:            -1  196.21917  5501.955           G          4          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  54:            -1  206.03013  5586.422          G#          4        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  55:            -1  209.84551  5618.189          G#          4         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  56:            -1  215.84109  5666.959           A          4        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  57:            -1  228.92237  5768.826          A#          4        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  58:            -1  235.46301  5817.596          A#          4         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  59:            -1  239.82343  5849.363          A#          4         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  60:            -1  251.81461  5933.830           B          4         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  61:             0  261.62557  6000.000           C          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  62:             0  269.80136  6053.273          C#          5        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  63:             0  274.70684  6084.467          C#          5        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  64:             0  287.78812  6165.004           D          5        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  65:             0  294.32876  6203.910           D          5          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  66:             0  305.22983  6266.871          D#          5        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  67:             0  323.76164  6368.914           E          5        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  68:             0  335.75281  6431.875           E          5         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  69:             0  343.38355  6470.781           F          5        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  70:             0  359.73515  6551.318          F#          5        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  71:             0  366.27579  6582.512          F#          5        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  72:             0  377.72191  6635.785          F#          5         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73:             0  392.43835  6701.955           G          5          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  74:             0  412.06027  6786.422          G#          5        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  75:             0  419.69101  6818.189          G#          5         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  76:             0  431.68218  6866.959           A          5        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  77:             0  457.84474  6968.826          A#          5        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  78:             0  470.92602  7017.596          A#          5         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79:             0  479.64687  7049.363          A#          5         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  80:             0  503.62921  7133.830           B          5         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  81:             1  523.25113  7200.000           C          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  82:             1  539.60273  7253.273          C#          6        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  83:             1  549.41369  7284.467          C#          6        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  84:             1  575.57624  7365.004           D          6        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  85:             1  588.65752  7403.910           D          6          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  86:             1  610.45965  7466.871          D#          6        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  87:             1  647.52327  7568.914           E          6        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  88:             1  671.50562  7631.875           E          6         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  89:             1  686.76711  7670.781           F          6        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  90:             1  719.47030  7751.318          F#          6        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  91:             1  732.55158  7782.512          F#          6        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  92:             1  755.44382  7835.785          F#          6         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  93:             1  784.87670  7901.955           G          6          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  94:             1  824.12053  7986.422          G#          6        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95:             1  839.38202  8018.189          G#          6         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  96:             1  863.36437  8066.959           A          6        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:             1  915.68948  8168.826          A#          6        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:             1  941.85204  8217.596          A#          6         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:             1  959.29374  8249.363          A#          6         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:             1 1007.25843  8333.830           B          6         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:             2 1046.50226  8400.000           C          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102:             2 1079.20546  8453.273          C#          7        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103:             2 1098.82737  8484.467          C#          7        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104:             2 1151.15249  8565.004           D          7        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105:             2 1177.31504  8603.910           D          7          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106:             2 1220.91930  8666.871          D#          7        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107:             2 1295.04655  8768.914           E          7        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108:             2 1343.01124  8831.875           E          7         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109:             2 1373.53422  8870.781           F          7        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110:             2 1438.94061  8951.318          F#          7        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111:             2 1465.10317  8982.512          F#          7        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112:             2 1510.88764  9035.785          F#          7         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113:             2 1569.75339  9101.955           G          7          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114:             2 1648.24106  9186.422          G#          7        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115:             2 1678.76404  9218.189          G#          7         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116:             2 1726.72873  9266.959           A          7        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117:             2 1831.37896  9368.826          A#          7        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118:             2 1883.70407  9417.596          A#          7         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119:             2 1918.58748  9449.363          A#          7         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120:             2 2014.51685  9533.830           B          7         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121:             3 2093.00452  9600.000           C          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122:             3 2158.41091  9653.273          C#          8        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123:             3 2197.65475  9684.467          C#          8        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124:             3 2302.30497  9765.004           D          8        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125:             3 2354.63009  9803.910           D          8          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126:             3 2441.83861  9866.871          D#          8        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127:             3 2590.09310  9968.914           E          8        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128:             3 2686.02247 10031.875           E          8         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      period_number       freq     cents ref_keyname ref_octave ref_offset</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 12-EDO for sanity check</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vanilla_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu">keyboard_map</span><span class="op">(</span><span class="fu"><a href="et_scale_table.html">et_scale_table</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number key_name key_octave note_name ratio_frac degree octave</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:           0        C         -1         C          1      0     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:           1       C#         -1     C#|Db  1461/1379      1     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:           2        D         -1         D  1714/1527      2     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:           3       D#         -1     D#|Eb  1785/1501      3     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:           4        E         -1         E    635/504      4     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124:         123       D#          9     D#|Eb  1785/1501      3      9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125:         124        E          9         E    635/504      4      9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126:         125        F          9         F  3249/2434      5      9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127:         126       F#          9     F#|Gb   1393/985      6      9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128:         127        G          9         G  2213/1477      7      9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              freq cents ref_keyname ref_octave ref_offsets</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:     8.175799     0           C          0           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     8.661957   100          C#          0           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:     9.177024   200           D          0           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:     9.722718   300          D#          0           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    10.300861   400           E          0           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124:  9956.063479 12300          D#         10           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125: 10548.081821 12400           E         10           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126: 11175.303406 12500           F         10           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127: 11839.821527 12600          F#         10           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128: 12543.853951 12700           G         10           0</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vanilla_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu">keyboard_map</span><span class="op">(</span><span class="fu"><a href="et_scale_table.html">et_scale_table</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, nrows <span class="op">=</span> <span class="fl">128</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number name_12edo octave_12edo note_name ratio_frac degree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:           0          C           -1         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:           1         C#           -1     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:           2          D           -1         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:           3         D#           -1     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:           4          E           -1         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6:           5          F           -1         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7:           6         F#           -1     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8:           7          G           -1         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9:           8         G#           -1     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  10:           9          A           -1         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  11:          10         A#           -1     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12:          11          B           -1         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  13:          12          C            0         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  14:          13         C#            0     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15:          14          D            0         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16:          15         D#            0     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17:          16          E            0         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18:          17          F            0         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19:          18         F#            0     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20:          19          G            0         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21:          20         G#            0     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22:          21          A            0         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  23:          22         A#            0     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  24:          23          B            0         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  25:          24          C            1         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  26:          25         C#            1     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  27:          26          D            1         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  28:          27         D#            1     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  29:          28          E            1         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  30:          29          F            1         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  31:          30         F#            1     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  32:          31          G            1         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  33:          32         G#            1     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  34:          33          A            1         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  35:          34         A#            1     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  36:          35          B            1         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  37:          36          C            2         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  38:          37         C#            2     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  39:          38          D            2         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  40:          39         D#            2     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  41:          40          E            2         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  42:          41          F            2         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  43:          42         F#            2     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  44:          43          G            2         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  45:          44         G#            2     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  46:          45          A            2         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  47:          46         A#            2     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  48:          47          B            2         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  49:          48          C            3         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  50:          49         C#            3     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  51:          50          D            3         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  52:          51         D#            3     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  53:          52          E            3         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  54:          53          F            3         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  55:          54         F#            3     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  56:          55          G            3         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  57:          56         G#            3     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  58:          57          A            3         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  59:          58         A#            3     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  60:          59          B            3         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  61:          60          C            4         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  62:          61         C#            4     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  63:          62          D            4         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  64:          63         D#            4     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  65:          64          E            4         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  66:          65          F            4         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  67:          66         F#            4     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  68:          67          G            4         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  69:          68         G#            4     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  70:          69          A            4         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  71:          70         A#            4     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  72:          71          B            4         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73:          72          C            5         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  74:          73         C#            5     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  75:          74          D            5         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  76:          75         D#            5     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  77:          76          E            5         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  78:          77          F            5         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79:          78         F#            5     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  80:          79          G            5         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  81:          80         G#            5     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  82:          81          A            5         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  83:          82         A#            5     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  84:          83          B            5         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  85:          84          C            6         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  86:          85         C#            6     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  87:          86          D            6         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  88:          87         D#            6     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  89:          88          E            6         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  90:          89          F            6         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  91:          90         F#            6     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  92:          91          G            6         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  93:          92         G#            6     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  94:          93          A            6         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95:          94         A#            6     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  96:          95          B            6         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:          96          C            7         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:          97         C#            7     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:          98          D            7         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:          99         D#            7     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:         100          E            7         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102:         101          F            7         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103:         102         F#            7     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104:         103          G            7         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105:         104         G#            7     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106:         105          A            7         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107:         106         A#            7     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108:         107          B            7         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109:         108          C            8         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110:         109         C#            8     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111:         110          D            8         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112:         111         D#            8     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113:         112          E            8         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114:         113          F            8         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115:         114         F#            8     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116:         115          G            8         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117:         116         G#            8     G#|Ab   1008/635      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118:         117          A            8         A  3002/1785      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119:         118         A#            8     A#|Bb   1527/857     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120:         119          B            8         B  2943/1559     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121:         120          C            9         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122:         121         C#            9     C#|Db  1461/1379      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123:         122          D            9         D  1714/1527      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124:         123         D#            9     D#|Eb  1785/1501      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125:         124          E            9         E    635/504      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126:         125          F            9         F  3249/2434      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127:         126         F#            9     F#|Gb   1393/985      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128:         127          G            9         G  2213/1477      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number name_12edo octave_12edo note_name ratio_frac degree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      period_number         freq cents ref_keyname ref_octave ref_offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:            -5     8.175799     0           C          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:            -5     8.661957   100          C#          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:            -5     9.177024   200           D          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:            -5     9.722718   300          D#          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:            -5    10.300861   400           E          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6:            -5    10.913382   500           F          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7:            -5    11.562326   600          F#          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8:            -5    12.249857   700           G          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9:            -5    12.978272   800          G#          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  10:            -5    13.750000   900           A          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  11:            -5    14.567618  1000          A#          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12:            -5    15.433853  1100           B          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  13:            -4    16.351598  1200           C          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  14:            -4    17.323914  1300          C#          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15:            -4    18.354048  1400           D          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16:            -4    19.445436  1500          D#          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17:            -4    20.601722  1600           E          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18:            -4    21.826764  1700           F          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19:            -4    23.124651  1800          F#          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20:            -4    24.499715  1900           G          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21:            -4    25.956544  2000          G#          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22:            -4    27.500000  2100           A          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  23:            -4    29.135235  2200          A#          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  24:            -4    30.867706  2300           B          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  25:            -3    32.703196  2400           C          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  26:            -3    34.647829  2500          C#          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  27:            -3    36.708096  2600           D          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  28:            -3    38.890873  2700          D#          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  29:            -3    41.203445  2800           E          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  30:            -3    43.653529  2900           F          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  31:            -3    46.249303  3000          F#          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  32:            -3    48.999429  3100           G          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  33:            -3    51.913087  3200          G#          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  34:            -3    55.000000  3300           A          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  35:            -3    58.270470  3400          A#          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  36:            -3    61.735413  3500           B          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  37:            -2    65.406391  3600           C          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  38:            -2    69.295658  3700          C#          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  39:            -2    73.416192  3800           D          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  40:            -2    77.781746  3900          D#          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  41:            -2    82.406889  4000           E          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  42:            -2    87.307058  4100           F          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  43:            -2    92.498606  4200          F#          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  44:            -2    97.998859  4300           G          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  45:            -2   103.826174  4400          G#          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  46:            -2   110.000000  4500           A          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  47:            -2   116.540940  4600          A#          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  48:            -2   123.470825  4700           B          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  49:            -1   130.812783  4800           C          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  50:            -1   138.591315  4900          C#          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  51:            -1   146.832384  5000           D          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  52:            -1   155.563492  5100          D#          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  53:            -1   164.813778  5200           E          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  54:            -1   174.614116  5300           F          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  55:            -1   184.997211  5400          F#          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  56:            -1   195.997718  5500           G          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  57:            -1   207.652349  5600          G#          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  58:            -1   220.000000  5700           A          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  59:            -1   233.081881  5800          A#          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  60:            -1   246.941651  5900           B          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  61:             0   261.625565  6000           C          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  62:             0   277.182631  6100          C#          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  63:             0   293.664768  6200           D          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  64:             0   311.126984  6300          D#          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  65:             0   329.627557  6400           E          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  66:             0   349.228231  6500           F          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  67:             0   369.994423  6600          F#          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  68:             0   391.995436  6700           G          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  69:             0   415.304698  6800          G#          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  70:             0   440.000000  6900           A          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  71:             0   466.163762  7000          A#          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  72:             0   493.883301  7100           B          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73:             1   523.251131  7200           C          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  74:             1   554.365262  7300          C#          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  75:             1   587.329536  7400           D          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  76:             1   622.253967  7500          D#          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  77:             1   659.255114  7600           E          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  78:             1   698.456463  7700           F          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79:             1   739.988845  7800          F#          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  80:             1   783.990872  7900           G          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  81:             1   830.609395  8000          G#          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  82:             1   880.000000  8100           A          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  83:             1   932.327523  8200          A#          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  84:             1   987.766603  8300           B          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  85:             2  1046.502261  8400           C          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  86:             2  1108.730524  8500          C#          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  87:             2  1174.659072  8600           D          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  88:             2  1244.507935  8700          D#          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  89:             2  1318.510228  8800           E          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  90:             2  1396.912926  8900           F          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  91:             2  1479.977691  9000          F#          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  92:             2  1567.981744  9100           G          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  93:             2  1661.218790  9200          G#          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  94:             2  1760.000000  9300           A          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95:             2  1864.655046  9400          A#          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  96:             2  1975.533205  9500           B          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:             3  2093.004522  9600           C          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:             3  2217.461048  9700          C#          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:             3  2349.318143  9800           D          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:             3  2489.015870  9900          D#          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:             3  2637.020455 10000           E          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102:             3  2793.825851 10100           F          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103:             3  2959.955382 10200          F#          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104:             3  3135.963488 10300           G          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105:             3  3322.437581 10400          G#          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106:             3  3520.000000 10500           A          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107:             3  3729.310092 10600          A#          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108:             3  3951.066410 10700           B          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109:             4  4186.009045 10800           C          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110:             4  4434.922096 10900          C#          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111:             4  4698.636287 11000           D          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112:             4  4978.031740 11100          D#          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113:             4  5274.040911 11200           E          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114:             4  5587.651703 11300           F          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115:             4  5919.910763 11400          F#          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116:             4  6271.926976 11500           G          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117:             4  6644.875161 11600          G#          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118:             4  7040.000000 11700           A          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119:             4  7458.620184 11800          A#          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120:             4  7902.132820 11900           B          9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121:             5  8372.018090 12000           C         10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122:             5  8869.844191 12100          C#         10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123:             5  9397.272573 12200           D         10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124:             5  9956.063479 12300          D#         10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125:             5 10548.081821 12400           E         10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126:             5 11175.303406 12500           F         10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127:             5 11839.821527 12600          F#         10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128:             5 12543.853951 12700           G         10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      period_number         freq cents ref_keyname ref_octave ref_offset</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check middle C setting</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">eikosany_keyboard_map_c3</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu">keyboard_map</span><span class="op">(</span><span class="fu"><a href="cps_scale_table.html">cps_scale_table</a></span><span class="op">(</span><span class="op">)</span>, middle_c_octave <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number key_name key_octave note_name ratio_frac degree octave</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:           0        C         -2     1x3x5          1      0      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:           1       C#         -2    5x9x11      33/32      1      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:           2        D         -2     1x7x9      21/20      2      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:           3       D#         -2    1x3x11      11/10      3      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:           4        E         -2     3x5x9        9/8      4      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124:         123       D#          8    1x3x11      11/10      3      6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125:         124        E          8     3x5x9        9/8      4      6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126:         125        F          8     1x5x7        7/6      5      6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127:         126       F#          8    3x9x11      99/80      6      6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128:         127        G          8    1x7x11      77/60      7      6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            freq     cents ref_keyname ref_octave ref_offsets</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:   32.70320  2400.000           C          2           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:   33.72517  2453.273          C#          2         -47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:   34.33836  2484.467          C#          2         -16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   35.97352  2565.004           D          2         -35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   36.79110  2603.910           D          2           4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124: 2302.30497  9765.004           D          8         -35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125: 2354.63009  9803.910           D          8           4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126: 2441.83861  9866.871          D#          8         -33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127: 2590.09310  9968.914           E          8         -31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128: 2686.02247 10031.875           E          8          32</span>
+<span class="r-in"><span>    <span class="fu">keyboard_map</span><span class="op">(</span><span class="fu"><a href="cps_scale_table.html">cps_scale_table</a></span><span class="op">(</span><span class="op">)</span>, middle_c_octave <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, nrows <span class="op">=</span> <span class="fl">128</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number name_12edo octave_12edo note_name ratio_frac degree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:           0          C           -2     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:           1         C#           -2    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:           2          D           -2     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:           3         D#           -2    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:           4          E           -2     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6:           5          F           -2     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7:           6         F#           -2    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8:           7          G           -2    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9:           8         G#           -2     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  10:           9          A           -2    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  11:          10         A#           -2     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12:          11          B           -2    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  13:          12          C           -1     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  14:          13         C#           -1     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15:          14          D           -1    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16:          15         D#           -1    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17:          16          E           -1     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18:          17          F           -1     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19:          18         F#           -1    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20:          19          G           -1    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21:          20         G#           -1     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22:          21          A           -1    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  23:          22         A#           -1     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  24:          23          B           -1    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  25:          24          C            0     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  26:          25         C#            0     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  27:          26          D            0    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  28:          27         D#            0    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  29:          28          E            0     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  30:          29          F            0    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  31:          30         F#            0     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  32:          31          G            0    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  33:          32         G#            0     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  34:          33          A            0     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  35:          34         A#            0    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  36:          35          B            0    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  37:          36          C            1     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  38:          37         C#            1     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  39:          38          D            1    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  40:          39         D#            1    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  41:          40          E            1     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  42:          41          F            1    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  43:          42         F#            1     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  44:          43          G            1    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  45:          44         G#            1     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  46:          45          A            1     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  47:          46         A#            1    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  48:          47          B            1    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  49:          48          C            2     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  50:          49         C#            2    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  51:          50          D            2     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  52:          51         D#            2    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  53:          52          E            2     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  54:          53          F            2     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  55:          54         F#            2    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  56:          55          G            2    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  57:          56         G#            2     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  58:          57          A            2     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  59:          58         A#            2    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  60:          59          B            2    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  61:          60          C            3     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  62:          61         C#            3    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  63:          62          D            3     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  64:          63         D#            3    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  65:          64          E            3     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  66:          65          F            3     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  67:          66         F#            3    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  68:          67          G            3    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  69:          68         G#            3     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  70:          69          A            3    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  71:          70         A#            3     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  72:          71          B            3    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73:          72          C            4     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  74:          73         C#            4     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  75:          74          D            4    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  76:          75         D#            4    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  77:          76          E            4     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  78:          77          F            4     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79:          78         F#            4    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  80:          79          G            4    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  81:          80         G#            4     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  82:          81          A            4    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  83:          82         A#            4     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  84:          83          B            4    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  85:          84          C            5     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  86:          85         C#            5     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  87:          86          D            5    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  88:          87         D#            5    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  89:          88          E            5     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  90:          89          F            5    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  91:          90         F#            5     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  92:          91          G            5    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  93:          92         G#            5     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  94:          93          A            5     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95:          94         A#            5    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  96:          95          B            5    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:          96          C            6     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:          97         C#            6     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:          98          D            6    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:          99         D#            6    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:         100          E            6     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102:         101          F            6    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103:         102         F#            6     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104:         103          G            6    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105:         104         G#            6     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106:         105          A            6     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107:         106         A#            6    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108:         107          B            6    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109:         108          C            7     5x7x9      21/16      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110:         109         C#            7    3x5x11       11/8      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111:         110          D            7     1x3x7        7/5     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112:         111         D#            7    7x9x11    231/160     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113:         112          E            7     1x5x9        3/2     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114:         113          F            7     3x7x9      63/40     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115:         114         F#            7    5x7x11      77/48     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116:         115          G            7    1x9x11      33/20     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117:         116         G#            7     3x5x7        7/4     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118:         117          A            7     1x3x9        9/5     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119:         118         A#            7    1x5x11       11/6     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120:         119          B            7    3x7x11      77/40     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121:         120          C            8     1x3x5          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122:         121         C#            8    5x9x11      33/32      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123:         122          D            8     1x7x9      21/20      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124:         123         D#            8    1x3x11      11/10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125:         124          E            8     3x5x9        9/8      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126:         125          F            8     1x5x7        7/6      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127:         126         F#            8    3x9x11      99/80      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128:         127          G            8    1x7x11      77/60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number name_12edo octave_12edo note_name ratio_frac degree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      period_number       freq     cents ref_keyname ref_octave ref_offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:            -3   32.70320  2400.000           C          2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:            -3   33.72517  2453.273          C#          2        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:            -3   34.33836  2484.467          C#          2        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:            -3   35.97352  2565.004           D          2        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:            -3   36.79110  2603.910           D          2          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6:            -3   38.15373  2666.871          D#          2        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7:            -3   40.47020  2768.914           E          2        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8:            -3   41.96910  2831.875           E          2         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9:            -3   42.92294  2870.781           F          2        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  10:            -3   44.96689  2951.318          F#          2        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  11:            -3   45.78447  2982.512          F#          2        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12:            -3   47.21524  3035.785          F#          2         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  13:            -3   49.05479  3101.955           G          2          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  14:            -3   51.50753  3186.422          G#          2        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15:            -3   52.46138  3218.189          G#          2         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16:            -3   53.96027  3266.959           A          2        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17:            -3   57.23059  3368.826          A#          2        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18:            -3   58.86575  3417.596          A#          2         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19:            -3   59.95586  3449.363          A#          2         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20:            -3   62.95365  3533.830           B          2         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21:            -2   65.40639  3600.000           C          3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22:            -2   67.45034  3653.273          C#          3        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  23:            -2   68.67671  3684.467          C#          3        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  24:            -2   71.94703  3765.004           D          3        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  25:            -2   73.58219  3803.910           D          3          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  26:            -2   76.30746  3866.871          D#          3        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  27:            -2   80.94041  3968.914           E          3        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  28:            -2   83.93820  4031.875           E          3         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  29:            -2   85.84589  4070.781           F          3        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  30:            -2   89.93379  4151.318          F#          3        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  31:            -2   91.56895  4182.512          F#          3        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  32:            -2   94.43048  4235.785          F#          3         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  33:            -2   98.10959  4301.955           G          3          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  34:            -2  103.01507  4386.422          G#          3        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  35:            -2  104.92275  4418.189          G#          3         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  36:            -2  107.92055  4466.959           A          3        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  37:            -2  114.46118  4568.826          A#          3        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  38:            -2  117.73150  4617.596          A#          3         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  39:            -2  119.91172  4649.363          A#          3         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  40:            -2  125.90730  4733.830           B          3         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  41:            -1  130.81278  4800.000           C          4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  42:            -1  134.90068  4853.273          C#          4        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  43:            -1  137.35342  4884.467          C#          4        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  44:            -1  143.89406  4965.004           D          4        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  45:            -1  147.16438  5003.910           D          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  46:            -1  152.61491  5066.871          D#          4        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  47:            -1  161.88082  5168.914           E          4        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  48:            -1  167.87640  5231.875           E          4         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  49:            -1  171.69178  5270.781           F          4        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  50:            -1  179.86758  5351.318          F#          4        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  51:            -1  183.13790  5382.512          F#          4        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  52:            -1  188.86095  5435.785          F#          4         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  53:            -1  196.21917  5501.955           G          4          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  54:            -1  206.03013  5586.422          G#          4        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  55:            -1  209.84551  5618.189          G#          4         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  56:            -1  215.84109  5666.959           A          4        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  57:            -1  228.92237  5768.826          A#          4        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  58:            -1  235.46301  5817.596          A#          4         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  59:            -1  239.82343  5849.363          A#          4         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  60:            -1  251.81461  5933.830           B          4         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  61:             0  261.62557  6000.000           C          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  62:             0  269.80136  6053.273          C#          5        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  63:             0  274.70684  6084.467          C#          5        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  64:             0  287.78812  6165.004           D          5        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  65:             0  294.32876  6203.910           D          5          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  66:             0  305.22983  6266.871          D#          5        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  67:             0  323.76164  6368.914           E          5        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  68:             0  335.75281  6431.875           E          5         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  69:             0  343.38355  6470.781           F          5        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  70:             0  359.73515  6551.318          F#          5        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  71:             0  366.27579  6582.512          F#          5        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  72:             0  377.72191  6635.785          F#          5         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73:             0  392.43835  6701.955           G          5          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  74:             0  412.06027  6786.422          G#          5        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  75:             0  419.69101  6818.189          G#          5         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  76:             0  431.68218  6866.959           A          5        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  77:             0  457.84474  6968.826          A#          5        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  78:             0  470.92602  7017.596          A#          5         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79:             0  479.64687  7049.363          A#          5         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  80:             0  503.62921  7133.830           B          5         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  81:             1  523.25113  7200.000           C          6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  82:             1  539.60273  7253.273          C#          6        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  83:             1  549.41369  7284.467          C#          6        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  84:             1  575.57624  7365.004           D          6        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  85:             1  588.65752  7403.910           D          6          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  86:             1  610.45965  7466.871          D#          6        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  87:             1  647.52327  7568.914           E          6        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  88:             1  671.50562  7631.875           E          6         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  89:             1  686.76711  7670.781           F          6        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  90:             1  719.47030  7751.318          F#          6        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  91:             1  732.55158  7782.512          F#          6        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  92:             1  755.44382  7835.785          F#          6         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  93:             1  784.87670  7901.955           G          6          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  94:             1  824.12053  7986.422          G#          6        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95:             1  839.38202  8018.189          G#          6         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  96:             1  863.36437  8066.959           A          6        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:             1  915.68948  8168.826          A#          6        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:             1  941.85204  8217.596          A#          6         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:             1  959.29374  8249.363          A#          6         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:             1 1007.25843  8333.830           B          6         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:             2 1046.50226  8400.000           C          7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102:             2 1079.20546  8453.273          C#          7        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103:             2 1098.82737  8484.467          C#          7        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104:             2 1151.15249  8565.004           D          7        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105:             2 1177.31504  8603.910           D          7          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106:             2 1220.91930  8666.871          D#          7        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107:             2 1295.04655  8768.914           E          7        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108:             2 1343.01124  8831.875           E          7         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109:             2 1373.53422  8870.781           F          7        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110:             2 1438.94061  8951.318          F#          7        -49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111:             2 1465.10317  8982.512          F#          7        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112:             2 1510.88764  9035.785          F#          7         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113:             2 1569.75339  9101.955           G          7          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114:             2 1648.24106  9186.422          G#          7        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115:             2 1678.76404  9218.189          G#          7         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116:             2 1726.72873  9266.959           A          7        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117:             2 1831.37896  9368.826          A#          7        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118:             2 1883.70407  9417.596          A#          7         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119:             2 1918.58748  9449.363          A#          7         49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120:             2 2014.51685  9533.830           B          7         34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121:             3 2093.00452  9600.000           C          8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122:             3 2158.41091  9653.273          C#          8        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123:             3 2197.65475  9684.467          C#          8        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124:             3 2302.30497  9765.004           D          8        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125:             3 2354.63009  9803.910           D          8          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126:             3 2441.83861  9866.871          D#          8        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127:             3 2590.09310  9968.914           E          8        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128:             3 2686.02247 10031.875           E          8         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      period_number       freq     cents ref_keyname ref_octave ref_offset</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Bohlen-Pierce (13 equal divisions of a perfect twelfth aka "tritave")</span></span></span>
+<span class="r-in"><span><span class="va">bohlen_pierce_et_scale</span> <span class="op">&lt;-</span> <span class="fu"><a href="et_scale_table.html">et_scale_table</a></span><span class="op">(</span><span class="va">bohlen_pierce_et_names</span>, period <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">bohlen_pierce_et_map</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu">keyboard_map</span><span class="op">(</span><span class="va">bohlen_pierce_et_scale</span><span class="op">)</span>, nrows <span class="op">=</span> <span class="fl">128</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number name_12edo octave_12edo note_name ratio_frac degree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:           0          C           -1     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:           1         C#           -1         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:           2          D           -1         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:           3         D#           -1     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:           4          E           -1         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6:           5          F           -1         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7:           6         F#           -1     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8:           7          G           -1         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9:           8         G#           -1         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  10:           9          A           -1     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  11:          10         A#           -1         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12:          11          B           -1         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  13:          12          C            0         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  14:          13         C#            0     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15:          14          D            0         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16:          15         D#            0         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17:          16          E            0     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18:          17          F            0         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19:          18         F#            0         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20:          19          G            0     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21:          20         G#            0         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22:          21          A            0         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  23:          22         A#            0     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  24:          23          B            0         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  25:          24          C            1         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  26:          25         C#            1         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  27:          26          D            1     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  28:          27         D#            1         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  29:          28          E            1         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  30:          29          F            1     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  31:          30         F#            1         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  32:          31          G            1         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  33:          32         G#            1     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  34:          33          A            1         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  35:          34         A#            1         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  36:          35          B            1     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  37:          36          C            2         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  38:          37         C#            2         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  39:          38          D            2         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  40:          39         D#            2     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  41:          40          E            2         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  42:          41          F            2         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  43:          42         F#            2     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  44:          43          G            2         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  45:          44         G#            2         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  46:          45          A            2     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  47:          46         A#            2         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  48:          47          B            2         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  49:          48          C            3     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  50:          49         C#            3         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  51:          50          D            3         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  52:          51         D#            3         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  53:          52          E            3     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  54:          53          F            3         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  55:          54         F#            3         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  56:          55          G            3     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  57:          56         G#            3         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  58:          57          A            3         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  59:          58         A#            3     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  60:          59          B            3         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  61:          60          C            4         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  62:          61         C#            4     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  63:          62          D            4         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  64:          63         D#            4         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  65:          64          E            4         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  66:          65          F            4     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  67:          66         F#            4         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  68:          67          G            4         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  69:          68         G#            4     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  70:          69          A            4         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  71:          70         A#            4         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  72:          71          B            4     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73:          72          C            5         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  74:          73         C#            5         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  75:          74          D            5     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  76:          75         D#            5         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  77:          76          E            5         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  78:          77          F            5         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79:          78         F#            5     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  80:          79          G            5         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  81:          80         G#            5         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  82:          81          A            5     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  83:          82         A#            5         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  84:          83          B            5         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  85:          84          C            6     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  86:          85         C#            6         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  87:          86          D            6         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  88:          87         D#            6     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  89:          88          E            6         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  90:          89          F            6         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  91:          90         F#            6         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  92:          91          G            6     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  93:          92         G#            6         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  94:          93          A            6         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95:          94         A#            6     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  96:          95          B            6         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:          96          C            7         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:          97         C#            7     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:          98          D            7         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:          99         D#            7         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:         100          E            7     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102:         101          F            7         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103:         102         F#            7         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104:         103          G            7         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105:         104         G#            7     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106:         105          A            7         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107:         106         A#            7         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108:         107          B            7     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109:         108          C            8         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110:         109         C#            8         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111:         110          D            8     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112:         111         D#            8         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113:         112          E            8         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114:         113          F            8     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115:         114         F#            8         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116:         115          G            8         E  1746/1355      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117:         116         G#            8         F   1025/731      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118:         117          A            8     F#|Gb  3691/2419      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119:         118         A#            8         G  2645/1593      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120:         119          B            8         H   1646/911      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121:         120          C            9     H#|Jb  2090/1063      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122:         121         C#            9         J   2101/982      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123:         122          D            9         A   1355/582     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124:         123         D#            9     A#|Bb   1135/448     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125:         124          E            9         B  6101/2213     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126:         125          F            9         C          1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127:         126         F#            9     C#|Db  1197/1100      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128:         127          G            9         D    881/744      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      note_number name_12edo octave_12edo note_name ratio_frac degree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      period_number         freq        cents ref_keyname ref_octave ref_offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:            -5     8.175799     0.000000          G#         -3         22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:            -5     8.175799     0.000000          A#         -3        -32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:            -5     8.175799     0.000000           B         -3         14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:            -5     8.175799     0.000000          C#         -2        -39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:            -5     8.175799     0.000000           D         -2          7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6:            -5     8.175799     0.000000           E         -2        -47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7:            -5     8.175799     0.000000           F         -2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   8:            -5     8.175799     0.000000          F#         -2         46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   9:            -4     8.175799     0.000000          G#         -2         -8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  10:            -4     8.175799     0.000000           A         -2         38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  11:            -4     8.175799     0.000000           B         -2        -15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12:            -4     8.175799     0.000000           C         -1         31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  13:            -4     8.175799     0.000000           D         -1        -23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  14:            -4     8.175799     0.000000          D#         -1         24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  15:            -4     8.175799     0.000000           F         -1        -30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  16:            -4     8.175799     0.000000          F#         -1         16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  17:            -4     8.175799     0.000000          G#         -1        -37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18:            -4     8.175799     0.000000           A         -1          9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19:            -4     8.175799     0.000000           B         -1        -45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20:            -4     8.183011     1.526536           C          0          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  21:            -4     8.904607   147.830767          C#          0         48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22:            -3     9.689836   294.134997          D#          0         -6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  23:            -3    10.544307   440.439228           E          0         40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  24:            -3    11.474128   586.743459          F#          0        -13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  25:            -3    12.485942   733.047690           G          0         33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  26:            -3    13.586981   879.351921           A          0        -21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  27:            -3    14.785111  1025.656152          A#          0         26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  28:            -3    16.088895  1171.960382           C          1        -28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  29:            -3    17.507650  1318.264613          C#          1         18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  30:            -3    19.051514  1464.568844          D#          1        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  31:            -3    20.731519  1610.873075           E          1         11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  32:            -3    22.559671  1757.177306          F#          1        -43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  33:            -3    24.549034  1903.481537           G          1          3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  34:            -3    26.713822  2049.785767          G#          1         50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  35:            -2    29.069507  2196.089998          A#          1         -4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  36:            -2    31.632922  2342.394229           B          1         42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  37:            -2    34.422384  2488.698460          C#          2        -11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  38:            -2    37.457827  2635.002691           D          2         35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  39:            -2    40.760942  2781.306922           E          2        -19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  40:            -2    44.355333  2927.611152           F          2         28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  41:            -2    48.266686  3073.915383           G          2        -26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  42:            -2    52.522951  3220.219614          G#          2         20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  43:            -2    57.154542  3366.523845          A#          2        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  44:            -2    62.194558  3512.828076           B          2         13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  45:            -2    67.679014  3659.132307          C#          3        -41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  46:            -2    73.647101  3805.436537           D          3          5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  47:            -2    80.141467  3951.740768           E          3        -48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  48:            -1    87.208522  4098.044999           F          3         -2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  49:            -1    94.898765  4244.349230          F#          3         44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  50:            -1   103.267151  4390.653461          G#          3         -9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  51:            -1   112.373480  4536.957692           A          3         37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  52:            -1   122.282825  4683.261922           B          3        -17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  53:            -1   133.065999  4829.566153           C          4         30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  54:            -1   144.800058  4975.870384           D          4        -24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  55:            -1   157.568852  5122.174615          D#          4         22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  56:            -1   171.463626  5268.478846           F          4        -32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  57:            -1   186.583674  5414.783077          F#          4         15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  58:            -1   203.037041  5561.087307          G#          4        -39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  59:            -1   220.941302  5707.391538           A          4          7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  60:            -1   240.424402  5853.695769           B          4        -46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  61:             0   261.625565  6000.000000           C          5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  62:             0   284.696295  6146.304231          C#          5         46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  63:             0   309.801453  6292.608462          D#          5         -7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  64:             0   337.120440  6438.912693           E          5         39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  65:             0   366.848476  6585.216923          F#          5        -15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  66:             0   399.197998  6731.521154           G          5         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  67:             0   434.400173  6877.825385           A          5        -22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  68:             0   472.706555  7024.129616          A#          5         24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  69:             0   514.390879  7170.433847           C          6        -30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  70:             0   559.751021  7316.738078          C#          6         17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  71:             0   609.111122  7463.042308          D#          6        -37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  72:             0   662.823907  7609.346539           E          6          9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  73:             0   721.273206  7755.650770          F#          6        -44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  74:             1   784.876696  7901.955001           G          6          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  75:             1   854.088884  8048.259232          G#          6         48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  76:             1   929.404358  8194.563463          A#          6         -5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  77:             1  1011.361319  8340.867693           B          6         41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  78:             1  1100.545429  8487.171924          C#          7        -13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  79:             1  1197.593994  8633.476155           D          7         33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  80:             1  1303.200519  8779.780386           E          7        -20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  81:             1  1418.119665  8926.084617           F          7         26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  82:             1  1543.172638  9072.388848           G          7        -28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  83:             1  1679.253063  9218.693078          G#          7         19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  84:             1  1827.333366  9364.997309          A#          7        -35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  85:             1  1988.471722  9511.301540           B          7         11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  86:             1  2163.819619  9657.605771          C#          8        -42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  87:             2  2354.630088  9803.910002           D          8          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  88:             2  2562.266651  9950.214233          D#          8         50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  89:             2  2788.213073 10096.518463           F          8         -3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  90:             2  3034.083957 10242.822694          F#          8         43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  91:             2  3301.636287 10389.126925          G#          8        -11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  92:             2  3592.781982 10535.431156           A          8         35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  93:             2  3909.601558 10681.735387           B          8        -18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  94:             2  4254.358994 10828.039618           C          9         28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  95:             2  4629.517915 10974.343848           D          9        -26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  96:             2  5037.759190 11120.648079          D#          9         21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:             2  5482.000098 11266.952310           F          9        -33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:             2  5965.415165 11413.256541          F#          9         13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:             2  6491.458858 11559.560772          G#          9        -40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:             3  7063.890263 11705.865003           A          9          6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:             3  7686.799954 11852.169233           B          9        -48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102:             3  8364.639219 11998.473464           C         10         -2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103:             3  9102.251871 12144.777695          C#         10         45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104:             3  9904.908862 12291.081926          D#         10         -9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105:             3 10778.345947 12437.386157           E         10         37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106:             3 11728.804673 12583.690388          F#         10        -16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107:             3 12543.853951 12700.000000           G         10         30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108:             3 12543.853951 12700.000000           A         10        -24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109:             3 12543.853951 12700.000000          A#         10         23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110:             3 12543.853951 12700.000000           C         11        -31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111:             3 12543.853951 12700.000000          C#         11         15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112:             3 12543.853951 12700.000000          D#         11        -38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113:             4 12543.853951 12700.000000           E         11          8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114:             4 12543.853951 12700.000000          F#         11        -46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115:             4 12543.853951 12700.000000           G         11          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116:             4 12543.853951 12700.000000          G#         11         47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117:             4 12543.853951 12700.000000          A#         11         -7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118:             4 12543.853951 12700.000000           B         11         39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119:             4 12543.853951 12700.000000          C#         12        -14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120:             4 12543.853951 12700.000000           D         12         32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121:             4 12543.853951 12700.000000           E         12        -22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122:             4 12543.853951 12700.000000           F         12         25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123:             4 12543.853951 12700.000000           G         12        -29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124:             4 12543.853951 12700.000000          G#         12         17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125:             4 12543.853951 12700.000000          A#         12        -37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126:             5 12543.853951 12700.000000           B         12         10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127:             5 12543.853951 12700.000000          C#         13        -44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128:             5 12543.853951 12700.000000           D         13          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      period_number         freq        cents ref_keyname ref_octave ref_offset</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -152,30 +152,30 @@ synthesizer keyboard.</p>
 <span><span class="co">#&gt; 20:        C' 2.000000          2  1200.00000       63.15789     19</span></span>
 <span><span class="va">edo19_keyboard_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/keyboard_map.html">keyboard_map</a></span><span class="op">(</span><span class="va">edo19_scale_table</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">edo19_keyboard_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      note_number key_name key_octave note_name ratio_frac degree octave</span></span>
-<span><span class="co">#&gt;   1:           0        C         -1        Bb   1124/627     16      0</span></span>
-<span><span class="co">#&gt;   2:           1       C#         -1         B   1123/604     17      0</span></span>
-<span><span class="co">#&gt;   3:           2        D         -1     B#|Cb   1884/977     18      0</span></span>
-<span><span class="co">#&gt;   4:           3       D#         -1         C          1      0      1</span></span>
-<span><span class="co">#&gt;   5:           4        E         -1        C#    977/942      1      1</span></span>
-<span><span class="co">#&gt;  ---                                                                   </span></span>
-<span><span class="co">#&gt; 124:         123       D#          9         E   1114/895      6      7</span></span>
-<span><span class="co">#&gt; 125:         124        E          9     E#|Fb  1553/1203      7      7</span></span>
-<span><span class="co">#&gt; 126:         125        F          9         F  1442/1077      8      7</span></span>
-<span><span class="co">#&gt; 127:         126       F#          9        F#   1297/934      9      7</span></span>
-<span><span class="co">#&gt; 128:         127        G          9        Gb  1639/1138     10      7</span></span>
-<span><span class="co">#&gt;            freq     cents ref_keyname ref_octave ref_offsets</span></span>
-<span><span class="co">#&gt;   1:   29.31292  2210.526          A#          1          11</span></span>
-<span><span class="co">#&gt;   2:   30.40205  2273.684           B          1         -26</span></span>
-<span><span class="co">#&gt;   3:   31.53164  2336.842           B          1          37</span></span>
-<span><span class="co">#&gt;   4:   32.70320  2400.000           C          2           0</span></span>
-<span><span class="co">#&gt;   5:   33.91828  2463.158          C#          2         -37</span></span>
-<span><span class="co">#&gt;  ---                                                        </span></span>
-<span><span class="co">#&gt; 124: 2605.14722  9978.947           E          8         -21</span></span>
-<span><span class="co">#&gt; 125: 2701.94158 10042.105           E          8          42</span></span>
-<span><span class="co">#&gt; 126: 2802.33234 10105.263           F          8           5</span></span>
-<span><span class="co">#&gt; 127: 2906.45312 10168.421          F#          8         -32</span></span>
-<span><span class="co">#&gt; 128: 3014.44252 10231.579          F#          8          32</span></span></code></pre></div>
+<span><span class="co">#&gt;      note_number name_12edo octave_12edo note_name ratio_frac degree</span></span>
+<span><span class="co">#&gt;   1:           0          C           -1        Bb   1124/627     16</span></span>
+<span><span class="co">#&gt;   2:           1         C#           -1         B   1123/604     17</span></span>
+<span><span class="co">#&gt;   3:           2          D           -1     B#|Cb   1884/977     18</span></span>
+<span><span class="co">#&gt;   4:           3         D#           -1         C          1      0</span></span>
+<span><span class="co">#&gt;   5:           4          E           -1        C#    977/942      1</span></span>
+<span><span class="co">#&gt;  ---                                                                </span></span>
+<span><span class="co">#&gt; 124:         123         D#            9         E   1114/895      6</span></span>
+<span><span class="co">#&gt; 125:         124          E            9     E#|Fb  1553/1203      7</span></span>
+<span><span class="co">#&gt; 126:         125          F            9         F  1442/1077      8</span></span>
+<span><span class="co">#&gt; 127:         126         F#            9        F#   1297/934      9</span></span>
+<span><span class="co">#&gt; 128:         127          G            9        Gb  1639/1138     10</span></span>
+<span><span class="co">#&gt;      period_number       freq     cents ref_keyname ref_octave ref_offset</span></span>
+<span><span class="co">#&gt;   1:            -4   29.31292  2210.526          A#          1         11</span></span>
+<span><span class="co">#&gt;   2:            -4   30.40205  2273.684           B          1        -26</span></span>
+<span><span class="co">#&gt;   3:            -4   31.53164  2336.842           B          1         37</span></span>
+<span><span class="co">#&gt;   4:            -3   32.70320  2400.000           C          2          0</span></span>
+<span><span class="co">#&gt;   5:            -3   33.91828  2463.158          C#          2        -37</span></span>
+<span><span class="co">#&gt;  ---                                                                     </span></span>
+<span><span class="co">#&gt; 124:             3 2605.14722  9978.947           E          8        -21</span></span>
+<span><span class="co">#&gt; 125:             3 2701.94158 10042.105           E          8         42</span></span>
+<span><span class="co">#&gt; 126:             3 2802.33234 10105.263           F          8          5</span></span>
+<span><span class="co">#&gt; 127:             3 2906.45312 10168.421          F#          8        -32</span></span>
+<span><span class="co">#&gt; 128:             3 3014.44252 10231.579          F#          8         32</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="just-intonation">Just intonation<a class="anchor" aria-label="anchor" href="#just-intonation"></a>
