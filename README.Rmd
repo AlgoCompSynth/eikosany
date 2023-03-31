@@ -43,6 +43,15 @@ compose with them.
 interface package for microtonal composition. It can operate as a
 standalone application, a plugin host or a plugin. I own a copy of Entonal
 Studio and recommend it highly.
+- [Infinitone DMT](https://infinitone.com/). From the
+[Infinitone DMT FAQ](https://infinitone.com/support/#faq-container):
+"Infinitone DMT is a DAW plugin and standalone that empowers musicians to
+easily use micro-tuning within their own workflow. ...
+
+    "As a plugin, Infinitone DMT is inserted in your DAW as a MIDI effect.
+    ... The standalone can be used separately from a DAW, or it can be used
+    in conjunction with a DAW by routing MIDI data from the DAW to the
+    standalone (and back)."
 - [Universal Tuning Editor](https://hpi.zentral.zone/ute). Universal Tuning
 Editor is an application for computing and visualizing microtonal scales and
 tunings, and includes tools to interface with hardware and software
