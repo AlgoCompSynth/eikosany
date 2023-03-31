@@ -18,15 +18,17 @@ function is 4, but other software can use 3 or even some other number}
 the keyboard map. This is a data.table with eight columns:
 \itemize{
 \item \code{note_number}: the MIDI note number from \code{.NN_MIN} through \code{.NN_MAX}
-\item \code{key_name}: note name of the key in 12EDO. This is the key you'd
+\item \code{name_12edo}: note name of the key in 12EDO. This is the key you'd
 normally press to play this note number
-\item \code{key_octave}: the octave the key normally plays
+\item \code{octave_12edo}: the octave the key normally plays
 \item \code{note_name}: the note name from the scale table
-\item \code{ratio_frac}: ratio for the note as a vulgar fraction
+\item \code{ratio_frac}: ratio for the note as a vulgar fraction. Note that for
+equal tempered scales this is usually an approximation to an irrational
+number. The algorithm used appears to give six decimal places of accuracy.
 \item \code{degree}: the scale degree of the note
 \item \code{octave}: the octave number of the note
 \item \code{freq}: the frequency in Hz
-\item \code{cents}: cents above default MIDI note \code{.NN_MIN}, which has frequency
+\item \code{cents}: cents above lowest MIDI note \code{.NN_MIN}, which has frequency
 \code{.FREQ_MIN}.
 \item \code{ref_keyname}: some synthesizers, including the Korg Minilogue XD,
 let you retune a key as an offset in cents from another reference key.
@@ -43,23 +45,31 @@ The function is currently hard-coded to compute the map so that
 middle C with frequency \code{.FREQ_MIDDLE_C}is mapped to MIDI note number
 \code{.NN_MIDDLE_C} and scale degree 0. With the current constants this is the
 same as it is on 12EDO with A440 on note 69. This note is 6000 cents above
-MIDI note number 0.
+MIDI note number 0 in 12EDO.
 
 Normally you would only use this to remap a keyboard to a scale with
 more than 12 notes per octave. For scales with 12 or fewer notes to the
-octave, it's easier to remap all octaves using the offsets provided in
-the scale table.
+octave, it's easier to remap all octaves using the offsets computed with
+offset_matrix!
 }
 \examples{
 
+# make sure we can print a whole keyboard map
+options(max.print = 2000)
+
 eikosany <- cps_scale_table()
-print(eikosany_keyboard_map <- keyboard_map(eikosany))
+print(eikosany_keyboard_map <- keyboard_map(eikosany), nrows = 128)
 
 # 12-EDO for sanity check
-print(vanilla_keyboard_map <- keyboard_map(et_scale_table()))
+print(vanilla_keyboard_map <- keyboard_map(et_scale_table()), nrows = 128)
 
 # check middle C setting
 print(
   eikosany_keyboard_map_c3 <-
-    keyboard_map(cps_scale_table(), middle_c_octave = 3))
+    keyboard_map(cps_scale_table(), middle_c_octave = 3), nrows = 128)
+
+# Bohlen-Pierce (13 equal divisions of a perfect twelfth aka "tritave")
+bohlen_pierce_et_scale <- et_scale_table(bohlen_pierce_et_names, period = 3)
+print(bohlen_pierce_et_map <-
+  keyboard_map(bohlen_pierce_et_scale), nrows = 128)
 }
