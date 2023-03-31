@@ -43,6 +43,16 @@ most commonly encountered Eikosany uses the first six odd numbers: 1, 3,
   standalone application, a plugin host or a plugin. I own a copy of
   Entonal Studio and recommend it highly.
 
+- [Infinitone DMT](https://infinitone.com/). From the [Infinitone DMT
+  FAQ](https://infinitone.com/support/#faq-container): “Infinitone DMT
+  is a DAW plugin and standalone that empowers musicians to easily use
+  micro-tuning within their own workflow. …
+
+  “As a plugin, Infinitone DMT is inserted in your DAW as a MIDI effect.
+  … The standalone can be used separately from a DAW, or it can be used
+  in conjunction with a DAW by routing MIDI data from the DAW to the
+  standalone (and back).”
+
 - [Universal Tuning Editor](https://hpi.zentral.zone/ute). Universal
   Tuning Editor is an application for computing and visualizing
   microtonal scales and tunings, and includes tools to interface with
@@ -187,7 +197,6 @@ Borasky, M. Edward (Ed). 2021. “When Harry Met Iannis.”
 
 Narushima, T. 2019. *Microtonality and the Tuning Systems of Erv
 Wilson*. Routledge Studies in Music Theory. Taylor & Francis Limited.
-<https://books.google.com/books?id=TCBdzAEACAAJ>.
 
 </div>
 
@@ -195,14 +204,13 @@ Wilson*. Routledge Studies in Music Theory. Taylor & Francis Limited.
 
 Partch, H. 1979. *Genesis of a Music: An Account of a Creative Work, Its
 Roots, and Its Fulfillments, Second Edition*. Hachette Books.
-<https://books.google.com/books?id=8JVQAQAACAAJ>.
 
 </div>
 
 <div id="ref-sethares1998tuning" class="csl-entry">
 
 Sethares, W. A. 1998. *Tuning, Timbre, Spectrum, Scale*. Springer
-London. <https://books.google.com/books?id=T8XvAAAAMAAJ>.
+London.
 
 </div>
 
@@ -210,7 +218,6 @@ London. <https://books.google.com/books?id=T8XvAAAAMAAJ>.
 
 Xenakis, I. 1992. *Formalized Music: Thought and Mathematics in
 Composition*. Harmonologia Series. Pendragon Press.
-<https://books.google.com/books?id=y6lL3I0vmMwC>.
 
 </div>
 

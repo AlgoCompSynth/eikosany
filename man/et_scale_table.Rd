@@ -42,4 +42,7 @@ print(vanilla <- et_scale_table()) # default is 12EDO, of course
 print(edo19 <- et_scale_table(edo19_names))
 # 31-EDO
 print(edo31 <- et_scale_table(edo31_names))
+
+# equal-tempered Bohlen-Pierce
+print(bohlen_pierce_et <- et_scale_table(bohlen_pierce_et_names, period = 3))
 }

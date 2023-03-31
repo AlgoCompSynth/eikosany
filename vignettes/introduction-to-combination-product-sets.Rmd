@@ -1,10 +1,14 @@
 ---
 title: "Introduction to Combination Product Sets"
 output: rmarkdown::html_vignette
+bibliography: eikosany.bibtex
 vignette: >
   %\VignetteIndexEntry{Introduction to Combination Product Sets}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, include = FALSE}
@@ -17,3 +21,125 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(eikosany)
 ```
+
+## Alternative Tunings Overview
+
+Unless you're into alternative tunings, your first question is probably
+"Alternative to what?" Of course, that depends on what culture you call
+home. But for most Americans and other native English speakers, most
+Europeans, and mass-market popular music creators and audiences nearly
+everywhere, music is tuned to 12-tone equal temperament, abbreviated as
+"*12-TET*". You will also see this tuning referred to as "*12-EDO*",
+which stands for "twelve equal divisions of the octave."
+
+So what are the alternatives? There are two main sources of alternative
+tunings:
+
+-   Other cultures, and
+
+-   Music theorists / composers / instrument builders / performers
+    within the ancient Greek / Italian / French / German mainstream
+    (with nationalist enhancements!) that now uses 12-EDO. For brevity
+    we'll call those "Western theoretical tunings".
+
+### Other cultures
+
+Notable examples of tunings from other cultures are Indonesian
+[*gamelan*](https://en.wikipedia.org/wiki/Gamelan "Gamelan on Wikipedia")
+tuning, South Indian [*carnatic*
+music](https://en.wikipedia.org/wiki/Carnatic_music "Carnatic music on Wikipedia"),
+and various
+[*makams*](https://en.wikipedia.org/wiki/List_of_makams "List of makams on Wikipedia")
+from [Ottoman
+music](https://en.wikipedia.org/wiki/Ottoman_music "Ottoman music on Wikipedia").
+You can find detailed analyses of gamelan tunings, as well as Thai
+classical tunings and numerous theoretical and practical tunings in
+[@sethares2013tuning]. The first edition of this book
+[@sethares1998tuning] is the book that sent me down the alternate
+tunings rabbit hole in 2001.
+
+### Western theoretical tunings
+
+Numerous tunings and temperaments have derived by theorists, composers,
+and performers over time. This happened first as steps along the path
+from ancient Greek music to 12-EDO claiming the dominant market share it
+has today, and later as a counter to said market share.
+
+In some cases, instrument builders constructed moderately complex
+instruments that used these tunings. It was the desire to mass-produce
+musical instruments, especially the piano, that led to the widespread
+adoption of 12-EDO as the standard.
+
+There are two main types of such alternative tunings in use today:
+
+-   Equal divisions of a period, usually the octave, and
+
+-   Just intonation.
+
+### Brief guide to tuning and scales
+
+Before moving onward, we need to define some concepts. *Pitches* are
+(sort of) the musical name for frequencies. *Frequencies* are the rate
+at which some string or air column or reed or membrane or loudspeaker or
+other physical object vibrates.
+
+Frequencies are designated in cycles per second, called *Hertz* and
+abbreviated *Hz*. The typical range of human hearing is 20 - 20,000
+Hertz, but not all of that range is commonly used in music.
+
+A *tuning* describes a set of pitches a composer selects from in writing
+a piece, often dictated by the instruments that will be used to play it.
+Tunings usually consist of a set of repetitions of a *scale.* A scale is
+a set of pitches in ascending order of frequency.
+
+The most common tuning of this type is equal divisions of the octave
+with more than twelve notes, generally called "N-TET" or "N-EDO". For
+example, quarter-tone tunings are *24-EDO*. Musicians create tunings of
+this kind for a variety of reasons, most often to provide more harmonic
+possibilities without giving up the ability to modulate to different
+keys.
+
+Two such tunings that have achieved serious usage are
+[*19-EDO*](https://en.wikipedia.org/wiki/19_equal_temperament "19 equal temperament on Wikipedia")
+and
+[*31-EDO*](https://en.wikipedia.org/wiki/31_equal_temperament "31 equal temperament on Wikipedia").
+If you're curious about such tunings, function `et_scale_table` in this
+package can create scale tables for them, and function `keyboard_map`
+can create a mapping for such a scale to a synthesizer keyboard.
+
+Here's what the 19-EDO scale table and keyboard map look like:
+
+```{r}
+data("edo19_names")
+edo19_scale_table <- et_scale_table(edo19_names)
+print(edo19_scale_table)
+edo19_keyboard_map <- keyboard_map(edo19_scale_table)
+print(edo19_keyboard_map)
+```
+
+### Just intonation
+
+The other main class of derived tunings is called [*just
+intonation*](https://en.wikipedia.org/wiki/Just_intonation "Just intonation on Wikipedia").
+Just intonation attempts to create perfect harmonies by dividing the
+octave into unequal intervals using ratios of small integers. For
+example, the just perfect fifth is 3/2, the just perfect fourth is 4/3,
+and the just major third is 5/4.
+
+If you've heard a barbershop quartet, you've heard just intonation.
+Combination product sets are a form of just intonation.
+
+## Combination Product Sets
+
+Combination product sets [@narushima2019microtonality, chapter 6] are
+just one of theoretician Erv Wilson's tuning constructs. The current
+release, v0.5.0, is focused on them, and the ability to play music with
+them on synthesizers that can be retuned, such as the [Korg Minilogue
+XD](https://www.korg.com/us/products/synthesizers/minilogue_xd/ "Korg Minilogue XD web page"),
+the [Aodyo Anyma
+Phi](https://aodyo.com/anyma-phi/ "Aodyo Anyma Phi web page"), and the
+[Ashun Sound
+Machines](https://www.ashunsoundmachines.com/ "Ashun Sound Machines home page")
+Hydrasynth.
+
+## References
