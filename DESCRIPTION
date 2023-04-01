@@ -26,9 +26,10 @@ Imports:
     data.table,
     ggplot2,
     magrittr,
-    pichor (>= 0.0.0.9030)
+    pichor (>= 0.0.0.9030),
+    pyramidi
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.2.0)
 Remotes: 
     AlgoCompSynth/pichor
 LazyData: true
