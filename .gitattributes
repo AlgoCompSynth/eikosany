@@ -7,3 +7,4 @@
 *.css binary
 *.json binary
 *.xml binary
+*.rproj text eol=lf
