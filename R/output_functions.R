@@ -119,6 +119,9 @@ chord_plot <-
 #' synthesizer
 #' @export chord_midi_file
 #' @importFrom gm Music
+#' @importFrom gm Meter
+#' @importFrom gm Tempo
+#' @importFrom gm Line
 #' @param chord a numeric vector with the scale degrees for the chord
 #' @param keyboard_map the keyboard map for the scale
 #' @param output_directory character, default "~/MIDI". This will be created
@@ -135,7 +138,7 @@ chord_plot <-
 #'   eikosany_map <- keyboard_map(eikosany)
 #'   print(chord_midi_file <- chord_midi_file(
 #'     c(1, 6, 11, 15),
-#'      eikosany_map,
+#'      eikosany_map
 #'   ))
 #' }
 chord_midi_file <- function(
@@ -146,13 +149,33 @@ chord_midi_file <- function(
   tempo = 60,
   hold_beats = 1
 ) {
-  music_object <- gm::Music()
+
+  # initialize music object
+  music_object <- gm::Music() + gm::Meter(4, 4) + gm::Tempo(tempo)
+
+  # get the note numbers for all the notes in the chord
   chord_map <- keyboard_map[degree %in% chord]
   note_numbers <- sort(chord_map$note_number)
-  return(list(
-    file_name = file_name,
-    chord_map = chord_map,
-    note_numbers = note_numbers,
-    music_object = music_object
-  ))
+
+  # generate the chords
+  chord_span <- length(chord)
+  last_note_number <- length(note_numbers)
+  root <- 1
+  chord_list <- duration_list <- list()
+
+  while (root <= last_note_number) {
+    end <- root + chord_span - 1
+    if (end > last_note_number) { break }
+    chord_list <- append(chord_list, list(note_numbers[root:end]))
+    duration_list <- append(duration_list, hold_beats)
+    root <- root + 1
+  }
+
+  # add the line to the music object
+  music_object <- music_object + gm::Line(
+    pitches = chord_list,
+    durations = duration_list
+  )
+
+  return(music_object)
 }

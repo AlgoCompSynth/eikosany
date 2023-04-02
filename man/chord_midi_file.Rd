@@ -44,7 +44,7 @@ the lowest to the highest notes in the keyboard map.
   eikosany_map <- keyboard_map(eikosany)
   print(chord_midi_file <- chord_midi_file(
     c(1, 6, 11, 15),
-     eikosany_map,
+     eikosany_map
   ))
 }
 }
