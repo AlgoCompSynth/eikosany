@@ -112,3 +112,47 @@ chord_plot <-
     ggplot2::labs(title = title_string)
   return(plot)
 }
+
+#' @title Create Chord MIDI File
+#' @name chord_midi_file
+#' @description Creates a MIDI file to play a given chord on a remapped
+#' synthesizer
+#' @export chord_midi_file
+#' @importFrom gm Music
+#' @param chord a numeric vector with the scale degrees for the chord
+#' @param keyboard_map the keyboard map for the scale
+#' @param output_directory character, default "~/MIDI". This will be created
+#' if it does not exist.
+#' @param file_name character, default is `paste("chord", chord, sep="_")`.mid
+#' @param tempo numeric, beats per minute, default is 60
+#' @param hold_beats numeric number of beats to hold the chord, default is 1
+#' @returns the full path to the file
+#' @details The created MIDI file will play all inversions of the chord from
+#' the lowest to the highest notes in the keyboard map.
+#' @examples
+#' \dontrun{
+#'   eikosany <- cps_scale_table()
+#'   eikosany_map <- keyboard_map(eikosany)
+#'   print(chord_midi_file <- chord_midi_file(
+#'     c(1, 6, 11, 15),
+#'      eikosany_map,
+#'   ))
+#' }
+chord_midi_file <- function(
+  chord,
+  keyboard_map,
+  output_directory = "~/MIDI",
+  file_name = paste0("chord_", paste(chord, collapse = "_"), ".mid"),
+  tempo = 60,
+  hold_beats = 1
+) {
+  music_object <- gm::Music()
+  chord_map <- keyboard_map[degree %in% chord]
+  note_numbers <- sort(chord_map$note_number)
+  return(list(
+    file_name = file_name,
+    chord_map = chord_map,
+    note_numbers = note_numbers,
+    music_object = music_object
+  ))
+}
