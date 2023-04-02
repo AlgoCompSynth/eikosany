@@ -27,10 +27,9 @@ Imports:
     ggplot2,
     magrittr,
     pichor (>= 0.0.0.9030),
-    pyramidi (>= 0.1)
+    gm
 Depends: 
     R (>= 4.2.0)
-Remotes:  
-    AlgoCompSynth/pichor,
-    urswilke/pyramidi
+Remotes: 
+    AlgoCompSynth/pichor
 LazyData: true
