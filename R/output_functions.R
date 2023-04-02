@@ -125,6 +125,8 @@ chord_plot <-
 #' @importFrom gm export
 #' @param chord a numeric vector with the scale degrees for the chord
 #' @param keyboard_map the keyboard map for the scale
+#' @param lowest_note the lowest MIDI note number to use. Default is 48.
+#' @param highest_note the highest MIDI note number to use. Default is 84.
 #' @param output_directory character, default "~/MIDI". This will be created
 #' if it does not exist.
 #' @param file_name character, default is "chord_`paste(chord, sep="_")`.mid"
@@ -141,10 +143,19 @@ chord_plot <-
 #'     c(1, 6, 11, 15),
 #'      eikosany_map
 #'   ))
+#'
+#'   vanilla <- cps_scale_table()
+#'   vanilla_map <- keyboard_map(vanilla)
+#'   print(chord_midi_file <- chord_midi_file(
+#'     c(0, 4, 7, 10),
+#'      vanilla_map
+#'   ))
 #' }
 chord_midi_file <- function(
   chord,
   keyboard_map,
+  lowest_note = 48,
+  highest_note = 84,
   output_directory = "~/MIDI",
   file_name = paste0("chord_", paste(chord, collapse = "_")),
   tempo = 60,
@@ -155,7 +166,7 @@ chord_midi_file <- function(
   music_object <- gm::Music() + gm::Meter(4, 4) + gm::Tempo(tempo)
 
   # get the note numbers for all the notes in the chord
-  chord_map <- keyboard_map[degree %in% chord]
+  chord_map <- keyboard_map[degree %in% chord & note_number >= lowest_note & note_number <= highest_note]
   note_numbers <- sort(chord_map$note_number)
 
   # generate the chords

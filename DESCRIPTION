@@ -31,5 +31,5 @@ Imports:
 Depends: 
     R (>= 4.2.0)
 Remotes: 
-    AlgoCompSynth/pichor
+    mikldk/pichor
 LazyData: true

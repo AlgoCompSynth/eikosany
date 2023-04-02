@@ -7,6 +7,8 @@
 chord_midi_file(
   chord,
   keyboard_map,
+  lowest_note = 48,
+  highest_note = 84,
   output_directory = "~/MIDI",
   file_name = paste0("chord_", paste(chord, collapse = "_")),
   tempo = 60,
@@ -17,6 +19,10 @@ chord_midi_file(
 \item{chord}{a numeric vector with the scale degrees for the chord}
 
 \item{keyboard_map}{the keyboard map for the scale}
+
+\item{lowest_note}{the lowest MIDI note number to use. Default is 48.}
+
+\item{highest_note}{the highest MIDI note number to use. Default is 84.}
 
 \item{output_directory}{character, default "~/MIDI". This will be created
 if it does not exist.}
@@ -45,6 +51,13 @@ the lowest to the highest notes in the keyboard map.
   print(chord_midi_file <- chord_midi_file(
     c(1, 6, 11, 15),
      eikosany_map
+  ))
+
+  vanilla <- cps_scale_table()
+  vanilla_map <- keyboard_map(vanilla)
+  print(chord_midi_file <- chord_midi_file(
+    c(0, 4, 7, 10),
+     vanilla_map
   ))
 }
 }
