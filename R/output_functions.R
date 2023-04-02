@@ -122,11 +122,12 @@ chord_plot <-
 #' @importFrom gm Meter
 #' @importFrom gm Tempo
 #' @importFrom gm Line
+#' @importFrom gm export
 #' @param chord a numeric vector with the scale degrees for the chord
 #' @param keyboard_map the keyboard map for the scale
 #' @param output_directory character, default "~/MIDI". This will be created
 #' if it does not exist.
-#' @param file_name character, default is `paste("chord", chord, sep="_")`.mid
+#' @param file_name character, default is "chord_`paste(chord, sep="_")`.mid"
 #' @param tempo numeric, beats per minute, default is 60
 #' @param hold_beats numeric number of beats to hold the chord, default is 1
 #' @returns the full path to the file
@@ -145,7 +146,7 @@ chord_midi_file <- function(
   chord,
   keyboard_map,
   output_directory = "~/MIDI",
-  file_name = paste0("chord_", paste(chord, collapse = "_"), ".mid"),
+  file_name = paste0("chord_", paste(chord, collapse = "_")),
   tempo = 60,
   hold_beats = 1
 ) {
@@ -177,5 +178,11 @@ chord_midi_file <- function(
     durations = duration_list
   )
 
-  return(music_object)
+  # create the directory
+  dir.create(output_directory, recursive = TRUE)
+
+  # export the object
+  gm::export(music_object, output_directory, file_name, formats = "mid")
+
+  return(paste0(output_directory, file_name, ".mid"))
 }

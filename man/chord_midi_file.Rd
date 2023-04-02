@@ -8,7 +8,7 @@ chord_midi_file(
   chord,
   keyboard_map,
   output_directory = "~/MIDI",
-  file_name = paste0("chord_", paste(chord, collapse = "_"), ".mid"),
+  file_name = paste0("chord_", paste(chord, collapse = "_")),
   tempo = 60,
   hold_beats = 1
 )
@@ -21,7 +21,7 @@ chord_midi_file(
 \item{output_directory}{character, default "~/MIDI". This will be created
 if it does not exist.}
 
-\item{file_name}{character, default is \code{paste("chord", chord, sep="_")}.mid}
+\item{file_name}{character, default is "chord_\code{paste(chord, sep="_")}.mid"}
 
 \item{tempo}{numeric, beats per minute, default is 60}
 
