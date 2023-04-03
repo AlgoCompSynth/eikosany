@@ -113,53 +113,48 @@ chord_plot <-
   return(plot)
 }
 
-#' @title Create Chord MIDI File
-#' @name chord_midi_file
-#' @description Creates a MIDI file to play a given chord on a remapped
-#' synthesizer
-#' @export chord_midi_file
+#' @title Create Chord Music Object
+#' @name chord_music_object
+#' @description Creates a `gm` music object for a given chord and keyboard map
+#' @export chord_music_object
 #' @importFrom gm Music
 #' @importFrom gm Meter
 #' @importFrom gm Tempo
 #' @importFrom gm Line
-#' @importFrom gm export
 #' @param chord a numeric vector with the scale degrees for the chord
 #' @param keyboard_map the keyboard map for the scale
 #' @param lowest_note the lowest MIDI note number to use. Default is 48.
 #' @param highest_note the highest MIDI note number to use. Default is 84.
-#' @param output_directory character, default "~/MIDI". This will be created
-#' if it does not exist.
-#' @param file_name character, default is "chord_`paste(chord, sep="_")`.mid"
 #' @param tempo numeric, beats per minute, default is 60
 #' @param hold_beats numeric number of beats to hold the chord, default is 1
-#' @returns the full path to the file
-#' @details The created MIDI file will play all inversions of the chord from
-#' the lowest to the highest notes in the keyboard map.
+#' @returns the music object
+#' @details The created music object contains a single line with all inversions
+#' of the chord from the given lowest to the highest notes in the keyboard map.
 #' @examples
 #' \dontrun{
 #'   eikosany <- cps_scale_table()
 #'   eikosany_map <- keyboard_map(eikosany)
-#'   print(chord_midi_file <- chord_midi_file(
+#'   print(eikosany_music_object <- chord_music_object(
 #'     c(1, 6, 11, 15),
-#'      eikosany_map
+#'      eikosany_map,
+#'      lowest_note = 40,
+#'      highest_note = 80
 #'   ))
 #'
-#'   vanilla <- cps_scale_table()
+#'   vanilla <- et_scale_table()
 #'   vanilla_map <- keyboard_map(vanilla)
-#'   print(chord_midi_file <- chord_midi_file(
+#'   print(vanilla_music_object <- chord_music_object(
 #'     c(0, 4, 7, 10),
 #'      vanilla_map
 #'   ))
 #' }
-chord_midi_file <- function(
-  chord,
-  keyboard_map,
-  lowest_note = 48,
-  highest_note = 84,
-  output_directory = "~/MIDI",
-  file_name = paste0("chord_", paste(chord, collapse = "_")),
-  tempo = 60,
-  hold_beats = 1
+chord_music_object <- function(
+    chord,
+    keyboard_map,
+    lowest_note = 48,
+    highest_note = 84,
+    tempo = 60,
+    hold_beats = 1
 ) {
 
   # initialize music object
@@ -189,11 +184,56 @@ chord_midi_file <- function(
     durations = duration_list
   )
 
+  return(music_object)
+}
+
+#' @title Export Music Object
+#' @name export_music_object
+#' @description Exports a `gm` music object to a MIDI file
+#' @export export_music_object
+#' @importFrom gm export
+#' @param music_object a `gm` music object
+#' @param file_name character The ".mid" suffix will be supplied
+#' @param output_directory character, default "~/MIDI". This will be created
+#' if it does not exist.
+#' @returns the full path to the file
+#' @examples
+#' \dontrun{
+#'   eikosany <- cps_scale_table()
+#'   eikosany_map <- keyboard_map(eikosany)
+#'   print(eikosany_music_object <- chord_music_object(
+#'     c(1, 6, 11, 15),
+#'      eikosany_map,
+#'      lowest_note = 40,
+#'      highest_note = 80
+#'   ))
+#'   print(file_path <- export_music_object(
+#'     eikosany_music_object,
+#'     "eikosany_chords"
+#'   ))
+#'
+#'   vanilla <- et_scale_table()
+#'   vanilla_map <- keyboard_map(vanilla)
+#'   print(vanilla_music_object <- chord_music_object(
+#'     c(0, 4, 7, 10),
+#'      vanilla_map
+#'   ))
+#'   print(file_path <- export_music_object(
+#'     vanilla_music_object,
+#'     "vanilla_chords"
+#'   ))
+#' }
+export_music_object <- function(
+  music_object,
+  file_name,
+  output_directory = "~/MIDI"
+) {
+
   # create the directory
   dir.create(output_directory, recursive = TRUE)
 
   # export the object
   gm::export(music_object, output_directory, file_name, formats = "mid")
 
-  return(paste0(output_directory, file_name, ".mid"))
+  return(paste0(output_directory, "/", file_name, ".mid"))
 }
