@@ -31,6 +31,9 @@
     <loc>/articles/run-the-examples.html</loc>
   </url>
   <url>
+    <loc>/articles/tetrads-as-midi-files.html</loc>
+  </url>
+  <url>
     <loc>/articles/tetrads-on-37-key-synth.html</loc>
   </url>
   <url>
@@ -50,6 +53,9 @@
   </url>
   <url>
     <loc>/reference/chord_midi_file.html</loc>
+  </url>
+  <url>
+    <loc>/reference/chord_music_object.html</loc>
   </url>
   <url>
     <loc>/reference/chord_plot.html</loc>
@@ -107,6 +113,9 @@
   </url>
   <url>
     <loc>/reference/et_scale_table.html</loc>
+  </url>
+  <url>
+    <loc>/reference/export_music_object.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
