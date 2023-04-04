@@ -2,9 +2,8 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  tetrads-as-midi-files: tetrads-as-midi-files.html
   tetrads-on-37-key-synth: tetrads-on-37-key-synth.html
   introduction-to-combination-product-sets: introduction-to-combination-product-sets.html
   tuning-the-korg-minilogue-xd-to-the-eikosany: tuning-the-korg-minilogue-xd-to-the-eikosany.html
-last_built: 2023-04-04T22:37Z
+last_built: 2023-04-04T23:05Z
 
