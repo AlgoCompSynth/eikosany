@@ -112,3 +112,128 @@ chord_plot <-
     ggplot2::labs(title = title_string)
   return(plot)
 }
+
+#' @title Create Chord Music Object
+#' @name chord_music_object
+#' @description Creates a `gm` music object for a given chord and keyboard map
+#' @export chord_music_object
+#' @importFrom gm Music
+#' @importFrom gm Meter
+#' @importFrom gm Tempo
+#' @importFrom gm Line
+#' @param chord a numeric vector with the scale degrees for the chord
+#' @param keyboard_map the keyboard map for the scale
+#' @param lowest_note the lowest MIDI note number to use. Default is 48.
+#' @param highest_note the highest MIDI note number to use. Default is 84.
+#' @param tempo numeric, beats per minute, default is 60
+#' @param hold_beats numeric number of beats to hold the chord, default is 1
+#' @returns the music object
+#' @details The created music object contains a single line with all inversions
+#' of the chord from the given lowest to the highest notes in the keyboard map.
+#' @examples
+#' \dontrun{
+#'   eikosany <- cps_scale_table()
+#'   eikosany_map <- keyboard_map(eikosany)
+#'   print(eikosany_music_object <- chord_music_object(
+#'     c(1, 6, 11, 15),
+#'      eikosany_map,
+#'      lowest_note = 40,
+#'      highest_note = 80
+#'   ))
+#'
+#'   vanilla <- et_scale_table()
+#'   vanilla_map <- keyboard_map(vanilla)
+#'   print(vanilla_music_object <- chord_music_object(
+#'     c(0, 4, 7, 10),
+#'      vanilla_map
+#'   ))
+#' }
+chord_music_object <- function(
+    chord,
+    keyboard_map,
+    lowest_note = 48,
+    highest_note = 84,
+    tempo = 60,
+    hold_beats = 1
+) {
+
+  # initialize music object
+  music_object <- gm::Music() + gm::Meter(4, 4) + gm::Tempo(tempo)
+
+  # get the note numbers for all the notes in the chord
+  chord_map <- keyboard_map[degree %in% chord & note_number >= lowest_note & note_number <= highest_note]
+  note_numbers <- sort(chord_map$note_number)
+
+  # generate the chords
+  chord_span <- length(chord)
+  last_note_number <- length(note_numbers)
+  root <- 1
+  chord_list <- duration_list <- list()
+
+  while (root <= last_note_number) {
+    end <- root + chord_span - 1
+    if (end > last_note_number) { break }
+    chord_list <- append(chord_list, list(note_numbers[root:end]))
+    duration_list <- append(duration_list, hold_beats)
+    root <- root + 1
+  }
+
+  # add the line to the music object
+  music_object <- music_object + gm::Line(
+    pitches = chord_list,
+    durations = duration_list
+  )
+
+  return(music_object)
+}
+
+#' @title Export Music Object
+#' @name export_music_object
+#' @description Exports a `gm` music object to a MIDI file
+#' @export export_music_object
+#' @importFrom gm export
+#' @param music_object a `gm` music object
+#' @param file_name character The ".mid" suffix will be supplied
+#' @param output_directory character, default "~/MIDI". This will be created
+#' if it does not exist.
+#' @returns the full path to the file
+#' @examples
+#' \dontrun{
+#'   eikosany <- cps_scale_table()
+#'   eikosany_map <- keyboard_map(eikosany)
+#'   print(eikosany_music_object <- chord_music_object(
+#'     c(1, 6, 11, 15),
+#'      eikosany_map,
+#'      lowest_note = 40,
+#'      highest_note = 80
+#'   ))
+#'   print(file_path <- export_music_object(
+#'     eikosany_music_object,
+#'     "eikosany_chords"
+#'   ))
+#'
+#'   vanilla <- et_scale_table()
+#'   vanilla_map <- keyboard_map(vanilla)
+#'   print(vanilla_music_object <- chord_music_object(
+#'     c(0, 4, 7, 10),
+#'      vanilla_map
+#'   ))
+#'   print(file_path <- export_music_object(
+#'     vanilla_music_object,
+#'     "vanilla_chords"
+#'   ))
+#' }
+export_music_object <- function(
+  music_object,
+  file_name,
+  output_directory = "~/MIDI"
+) {
+
+  # create the directory
+  dir.create(output_directory, recursive = TRUE)
+
+  # export the object
+  gm::export(music_object, output_directory, file_name, formats = "mid")
+
+  return(paste0(output_directory, "/", file_name, ".mid"))
+}

@@ -90,3 +90,49 @@ bohlen_pierce_et_names <- c(
   "B"
 )
 usethis::use_data(bohlen_pierce_et_names, overwrite = TRUE)
+
+# Make Eiksoany chord MIDI files
+
+## Create chord table
+scale <- eikosany::cps_scale_table() # 1-3-5-7-9-11 Eikosany is the default
+scale_degrees <- length(scale$degree) - 1
+map <- eikosany::keyboard_map(scale)
+chords <- eikosany::cps_chord_table(scale)
+
+## make filename-compatible chord names
+chord_names <- chords$chord
+chord_names <- gsub(":/", "-", chord_names, fixed = TRUE)
+chord_names <- gsub(":", "-", chord_names, fixed = TRUE)
+chord_names <- gsub("/", "sub-", chord_names, fixed = TRUE)
+
+## convert the chord degrees to a matrix
+degrees <- chords$degrees
+degrees_matrix <- matrix(
+  unlist(lapply(strsplit(degrees, ":"), as.numeric)),
+  byrow = TRUE,
+  nrow = length(degrees)
+)
+
+## main loop to generate MIDI files
+for (ichord in 1:nrow(degrees_matrix)) {
+  chord_vector <- degrees_matrix[ichord, ]
+
+  # all inversions over the same three octaves in a typical 37-key synth
+  music_object <- eikosany::chord_music_object(
+    chord_vector,
+    map,
+    lowest_note = 40,
+    highest_note = 100,
+    tempo = 60,
+    hold_beats = 1
+  )
+
+  # write the file
+  file_name <- paste0("eikosany-", chord_names[ichord])
+  file_path <- eikosany::export_music_object(
+    music_object,
+    file_name,
+    output_directory = "inst/Eikosany-MIDI-Files"
+  )
+  print(file_path)
+}
