@@ -7,8 +7,47 @@ bibliography: vignettes/eikosany.bibtex
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# eikosany - Algorithmic Composition With Erv Wilson's Combination Product
-Sets
+# eikosany - Algorithmic Composition With Erv Wilson's Combination Product Sets
+
+## Update 2023-04-12
+This project is going on a brief hold for rescoping and refactoring. There are
+a couple of reasons for this:
+
+1. The package I was using to write MIDI files, `gm`, writes MIDI files by
+running MuseScore 3 from an OS shell. This is a hassle for the user, who needs
+to install MuseScore 3. But worse, the resulting MIDI files sometimes work and
+sometimes don't.
+
+    One specific "didn't work" was a tool from the Windows store called _MIDI
+    Analyzer_. When I tried to open one of the MIDI files with MIDI Analyzer to
+    see what it looked like, MIDI Analyzer crashed!
+
+    Meanwhile, MuseScore have moved on to version 4. I don't have the time to
+    troubleshoot MuseScore's current product, let alone their "legacy" one.
+
+    So I have spun off a new project,
+    [`mydough`](https://github.com/AlgoCompSynth/mydough), that's specifically
+    designed to read and write MIDI files. It uses
+    [`reticulate`](https://rstudio.github.io/reticulate/) to access MIDI via
+    the [`mido`](https://mido.readthedocs.io/en/latest/) Python package.
+
+2. `eikosany` was starting to overlap a lot of functionality provided by other
+software, all of which I use and which I suspect most microtonal musicians use
+as well. In addition, there's a whole other domain of microtonal music that
+deals with the relationships between timbre / spectra and musical scales.
+
+    So I've started a new R package,
+    [`setharophone`](https://github.com/AlgoCompSynth/setharophone).
+    `setharophone` will implement many of the algorithms in _Tuning, Timbre,
+    Spectrum, Scale_ [@sethares2013tuning], and will be able to read and write
+    audio files using existing CRAN packages.
+    
+    Once `setharophone` is fleshed out enough to use, I'll be able to design
+    sounds that go well with any microtonal / xentonal scale, including
+    eikosanies. I'll probably move the scale, interval and keyboard mapping
+    functions from `eikosany` to `setharophone`, since they aren't specific to
+    the Wilson theory. `setharophone` will most likely have Scala `.scl` file
+    input and output.
 
 ## Overview
 
