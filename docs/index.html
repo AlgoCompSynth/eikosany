@@ -72,9 +72,26 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="eikosany---algorithmic-composition-with-erv-wilsons-combination-product">eikosany - Algorithmic Composition With Erv Wilson’s Combination Product<a class="anchor" aria-label="anchor" href="#eikosany---algorithmic-composition-with-erv-wilsons-combination-product"></a>
+<div class="page-header"><h1 id="eikosany---algorithmic-composition-with-erv-wilsons-combination-product-sets">eikosany - Algorithmic Composition With Erv Wilson’s Combination Product Sets<a class="anchor" aria-label="anchor" href="#eikosany---algorithmic-composition-with-erv-wilsons-combination-product-sets"></a>
 </h1></div>
-<p>Sets</p>
+<div class="section level2">
+<h2 id="update-2023-04-12">Update 2023-04-12<a class="anchor" aria-label="anchor" href="#update-2023-04-12"></a>
+</h2>
+<p>This project is going on a brief hold for rescoping and refactoring. There are a couple of reasons for this:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>The package I was using to write MIDI files, <code>gm</code>, writes MIDI files by running MuseScore 3 from an OS shell. This is a hassle for the user, who needs to install MuseScore 3. But worse, the resulting MIDI files sometimes work and sometimes don’t.</p>
+<p>One specific “didn’t work” was a tool from the Windows store called <em>MIDI Analyzer</em>. When I tried to open one of the MIDI files with MIDI Analyzer to see what it looked like, MIDI Analyzer crashed!</p>
+<p>Meanwhile, MuseScore have moved on to version 4. I don’t have the time to troubleshoot MuseScore’s current product, let alone their “legacy” one.</p>
+<p>So I have spun off a new project, <a href="https://github.com/AlgoCompSynth/mydough" class="external-link"><code>mydough</code></a>, that’s specifically designed to read and write MIDI files. It uses <a href="https://rstudio.github.io/reticulate/" class="external-link"><code>reticulate</code></a> to access MIDI via the <a href="https://mido.readthedocs.io/en/latest/" class="external-link"><code>mido</code></a> Python package.</p>
+</li>
+<li>
+<p><code>eikosany</code> was starting to overlap a lot of functionality provided by other software, all of which I use and which I suspect most microtonal musicians use as well. In addition, there’s a whole other domain of microtonal music that deals with the relationships between timbre / spectra and musical scales.</p>
+<p>So I’ve started a new R package, <a href="https://github.com/AlgoCompSynth/setharophone" class="external-link"><code>setharophone</code></a>. <code>setharophone</code> will implement many of the algorithms in <em>Tuning, Timbre, Spectrum, Scale</em> (Sethares 2013), and will be able to read and write audio files using existing CRAN packages.</p>
+<p>Once <code>setharophone</code> is fleshed out enough to use, I’ll be able to design sounds that go well with any microtonal / xentonal scale, including eikosanies. I’ll probably move the scale, interval and keyboard mapping functions from <code>eikosany</code> to <code>setharophone</code>, since they aren’t specific to the Wilson theory. <code>setharophone</code> will most likely have Scala <code>.scl</code> file input and output.</p>
+</li>
+</ol>
+</div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -170,6 +187,9 @@ Partch, H. 1979. <em>Genesis of a Music: An Account of a Creative Work, Its Root
 </div>
 <div id="ref-sethares1998tuning" class="csl-entry">
 Sethares, W. A. 1998. <em>Tuning, Timbre, Spectrum, Scale</em>. Springer London.
+</div>
+<div id="ref-sethares2013tuning" class="csl-entry">
+———. 2013. <em>Tuning, Timbre, Spectrum, Scale</em>. Springer London.
 </div>
 <div id="ref-xenakis1992formalized" class="csl-entry">
 Xenakis, I. 1992. <em>Formalized Music: Thought and Mathematics in Composition</em>. Harmonologia Series. Pendragon Press.
