@@ -29,7 +29,7 @@ Imports:
     pichor (>= 0.0.0.9030),
     gm (>= 1.0.2)
 Depends: 
-    R (>= 4.3.0)
+    R (>= 4.2.0)
 Remotes: 
     mikldk/pichor
 LazyData: true
