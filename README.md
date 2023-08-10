@@ -1,50 +1,6 @@
 
 # eikosany - Algorithmic Composition With Erv Wilson’s Combination Product Sets
 
-## Update 2023-04-12
-
-This project is going on a brief hold for rescoping and refactoring.
-There are a couple of reasons for this:
-
-1.  The package I was using to write MIDI files, `gm`, writes MIDI files
-    by running MuseScore 3 from an OS shell. This is a hassle for the
-    user, who needs to install MuseScore 3. But worse, the resulting
-    MIDI files sometimes work and sometimes don’t.
-
-    One specific “didn’t work” was a tool from the Windows store called
-    *MIDI Analyzer*. When I tried to open one of the MIDI files with
-    MIDI Analyzer to see what it looked like, MIDI Analyzer crashed!
-
-    Meanwhile, MuseScore have moved on to version 4. I don’t have the
-    time to troubleshoot MuseScore’s current product, let alone their
-    “legacy” one.
-
-    So I have spun off a new project,
-    [`mydough`](https://github.com/AlgoCompSynth/mydough), that’s
-    specifically designed to read and write MIDI files. It uses
-    [`reticulate`](https://rstudio.github.io/reticulate/) to access MIDI
-    via the [`mido`](https://mido.readthedocs.io/en/latest/) Python
-    package.
-
-2.  `eikosany` was starting to overlap a lot of functionality provided
-    by other software, all of which I use and which I suspect most
-    microtonal musicians use as well. In addition, there’s a whole other
-    domain of microtonal music that deals with the relationships between
-    timbre / spectra and musical scales.
-
-    So I’ve started a new R package,
-    [`setharophone`](https://github.com/AlgoCompSynth/setharophone).
-    `setharophone` will implement many of the algorithms in *Tuning,
-    Timbre, Spectrum, Scale* (Sethares 2013), and will be able to read
-    and write audio files using existing CRAN packages.
-
-    Once `setharophone` is fleshed out enough to use, I’ll be able to
-    design sounds that go well with any microtonal / xentonal scale,
-    including eikosanies. I’ll probably move the scale, interval and
-    keyboard mapping functions from `eikosany` to `setharophone`, since
-    they aren’t specific to the Wilson theory. `setharophone` will most
-    likely have Scala `.scl` file input and output.
-
 ## Overview
 
 `eikosany` is an R package of tools for algorithmic composition with Erv
@@ -72,13 +28,12 @@ most commonly encountered Eikosany uses the first six odd numbers: 1, 3,
   [Counterpoint](https://ctpt.co/), are browser-based applications for
   creating microtonal scales and making generative music with them.
 
-- [ODDSound
-  MTS-ESP](https://oddsound.com/mtsespsuite.phphttps://oddsound.com/mtsespsuite.php).
-  This is a plugin for digital audio workstations (DAWs) that
-  facilitates production of microtonal music. I own a copy and if you’re
-  making microtonal electronic music, you should too. The Eikosany and
-  other scales Erv Wilson developed all ship with MTS-ESP, so you don’t
-  really need my R package to compose with them.
+- [ODDSound MTS-ESP](https://oddsound.com/mtsespsuite.php). This is a
+  plugin for digital audio workstations (DAWs) that facilitates
+  production of microtonal music. I own a copy and if you’re making
+  microtonal electronic music, you should too. The Eikosany and other
+  scales Erv Wilson developed all ship with MTS-ESP, so you don’t really
+  need my R package to compose with them.
 
 - [Entonal Studio](https://entonal.studio/). Entonal Studio is a user
   interface package for microtonal composition. It can operate as a
@@ -102,12 +57,11 @@ most commonly encountered Eikosany uses the first six odd numbers: 1, 3,
 
 - [Wilsonic](https://apps.apple.com/us/app/wilsonic/id848852071). This
   is a free app that runs on iOS devices. I don’t have any iOS devices
-  so I’ve never used this. There is also a version of Wilsonic in
-  development for use with ODDSound MTS-ESP. See
+  so I’ve never used this.
 
-  <https://wilsonic.co/downloads/downloads-mts-esp/>
-
-  for the details.
+  There is also a version of Wilsonic in development for use with
+  ODDSound MTS-ESP. See
+  <https://wilsonic.co/downloads/downloads-mts-esp/> for the details.
 
 See the [Xenharmonic Wiki List of microtonal software
 plugins](https://en.xen.wiki/w/List_of_microtonal_software_plugins) for
@@ -139,7 +93,7 @@ Wilson was a theoretician who developed keyboards, scales and tuning
 systems that several composers were using at the time, and are still
 using today. Terumi Narushima’s *Microtonality and the Tuning Systems of
 Erv Wilson* [^5] is a comprehensive documentation of Wilson’s work and
-is the basis for the code in this package.
+is the basis for much of the code in this package.
 
 ## Motivation
 
@@ -187,43 +141,6 @@ I have two main motivations:
     expensive and, like the instruments, custom-built. I need tools to
     work with what I have.
 
-## Milestones
-
-The ultimate goal of this package is to compose music using Combination
-Product Set (CPS) scales and other Wilsonic constructs. There are three
-milestones on that path:
-
-- [v0.5.0](https://github.com/AlgoCompSynth/eikosany/milestone/1):
-  - computing scale tables, interval tables, keyboard maps and chord
-    tables from definitions of combination product sets and
-    equal-tempered scales,
-  - creating full-keyboard `.scl` files for synthesizers that can use
-    them, like the Korg Minilogue XD,
-  - plotting keyboard maps of chords for retuned synthesizers, and
-  - capturing samples from retuned synthesizers and publishing them on
-    [Bandcamp](https://algocompsynth.bandcamp.com/).
-- [v0.7.5](https://github.com/AlgoCompSynth/eikosany/milestone/2):
-  coding the full range of Erv Wilson’s concepts and graphics - keyboard
-  layouts, lattice diagrams, the scale tree, moments of symmetry, etc.
-- [v0.9.0](https://github.com/AlgoCompSynth/eikosany/milestone/3):
-  algorithms for musical composition by traversing Wilsonic graph
-  structures and emitting scores in computer-readable formats such as
-  MIDI and Open Sound Control as well as human-readable formats.
-
-## Update 2023-02-23
-
-Mostly because of some hassles getting the Minilogue XD retuned to the
-1-3-5-7-9-11 Eikosany, the contents of the v0.5.0 milestone have changed
-rather drastically. But there is now a due date - Friday, 2023-03-03, a
-feature freeze is in place and I’m wrapping up the documentation. The
-`pkgdown` site is active and you can watch things happen at
-<https://algocompsynth.github.io/eikosany/>.
-
-Much of the good stuff - the diagrams, and the algorithms for exploring
-Wilson scales and generating scores that use them - will be in future
-releases. I don’t have firm release dates yet but I’m aiming for the
-beginning of May for v0.9.0.
-
 ## References
 
 <div id="refs" class="references csl-bib-body hanging-indent">
@@ -253,12 +170,6 @@ Roots, and Its Fulfillments, Second Edition*. Hachette Books.
 
 Sethares, W. A. 1998. *Tuning, Timbre, Spectrum, Scale*. Springer
 London.
-
-</div>
-
-<div id="ref-sethares2013tuning" class="csl-entry">
-
-———. 2013. *Tuning, Timbre, Spectrum, Scale*. Springer London.
 
 </div>
 

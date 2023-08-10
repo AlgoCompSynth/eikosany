@@ -75,24 +75,6 @@
 <div class="page-header"><h1 id="eikosany---algorithmic-composition-with-erv-wilsons-combination-product-sets">eikosany - Algorithmic Composition With Erv Wilson’s Combination Product Sets<a class="anchor" aria-label="anchor" href="#eikosany---algorithmic-composition-with-erv-wilsons-combination-product-sets"></a>
 </h1></div>
 <div class="section level2">
-<h2 id="update-2023-04-12">Update 2023-04-12<a class="anchor" aria-label="anchor" href="#update-2023-04-12"></a>
-</h2>
-<p>This project is going on a brief hold for rescoping and refactoring. There are a couple of reasons for this:</p>
-<ol style="list-style-type: decimal">
-<li>
-<p>The package I was using to write MIDI files, <code>gm</code>, writes MIDI files by running MuseScore 3 from an OS shell. This is a hassle for the user, who needs to install MuseScore 3. But worse, the resulting MIDI files sometimes work and sometimes don’t.</p>
-<p>One specific “didn’t work” was a tool from the Windows store called <em>MIDI Analyzer</em>. When I tried to open one of the MIDI files with MIDI Analyzer to see what it looked like, MIDI Analyzer crashed!</p>
-<p>Meanwhile, MuseScore have moved on to version 4. I don’t have the time to troubleshoot MuseScore’s current product, let alone their “legacy” one.</p>
-<p>So I have spun off a new project, <a href="https://github.com/AlgoCompSynth/mydough" class="external-link"><code>mydough</code></a>, that’s specifically designed to read and write MIDI files. It uses <a href="https://rstudio.github.io/reticulate/" class="external-link"><code>reticulate</code></a> to access MIDI via the <a href="https://mido.readthedocs.io/en/latest/" class="external-link"><code>mido</code></a> Python package.</p>
-</li>
-<li>
-<p><code>eikosany</code> was starting to overlap a lot of functionality provided by other software, all of which I use and which I suspect most microtonal musicians use as well. In addition, there’s a whole other domain of microtonal music that deals with the relationships between timbre / spectra and musical scales.</p>
-<p>So I’ve started a new R package, <a href="https://github.com/AlgoCompSynth/setharophone" class="external-link"><code>setharophone</code></a>. <code>setharophone</code> will implement many of the algorithms in <em>Tuning, Timbre, Spectrum, Scale</em> (Sethares 2013), and will be able to read and write audio files using existing CRAN packages.</p>
-<p>Once <code>setharophone</code> is fleshed out enough to use, I’ll be able to design sounds that go well with any microtonal / xentonal scale, including eikosanies. I’ll probably move the scale, interval and keyboard mapping functions from <code>eikosany</code> to <code>setharophone</code>, since they aren’t specific to the Wilson theory. <code>setharophone</code> will most likely have Scala <code>.scl</code> file input and output.</p>
-</li>
-</ol>
-</div>
-<div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p><code>eikosany</code> is an R package of tools for algorithmic composition with Erv Wilson’s Combination Product Sets (Narushima 2019, chap. 6). It’s meant to <strong><em>complement</em></strong> other microtonal composition tools, not replace any of them.</p>
@@ -105,7 +87,7 @@
 <li><p><a href="https://www.huygens-fokker.org/scala/" class="external-link">Scala</a>. Note: this is <strong><em>not</em></strong> the Scala multi-paradigm programming language that runs on the Java Virtual Machine. This is a specialized tool for working with musical scales.</p></li>
 <li><p><a href="https://sevish.com/scaleworkshop/guide.htm" class="external-link">Sevish’s Scale Workshop</a>. This is a web-based tool for working with musical scales.</p></li>
 <li><p><a href="https://isartum.net/" class="external-link">Leimma and Apotome</a>. These tools, by <a href="https://khyamallami.com/" class="external-link">Khyam Allami</a> and <a href="https://ctpt.co/" class="external-link">Counterpoint</a>, are browser-based applications for creating microtonal scales and making generative music with them.</p></li>
-<li><p><a href="https://oddsound.com/mtsespsuite.phphttps://oddsound.com/mtsespsuite.php" class="external-link">ODDSound MTS-ESP</a>. This is a plugin for digital audio workstations (DAWs) that facilitates production of microtonal music. I own a copy and if you’re making microtonal electronic music, you should too. The Eikosany and other scales Erv Wilson developed all ship with MTS-ESP, so you don’t really need my R package to compose with them.</p></li>
+<li><p><a href="https://oddsound.com/mtsespsuite.php" class="external-link">ODDSound MTS-ESP</a>. This is a plugin for digital audio workstations (DAWs) that facilitates production of microtonal music. I own a copy and if you’re making microtonal electronic music, you should too. The Eikosany and other scales Erv Wilson developed all ship with MTS-ESP, so you don’t really need my R package to compose with them.</p></li>
 <li><p><a href="https://entonal.studio/" class="external-link">Entonal Studio</a>. Entonal Studio is a user interface package for microtonal composition. It can operate as a standalone application, a plugin host or a plugin. I own a copy of Entonal Studio and recommend it highly.</p></li>
 <li>
 <p><a href="https://infinitone.com/" class="external-link">Infinitone DMT</a>. From the <a href="https://infinitone.com/support/#faq-container" class="external-link">Infinitone DMT FAQ</a>: “Infinitone DMT is a DAW plugin and standalone that empowers musicians to easily use micro-tuning within their own workflow. …</p>
@@ -113,9 +95,8 @@
 </li>
 <li><p><a href="https://hpi.zentral.zone/ute" class="external-link">Universal Tuning Editor</a>. Universal Tuning Editor is an application for computing and visualizing microtonal scales and tunings, and includes tools to interface with hardware and software synthesizers.</p></li>
 <li>
-<p><a href="https://apps.apple.com/us/app/wilsonic/id848852071" class="external-link">Wilsonic</a>. This is a free app that runs on iOS devices. I don’t have any iOS devices so I’ve never used this. There is also a version of Wilsonic in development for use with ODDSound MTS-ESP. See</p>
-<p><a href="https://wilsonic.co/downloads/downloads-mts-esp/" class="external-link uri">https://wilsonic.co/downloads/downloads-mts-esp/</a></p>
-<p>for the details.</p>
+<p><a href="https://apps.apple.com/us/app/wilsonic/id848852071" class="external-link">Wilsonic</a>. This is a free app that runs on iOS devices. I don’t have any iOS devices so I’ve never used this.</p>
+<p>There is also a version of Wilsonic in development for use with ODDSound MTS-ESP. See <a href="https://wilsonic.co/downloads/downloads-mts-esp/" class="external-link uri">https://wilsonic.co/downloads/downloads-mts-esp/</a> for the details.</p>
 </li>
 </ul>
 <p>See the <a href="https://en.xen.wiki/w/List_of_microtonal_software_plugins" class="external-link">Xenharmonic Wiki List of microtonal software plugins</a> for more ways of making microtonal music.</p>
@@ -126,7 +107,7 @@
 <p>On February 4, 2001, composer Iannis Xenakis passed away. I’ve been a fan of experimental music, especially <em>musique concrète</em>, algorithmically composed music, microtonal music, and other <em>avant-garde</em> genres since I was an undergraduate. Xenakis was one of the major figures in algorithmic composition.</p>
 <p>Reading the first edition of <em>Tuning, Timbre, Spectrum, Scale</em> <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Sethares (1998)&lt;/p&gt;"><sup>1</sup></a> rekindled my appreciation for the microtonal music of Harry Partch. And so, armed with copies of Sethares (1998), <em>Formalized Music</em> <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Xenakis (1992)&lt;/p&gt;"><sup>2</sup></a>, and <em>Genesis of a Music</em> <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Partch (1979)&lt;/p&gt;"><sup>3</sup></a>, I embarked on a path that led to <em>When Harry Met Iannis</em> <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Borasky (2021)&lt;/p&gt;"><sup>4</sup></a>.</p>
 <p><em>When Harry Met Iannis</em> was premiered at a microtonal music festival in El Paso, Texas in late October, 2001. The <a href="https://algocompsynth.bandcamp.com/album/when-harry-met-iannis" class="external-link">Bandcamp version</a> is essentially identical to that version; the source code is on GitHub at <a href="https://github.com/AlgoCompSynth/when-harry-met-iannis" class="external-link uri">https://github.com/AlgoCompSynth/when-harry-met-iannis</a>.</p>
-<p>At the festival, I met a number of composers who were working in microtonal and just intonation, and one name kept coming up: Erv Wilson. Wilson was a theoretician who developed keyboards, scales and tuning systems that several composers were using at the time, and are still using today. Terumi Narushima’s <em>Microtonality and the Tuning Systems of Erv Wilson</em> <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Narushima (2019)&lt;/p&gt;"><sup>5</sup></a> is a comprehensive documentation of Wilson’s work and is the basis for the code in this package.</p>
+<p>At the festival, I met a number of composers who were working in microtonal and just intonation, and one name kept coming up: Erv Wilson. Wilson was a theoretician who developed keyboards, scales and tuning systems that several composers were using at the time, and are still using today. Terumi Narushima’s <em>Microtonality and the Tuning Systems of Erv Wilson</em> <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Narushima (2019)&lt;/p&gt;"><sup>5</sup></a> is a comprehensive documentation of Wilson’s work and is the basis for much of the code in this package.</p>
 </div>
 <div class="section level2">
 <h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
@@ -147,32 +128,6 @@
 </ol>
 </div>
 <div class="section level2">
-<h2 id="milestones">Milestones<a class="anchor" aria-label="anchor" href="#milestones"></a>
-</h2>
-<p>The ultimate goal of this package is to compose music using Combination Product Set (CPS) scales and other Wilsonic constructs. There are three milestones on that path:</p>
-<ul>
-<li>
-<a href="https://github.com/AlgoCompSynth/eikosany/milestone/1" class="external-link">v0.5.0</a>:
-<ul>
-<li>computing scale tables, interval tables, keyboard maps and chord tables from definitions of combination product sets and equal-tempered scales,</li>
-<li>creating full-keyboard <code>.scl</code> files for synthesizers that can use them, like the Korg Minilogue XD,</li>
-<li>plotting keyboard maps of chords for retuned synthesizers, and</li>
-<li>capturing samples from retuned synthesizers and publishing them on <a href="https://algocompsynth.bandcamp.com/" class="external-link">Bandcamp</a>.</li>
-</ul>
-</li>
-<li>
-<a href="https://github.com/AlgoCompSynth/eikosany/milestone/2" class="external-link">v0.7.5</a>: coding the full range of Erv Wilson’s concepts and graphics - keyboard layouts, lattice diagrams, the scale tree, moments of symmetry, etc.</li>
-<li>
-<a href="https://github.com/AlgoCompSynth/eikosany/milestone/3" class="external-link">v0.9.0</a>: algorithms for musical composition by traversing Wilsonic graph structures and emitting scores in computer-readable formats such as MIDI and Open Sound Control as well as human-readable formats.</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="update-2023-02-23">Update 2023-02-23<a class="anchor" aria-label="anchor" href="#update-2023-02-23"></a>
-</h2>
-<p>Mostly because of some hassles getting the Minilogue XD retuned to the 1-3-5-7-9-11 Eikosany, the contents of the v0.5.0 milestone have changed rather drastically. But there is now a due date - Friday, 2023-03-03, a feature freeze is in place and I’m wrapping up the documentation. The <code>pkgdown</code> site is active and you can watch things happen at <a href="https://algocompsynth.github.io/eikosany/" class="external-link uri">https://algocompsynth.github.io/eikosany/</a>.</p>
-<p>Much of the good stuff - the diagrams, and the algorithms for exploring Wilson scales and generating scores that use them - will be in future releases. I don’t have firm release dates yet but I’m aiming for the beginning of May for v0.9.0.</p>
-</div>
-<div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
@@ -187,9 +142,6 @@ Partch, H. 1979. <em>Genesis of a Music: An Account of a Creative Work, Its Root
 </div>
 <div id="ref-sethares1998tuning" class="csl-entry">
 Sethares, W. A. 1998. <em>Tuning, Timbre, Spectrum, Scale</em>. Springer London.
-</div>
-<div id="ref-sethares2013tuning" class="csl-entry">
-———. 2013. <em>Tuning, Timbre, Spectrum, Scale</em>. Springer London.
 </div>
 <div id="ref-xenakis1992formalized" class="csl-entry">
 Xenakis, I. 1992. <em>Formalized Music: Thought and Mathematics in Composition</em>. Harmonologia Series. Pendragon Press.
