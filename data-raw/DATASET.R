@@ -132,7 +132,7 @@ for (ichord in 1:nrow(degrees_matrix)) {
   file_path <- eikosany::export_music_object(
     music_object,
     file_name,
-    output_directory = "inst/Eikosany-MIDI-Files"
+    output_directory = "inst/Eikosany-Chord-MIDI-Files"
   )
   print(file_path)
 }
