@@ -63,6 +63,10 @@ never used this.
     MTS-ESP. See <https://wilsonic.co/downloads/downloads-mts-esp/> for the
     details.
 
+- [Surge XT](https://surge-synthesizer.github.io/). Surge XT is an open source
+full featured software synthesizer. The Surge XT community has invested a
+significant level of effort into supporting alternate tuning systems.
+
 See the [Xenharmonic Wiki List of microtonal software
 plugins](https://en.xen.wiki/w/List_of_microtonal_software_plugins) for
 more ways of making microtonal music.    
