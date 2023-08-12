@@ -146,6 +146,34 @@ I have two main motivations:
     expensive and, like the instruments, custom-built. I need tools to
     work with what I have.
 
+## Developer notes
+
+If you’re interested in helping with the development of this package, a
+few notes:
+
+1.  While you *can* install this package via
+    `remotes::install("eikosany")`, it will be easier for me if you fork
+    the repository <https://github.com/AlgoCompSynth/eikosany.git> and
+    install it via `devtools::install(dependencies = TRUE)`. I don’t
+    recommend using the package without RStudio; there may well be
+    hidden dependencies on it. I regularly run `R CMD check` and you
+    should too.
+
+2.  I am tracking Wilsonic MTS-ESP and Surge XT and am more or less
+    constantly re-scoping this project to avoid duplicating those
+    capabilities. So if I get a feature request that’s covered by one of
+    them, I’ll most likely send you there.
+
+3.  I have another project in the works that will be ramping up in
+    September. [CLAMS](https://github.com/AlgoCompSynth/CLAMS) is a
+    Forth-based real-time synthesis toolset for embedded environments.
+    So my development time will be divided between the two projects.
+
+    There *will* be integrations between the two projects, mostly so I
+    can use R Markdown and Quarto for literate programming and
+    documentation, and so the synthesizer can make algorithmic
+    microtonal music.
+
 ## References
 
 <div id="refs" class="references csl-bib-body hanging-indent">

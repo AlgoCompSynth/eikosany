@@ -129,6 +129,19 @@
 </ol>
 </div>
 <div class="section level2">
+<h2 id="developer-notes">Developer notes<a class="anchor" aria-label="anchor" href="#developer-notes"></a>
+</h2>
+<p>If you’re interested in helping with the development of this package, a few notes:</p>
+<ol style="list-style-type: decimal">
+<li><p>While you <em>can</em> install this package via <code>remotes::install("eikosany")</code>, it will be easier for me if you fork the repository <a href="https://github.com/AlgoCompSynth/eikosany.git" class="external-link uri">https://github.com/AlgoCompSynth/eikosany.git</a> and install it via <code>devtools::install(dependencies = TRUE)</code>. I don’t recommend using the package without RStudio; there may well be hidden dependencies on it. I regularly run <code>R CMD check</code> and you should too.</p></li>
+<li><p>I am tracking Wilsonic MTS-ESP and Surge XT and am more or less constantly re-scoping this project to avoid duplicating those capabilities. So if I get a feature request that’s covered by one of them, I’ll most likely send you there.</p></li>
+<li>
+<p>I have another project in the works that will be ramping up in September. <a href="https://github.com/AlgoCompSynth/CLAMS" class="external-link">CLAMS</a> is a Forth-based real-time synthesis toolset for embedded environments. So my development time will be divided between the two projects.</p>
+<p>There <em>will</em> be integrations between the two projects, mostly so I can use R Markdown and Quarto for literate programming and documentation, and so the synthesizer can make algorithmic microtonal music.</p>
+</li>
+</ol>
+</div>
+<div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
