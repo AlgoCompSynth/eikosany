@@ -18,6 +18,7 @@ RoxygenNote: 7.2.3
 Suggests: 
     devtools (>= 2.4.5),
     knitr (>= 1.42),
+    markdown (>= 1.7),
     pkgdown (>= 2.0.7),
     rmarkdown (>= 2.21)
 VignetteBuilder: knitr
