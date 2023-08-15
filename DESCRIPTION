@@ -28,11 +28,11 @@ Imports:
     ggplot2 (>= 3.4.2),
     magrittr (>= 2.0.3),
     pichor (>= 0.0.0.9030),
-    gm (>= 1.0.2)
-Depends: 
-    R (>= 4.2.0),
+    gm (>= 1.0.2),
     seewave (>= 2.2.1),
     tuneR (>= 1.4.5)
+Depends: 
+    R (>= 4.2.0)
 Remotes: 
     mikldk/pichor
 LazyData: true

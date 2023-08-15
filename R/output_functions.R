@@ -237,3 +237,107 @@ export_music_object <- function(
 
   return(paste0(output_directory, "/", file_name, ".mid"))
 }
+
+#' @title Create Scale Sawtooth Multisample
+#' @name scale_sawtooth_multisample
+#' @description Creates a multisample for the 1010music Blackbox for a
+#' given section of a keyboard map.
+#' @export scale_sawtooth_multisample
+#' @importFrom seewave synth
+#' @importFrom tuneR Wave
+#' @importFrom tuneR normalize
+#' @importFrom tuneR writeWave
+#' @param keyboard_map a keyboard map of the scale from
+#'  eikosany::keyboard_map
+#' @param start_note_number the starting MIDI note number for the scale
+#' @param end_note_number the ending MIDI note number for the scale
+#' @param output_directory character, default "~/Multisample". This will
+#' be created if it does not exist.
+#' @returns the full path to output_directory
+#' @examples
+#' \dontrun{
+#'   eikosany <- cps_scale_table()
+#'   eikosany_map <- keyboard_map(eikosany)
+#'
+#'   # two octaves around middle C
+#'   path <- scale_sawtooth_multisample(eikosany_map, 40, 80)
+#'   print(path)
+#' }
+#' @details
+#' The 1010music Blackbox is a small music sampling studio. One of its
+#' features is the ability to connect to a synthesizer and collect a
+#' _multisample_.
+#'
+#' A multisample is a set of `WAV` files with fixed duration over a set
+#' of MIDI note numbers, and for each note number, a set of velocities.
+#' The default velocity is 100; maximum possible velocity is 127. The
+#' default `WAV` format is 24 bits with a sample rate of 48 kHz.
+#'
+#'
+scale_sawtooth_multisample <- function(
+  keyboard_map,
+  start_note_number,
+  end_note_number,
+  output_directory = "~/Multisample"
+) {
+
+  # constants
+  DURATION_SEC = 2.0
+  SAMPLE_RATE = 48000
+  BIT_WIDTH = 24
+  VELOCITY = 100
+  MAX_VELOCITY = 127.0
+  LEVEL = VELOCITY / MAX_VELOCITY
+
+  # get the scale
+  scale <- keyboard_map[
+    note_number >= start_note_number & note_number <= end_note_number,
+    list(note_number, freq)
+  ]
+
+  # create the directory
+  dir.create(output_directory, recursive = TRUE)
+
+  for (nn in start_note_number:end_note_number) {
+    frequency <- scale[note_number == nn, list(freq)]$freq
+
+    # numeric saw wave
+    saw_wave <- seewave::synth(
+      f = SAMPLE_RATE,
+      d = DURATION_SEC,
+      cf = frequency,
+      signal = "saw")
+
+    # convert numeric to Wave object
+    saw_wave_24 <- tuneR::Wave(
+      saw_wave,
+      samp.rate = SAMPLE_RATE,
+      bit = BIT_WIDTH,
+      pcm = TRUE)
+
+    # normalize to given velocity - max velocity is 127.0
+    saw_wave_norm <- tuneR::normalize(
+      saw_wave_24,
+      unit = as.character(BIT_WIDTH),
+      level = LEVEL
+    )
+
+    # make file name - this is the Blackbox multisample name format
+    file_name <- sprintf(
+      "sawtooth-%03i-%03i.wav",
+      nn,
+      VELOCITY
+    )
+    file_path <- paste0(output_directory, "/", file_name)
+
+    # and write it!
+    tuneR::writeWave(saw_wave_norm, file_path)
+  }
+
+  return(output_directory)
+
+}
+
+utils::globalVariables(c(
+  "freq"
+))
