@@ -8,7 +8,11 @@ scale_sawtooth_multisample(
   keyboard_map,
   start_note_number,
   end_note_number,
-  output_directory = "~/Multisample"
+  output_directory = "~/Multisample",
+  duration_sec = 1,
+  velocity = 100,
+  sample_rate_hz = 48000,
+  bit_width = 24
 )
 }
 \arguments{
@@ -21,6 +25,14 @@ eikosany::keyboard_map}
 
 \item{output_directory}{character, default "~/Multisample". This will
 be created if it does not exist.}
+
+\item{duration_sec}{how long to hold each note, default = 1}
+
+\item{velocity}{MIDI velocity, default = 100, max is 127}
+
+\item{sample_rate_hz}{sample rate in hz, default = 48000}
+
+\item{bit_width}{bit width of samples, default = 24}
 }
 \value{
 the full path to output_directory
@@ -44,8 +56,8 @@ default \code{WAV} format is 24 bits with a sample rate of 48 kHz.
   eikosany <- cps_scale_table()
   eikosany_map <- keyboard_map(eikosany)
 
-  # two octaves around middle C
-  path <- scale_sawtooth_multisample(eikosany_map, 40, 80)
+  # typical 37-key synthesizer
+  path <- scale_sawtooth_multisample(eikosany_map, 48, 84)
   print(path)
 }
 }

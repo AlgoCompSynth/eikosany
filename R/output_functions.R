@@ -253,14 +253,18 @@ export_music_object <- function(
 #' @param end_note_number the ending MIDI note number for the scale
 #' @param output_directory character, default "~/Multisample". This will
 #' be created if it does not exist.
+#' @param duration_sec how long to hold each note, default = 1
+#' @param velocity MIDI velocity, default = 100, max is 127
+#' @param sample_rate_hz sample rate in hz, default = 48000
+#' @param bit_width bit width of samples, default = 24
 #' @returns the full path to output_directory
 #' @examples
 #' \dontrun{
 #'   eikosany <- cps_scale_table()
 #'   eikosany_map <- keyboard_map(eikosany)
 #'
-#'   # two octaves around middle C
-#'   path <- scale_sawtooth_multisample(eikosany_map, 40, 80)
+#'   # typical 37-key synthesizer
+#'   path <- scale_sawtooth_multisample(eikosany_map, 48, 84)
 #'   print(path)
 #' }
 #' @details
@@ -278,16 +282,25 @@ scale_sawtooth_multisample <- function(
   keyboard_map,
   start_note_number,
   end_note_number,
-  output_directory = "~/Multisample"
+  output_directory = "~/Multisample",
+  duration_sec = 1,
+  velocity = 100,
+  sample_rate_hz = 48000,
+  bit_width = 24
 ) {
 
-  # constants
-  DURATION_SEC = 2.0
-  SAMPLE_RATE = 48000
-  BIT_WIDTH = 24
-  VELOCITY = 100
+  # detonate if bad bit width
+  legal_bit_widths <- c(8, 16, 24, 32, 64)
+  if (!(bit_width %in% legal_bit_widths)) {
+    stop(paste0("bit_width", bit_width, "not in", legal_bit_widths))
+  }
+
+  # set `pcm`
+  pcm <- ifelse(bit_width < 32, TRUE, FALSE)
+
+  # set level
   MAX_VELOCITY = 127.0
-  LEVEL = VELOCITY / MAX_VELOCITY
+  level = velocity / MAX_VELOCITY
 
   # get the scale
   scale <- keyboard_map[
@@ -302,31 +315,31 @@ scale_sawtooth_multisample <- function(
     frequency <- scale[note_number == nn, list(freq)]$freq
 
     # numeric saw wave
-    saw_wave <- seewave::synth(
-      f = SAMPLE_RATE,
-      d = DURATION_SEC,
+    saw_wave_raw <- seewave::synth(
+      f = sample_rate_hz,
+      d = duration_sec,
       cf = frequency,
       signal = "saw")
 
     # convert numeric to Wave object
-    saw_wave_24 <- tuneR::Wave(
-      saw_wave,
-      samp.rate = SAMPLE_RATE,
-      bit = BIT_WIDTH,
-      pcm = TRUE)
+    saw_wave <- tuneR::Wave(
+      saw_wave_raw,
+      samp.rate = sample_rate_hz,
+      bit = bit_width,
+      pcm = pcm)
 
     # normalize to given velocity - max velocity is 127.0
     saw_wave_norm <- tuneR::normalize(
-      saw_wave_24,
-      unit = as.character(BIT_WIDTH),
-      level = LEVEL
+      saw_wave,
+      unit = as.character(bit_width),
+      level = level
     )
 
     # make file name - this is the Blackbox multisample name format
     file_name <- sprintf(
       "sawtooth-%03i-%03i.wav",
       nn,
-      VELOCITY
+      velocity
     )
     file_path <- paste0(output_directory, "/", file_name)
 
