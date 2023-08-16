@@ -16,54 +16,70 @@ knitr::opts_chunk$set(echo = TRUE)
 # 1 Algorithmic Composition
 
 ## Overview of Methods [@nierhaus2009algorithmic]
-
--   Markov Models / Stochastic
--   Generative Grammars
--   Transition Networks
--   Chaos and Self-Similarity
--   Genetic Algorithms
--   Cellular Automata
--   Artificial Neural Networks
+::: {.incremental}
+- Markov Models / Stochastic
+- Generative Grammars
+- Transition Networks
+- Chaos and Self-Similarity
+- Genetic Algorithms
+- Cellular Automata
+- Artificial Neural Networks
+:::
 
 ## My Main Focus
+::: {.incremental}
+- Markov Models / Stochastic
+- Pioneered by Iannis Xenakis [@xenakis1992formalized]
+- Random chord progressions on microtonal harmonic structures
+:::
 
--   Markov Models / Stochastic
-    -   Pioneered by Iannis Xenakis [@xenakis1992formalized]
-    -   [for example, @Borasky2021a; @partch1979genesis - random
-    walk on Harry Partch 11-limit tonality diamond]
+## When Harry Met Iannis (2021) [@Borasky2021a]
+::: {.incremental}
+- Microtonal harmonic structure is Harry Partch's Tonality
+Diamond [@partch1979genesis]
+- Tonality Diamond was an inspiration for Erv Wilson's
+Combination Product Sets
+:::
 
 # 2 Musical Scales
 
 ## Types of scales
-
+::: {.incremental}
 -   Standard "western" tuning - 12 equally-spaced tones / octave
     -   abbreviated 12-TET or 12-EDO
 -   Alternative tuning - anything else
+:::
 
-## Alternative scales
+## Alternative tunings
+::: {.incremental}
 -   scales from other cultures
 -   "just" scales - scales based on rational numbers
--   scale periods different from the octave
--   scale period divided into more than 12 tones
+-   scale repetition periods different from the octave
+-   scale repetition period divided into more than 12 tones
 -   combinations of the above!
+:::
 
 ## Microtonal music
-
+::: {.incremental}
 -   Usually defined as an octave divided into more than 12 tones
 -   Common microtonal scales
     -   19-TET
     -   24-TET aka quarter tones
     -   31-TET
+:::
 
 # 3 Erv Wilson [@narushima2019microtonality]
 
 ## Ervin Wilson (June 11, 1928 – December 8, 2016)
+::: {.incremental}
 - Mexican/American (dual citizen)
 - Prolific music theorist
 - Developed keyboard layouts, scales and lattices
-- Primarily known for microtonal just scales
+- Primarily known for theories of microtonal just scales
+:::
 
-## Combination Product Sets {.smaller}
+## Combination Product Sets [@narushima2019microtonality, chapter 6] {.smaller}
+::: {.incremental}
 - Focus of the `eikosany` package
 - Start with a set of _harmonic factors_
 - Take all the combinations of the factors with `N` elements
@@ -73,12 +89,15 @@ knitr::opts_chunk$set(echo = TRUE)
     1. Divide all by smallest product
     2. Multiply or divide by powers of two to get values in [1, 2)
 - Sort
+:::
 
 ## Example: 1-3-5-7 Hexany
+::: {.incremental}
 - Products of combinations: `1*3, 1*5, 1*7, 3*5, 3*7, 5*7`
 - Raw ratios (divide by smallest product): `1 5/3 7/3 5 7 35/3`
 - Reduce: `1 5/3 7/6 5/4 7/4 35/24`
 - Sort: `1 7/6 5/4 35/24 5/3 7/4`
+:::
 
 ## Using the package!
 ```{r}
@@ -92,7 +111,14 @@ print(hexany)
 
 ```
 
-- The prime on the bottom row indicates the next octave
+- The prime on the bottom `note_name` indicates the next octave
+
+## Cents??
+::: {.incremental}
+- A logarithmic measure used by scale theorists
+- 1 cent = 1/100th of a semitone
+- 12 semitones = 1200 cents = 1 octave = ratio of 2/1
+:::
 
 # 4 Pseudo-Demo
 
@@ -115,15 +141,18 @@ print(eikosany_scale_table)
 ```
 
 ## What Does It Sound Like?
+::: {.incremental}
 - To hear the scale:
     1. Get a synthesizer
     2. Map the keys of the synthesizer to the notes of the scale
     3. Play the keys
 - But that's kind of expensive and I'm in a hurry
 - So I'll emulate it in R!
+:::
 
 ## First Step - Make a Keyboard Map
 - Maps MIDI note numbers to frequencies
+- MIDI note numbers range from 0 to 127
 - MIDI note number 60 is middle C
 - Our 20-note scale is note numbers 60:80
 - Keyboard maps are also data.tables
@@ -138,6 +167,7 @@ scale_map <- eikosany_map[
 ]
 
 ```
+
 ## The Scale Map {.smaller}
 ```{r}
 print(scale_map)
@@ -145,11 +175,13 @@ print(scale_map)
 ```
 
 ## Second Step - Make Waves!
+::: {.incremental}
 - uses `seewave` and `tuneR` [@sueur2018sound]
 - creates a _multisample_ - a collection of `WAV` files
     - can be used in sample-based workflows
     - emulates multisamples captured by [1010music
     Blackbox](https://1010music.com/product/blackbox)
+:::
 
 ## Make Waves!
 ```{r}
@@ -169,15 +201,24 @@ scale_sawtooth_multisample(
 # 5 Roadmap
 
 ## Current status
+::: {.incremental}
 - Enough infrastructure to manually make music!
     - (which was my initial goal)
 - Documentation - you're looking at it
+:::
 
 ## Current plan
+::: {.incremental}
 1. Clean up documentation and do a first release (August)
     - Hoping to release an album / EP on Bandcamp
 2. Open feature requests for triage
 3. Add consonance analysis capability [@sethares2013tuning]
+:::
+
+## Where does all this stuff live?
+- GitHub: <https://github.com/AlgoCompSynth/eikosany>
+- Pkgdown: <https://algocompsynth.github.io/eikosany>
+- These slides: <>
 
 # Appendix - Microtonal Music Resources
 
