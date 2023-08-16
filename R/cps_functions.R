@@ -549,9 +549,14 @@ cps_chord_table <- function(scale_table) {
   }
   chords <- t(combn(harmonics, choose))
   num_chords <- nrow(chords)
-  others <- t(
-    apply(chords, MARGIN = 1, FUN = function(x) setdiff(harmonics, x)
-  ))
+  setdiff <- apply(
+    chords, MARGIN = 1, FUN = function(x) setdiff(harmonics, x)
+  )
+  if (is.matrix(setdiff)) {
+    others <- t(setdiff)
+  } else {
+    others <- as.matrix(setdiff)
+  }
 
   # allocate result matrices
   harm_matrix <- subharm_matrix <- chords
