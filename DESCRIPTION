@@ -20,6 +20,7 @@ Suggests:
     knitr (>= 1.42),
     markdown (>= 1.7),
     pkgdown (>= 2.0.7),
+    quarto (>= 1.2),
     rmarkdown (>= 2.21)
 VignetteBuilder: knitr
 Imports: 
