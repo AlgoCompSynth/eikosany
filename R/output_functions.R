@@ -351,6 +351,148 @@ scale_sawtooth_multisample <- function(
 
 }
 
+#' @title Create Chord Sawtooth WAV Files
+#' @name chord_sawtooth_WAVs
+#' @description Creates a `gm` music object for a given chord and keyboard map
+#' @export chord_sawtooth_WAVs
+#' @param chord a numeric vector with the scale degrees for the chord
+#' @param keyboard_map the keyboard map for the scale
+#' @param lowest_note the lowest MIDI note number to use. Default is 48.
+#' @param highest_note the highest MIDI note number to use. Default is 84.
+#' @param output_directory character, default "~/Multisample". This will
+#' be created if it does not exist.
+#' @param duration_sec how long to hold each note, default = 1
+#' @param velocity MIDI velocity, default = 100, max is 127
+#' @param sample_rate_hz sample rate in hz, default = 48000
+#' @param bit_width bit width of samples, default = 24
+#' @returns the full path to output_directory
+#'
+chord_sawtooth_WAVs <- function(
+    chord,
+    keyboard_map,
+    lowest_note = 48,
+    highest_note = 84,
+    output_directory = "~/Multisample",
+    duration_sec = 1,
+    velocity = 100,
+    sample_rate_hz = 48000,
+    bit_width = 24
+) {
+
+  # get the frequencies for all the notes in the chord
+  chord_map <- keyboard_map[
+    degree %in% chord &
+      note_number >= lowest_note &
+      note_number <= highest_note
+  ]
+  frequencies <- sort(chord_map$freq)
+
+  # generate the chords
+  chord_span <- length(chord)
+  last_index <- length(frequencies)
+  root_index <- 1
+
+  while (root_index <= last_index) {
+    end_index <- root_index + chord_span - 1
+    if (end_index > last_index) { break }
+    chord_frequencies <- frequencies[root_index:end_index]
+    print(chord_frequencies)
+    root_index <- root_index + 1
+  }
+
+  return(output_directory)
+
+}
+
+#' @title Synthesize a Chord
+#' @name chord_synth
+#' @description Creates a `Wave` object for a given chord
+#' @export chord_synth
+#' @importFrom seewave synth
+#' @importFrom tuneR Wave
+#' @importFrom tuneR normalize
+#' @importFrom tuneR silence
+#' @param chord a vector of frequencies for the chord
+#' @param signal The `seewave` signal type: "sine", "tria",
+#' "square" or "saw", default = "saw"
+#' @param duration_sec how many seconds to hold each note,
+#' default = 1
+#' @param velocity MIDI velocity, default = 100, max is 127
+#' @param sample_rate_hz sample rate in hz, default = 48000
+#' @param bit_width bit width of samples, default = 24
+#' @returns the full path to output_directory
+#' @examples
+#' \dontrun{
+#' justmajor7th <- c(1, 5/4, 3/2, 7/4)
+#' wave <- chord_synth(256*justmajor7th, duration_sec = 10)
+#' tuneR::play(wave)
+#' }
+#'
+chord_synth <- function(
+  chord,
+  signal = "saw",
+  duration_sec = 1,
+  velocity = 100,
+  sample_rate_hz = 48000,
+  bit_width = 24
+) {
+
+  # detonate if bad bit width
+  legal_bit_widths <- c(8, 16, 24, 32, 64)
+  if (!(bit_width %in% legal_bit_widths)) {
+    stop(paste0("bit_width", bit_width, "not in", legal_bit_widths))
+  }
+
+  # set `pcm`
+  pcm <- ifelse(bit_width < 32, TRUE, FALSE)
+
+  # compute level
+  MAX_VELOCITY = 127.0
+  level = velocity / MAX_VELOCITY
+
+  # initialize sample vector
+  sample_vector <- tuneR::silence(
+    duration = duration_sec,
+    samp.rate = sample_rate_hz,
+    bit = 32,
+    xunit = "time"
+  )
+  sample_vector <- sample_vector@left
+  sample_vector <- 0
+
+  for (note in chord) {
+
+    note_wave <- seewave::synth(
+      f = sample_rate_hz,
+      d = duration_sec,
+      cf = note,
+      signal = signal,
+      output = "Wave")
+    sample_vector <- sample_vector + note_wave@left
+
+  }
+
+  # convert numeric to Wave object
+  chord_wave_raw <- tuneR::Wave(
+    sample_vector,
+    samp.rate = sample_rate_hz,
+    bit = bit_width,
+    pcm = pcm
+  )
+
+  # normalize to given velocity - max velocity is 127.0
+  chord_wave <- tuneR::normalize(
+    chord_wave_raw,
+    unit = as.character(bit_width),
+    level = level
+  )
+
+  return(chord_wave)
+
+}
+
+
 utils::globalVariables(c(
+  "highest_note",
   "freq"
 ))
