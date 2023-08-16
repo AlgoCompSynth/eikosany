@@ -238,14 +238,11 @@ export_music_object <- function(
   return(paste0(output_directory, "/", file_name, ".mid"))
 }
 
-#' @title Create Scale Sawtooth Multisample
-#' @name scale_sawtooth_multisample
+#' @title Create Scale Multisample
+#' @name scale_multisample
 #' @description Creates a multisample for the 1010music Blackbox for a
 #' given section of a keyboard map.
-#' @export scale_sawtooth_multisample
-#' @importFrom seewave synth
-#' @importFrom tuneR Wave
-#' @importFrom tuneR normalize
+#' @export scale_multisample
 #' @importFrom tuneR writeWave
 #' @param keyboard_map a keyboard map of the scale from
 #'  eikosany::keyboard_map
@@ -257,6 +254,7 @@ export_music_object <- function(
 #' @param velocity MIDI velocity, default = 100, max is 127
 #' @param sample_rate_hz sample rate in hz, default = 48000
 #' @param bit_width bit width of samples, default = 24
+#' @param signal `seewave` signal type
 #' @returns the full path to output_directory
 #' @examples
 #' \dontrun{
@@ -264,7 +262,7 @@ export_music_object <- function(
 #'   eikosany_map <- keyboard_map(eikosany)
 #'
 #'   # typical 37-key synthesizer
-#'   path <- scale_sawtooth_multisample(eikosany_map, 48, 84)
+#'   path <- scale_multisample(eikosany_map, 48, 84)
 #'   print(path)
 #' }
 #' @details
@@ -278,7 +276,7 @@ export_music_object <- function(
 #' default `WAV` format is 24 bits with a sample rate of 48 kHz.
 #'
 #'
-scale_sawtooth_multisample <- function(
+scale_multisample <- function(
   keyboard_map,
   start_note_number,
   end_note_number,
@@ -286,7 +284,8 @@ scale_sawtooth_multisample <- function(
   duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 48000,
-  bit_width = 24
+  bit_width = 24,
+  signal = "saw"
 ) {
 
   # detonate if bad bit width
@@ -314,37 +313,28 @@ scale_sawtooth_multisample <- function(
   for (nn in start_note_number:end_note_number) {
     frequency <- scale[note_number == nn, list(freq)]$freq
 
-    # numeric saw wave
-    saw_wave_raw <- seewave::synth(
-      f = sample_rate_hz,
-      d = duration_sec,
-      cf = frequency,
-      signal = "saw")
-
-    # convert numeric to Wave object
-    saw_wave <- tuneR::Wave(
-      saw_wave_raw,
-      samp.rate = sample_rate_hz,
-      bit = bit_width,
-      pcm = pcm)
-
-    # normalize to given velocity - max velocity is 127.0
-    saw_wave_norm <- tuneR::normalize(
-      saw_wave,
-      unit = as.character(bit_width),
-      level = level
+    # make Wave object
+    # a note is a chord of length 1 :-)
+    wave_object <- chord_synth(
+      frequency,
+      signal = signal,
+      duration_sec = duration_sec,
+      velocity = velocity,
+      sample_rate_hz = sample_rate_hz,
+      bit_width = bit_width
     )
 
     # make file name - this is the Blackbox multisample name format
     file_name <- sprintf(
-      "sawtooth-%03i-%03i.wav",
+      "%s-%03i-%03i.wav",
+      signal,
       nn,
       velocity
     )
     file_path <- paste0(output_directory, "/", file_name)
 
     # and write it!
-    tuneR::writeWave(saw_wave_norm, file_path)
+    tuneR::writeWave(wave_object, file_path)
   }
 
   return(output_directory)
