@@ -218,7 +218,7 @@ scale_sawtooth_multisample(
 ## Where does all this stuff live?
 - GitHub: <https://github.com/AlgoCompSynth/eikosany>
 - Pkgdown: <https://algocompsynth.github.io/eikosany>
-- These slides: <>
+- These slides: <https://github.com/AlgoCompSynth/eikosany/tree/main/inst/Eikosany-Cascadia-R-Conference-Slides>
 
 # Appendix - Microtonal Music Resources
 
