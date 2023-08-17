@@ -8,5 +8,3 @@
 *.json binary
 *.xml binary
 *.rproj text eol=lf
-NAMESPACE text eol=lf
-DESCRIPTION text eol=lf
