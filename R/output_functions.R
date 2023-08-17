@@ -437,8 +437,6 @@ chord_WAVs <- function(
     file_path <- paste0(output_directory, "/", file_name)
 
     # and write it!
-    summary(wave_object)
-    print(file_path)
     tuneR::writeWave(wave_object, file_path)
 
     root_index <- root_index + 1
