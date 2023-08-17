@@ -366,7 +366,7 @@ scale_multisample <- function(
 #' eikosany_chords <- cps_chord_table(eikosany)
 #' eikosany_map <- keyboard_map(eikosany)
 #' chord_degrees <- eikosany_chords$degrees
-#' for (i in length(chord_degrees)) {
+#' for (i in 1:length(chord_degrees)) {
 #'   chord <- as.numeric(unlist(strsplit(chord_degrees[i], ":")))
 #'   folder_name <-
 #'     paste0("~/eikosany-chords/chord-", gsub(":", "-", chord_degrees[i]))
