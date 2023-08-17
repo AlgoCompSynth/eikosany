@@ -6,7 +6,7 @@
 \usage{
 chord_synth(
   chord,
-  signal = "saw",
+  signal = "tria",
   duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 48000,
@@ -17,7 +17,7 @@ chord_synth(
 \item{chord}{a vector of frequencies for the chord}
 
 \item{signal}{The \code{seewave} signal type: "sine", "tria",
-"square" or "saw", default = "saw"}
+"square" or "saw", default = "tria"}
 
 \item{duration_sec}{how many seconds to hold each note,
 default = 1}

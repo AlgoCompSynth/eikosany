@@ -254,7 +254,7 @@ export_music_object <- function(
 #' @param velocity MIDI velocity, default = 100, max is 127
 #' @param sample_rate_hz sample rate in hz, default = 48000
 #' @param bit_width bit width of samples, default = 24
-#' @param signal `seewave` signal type
+#' @param signal `seewave` signal type, default is "tria"
 #' @returns the full path to output_directory
 #' @examples
 #' \dontrun{
@@ -285,7 +285,7 @@ scale_multisample <- function(
   velocity = 100,
   sample_rate_hz = 48000,
   bit_width = 24,
-  signal = "saw"
+  signal = "tria"
 ) {
 
   # detonate if bad bit width
@@ -354,7 +354,7 @@ scale_multisample <- function(
 #' is 84.
 #' @param output_directory character, default "~/Multisample". This will
 #' be created if it does not exist.
-#' @param signal the `seewave` signal type, default is "saw"
+#' @param signal the `seewave` signal type, default is "tria"
 #' @param duration_sec how long to hold each note, default = 4
 #' @param velocity MIDI velocity, default = 100, max is 127
 #' @param sample_rate_hz sample rate in hz, default = 48000
@@ -387,7 +387,7 @@ chord_WAVs <- function(
     lowest_note = 48,
     highest_note = 84,
     output_directory = "~/Multisample",
-    signal = "saw",
+    signal = "tria",
     duration_sec = 1,
     velocity = 100,
     sample_rate_hz = 48000,
@@ -430,7 +430,7 @@ chord_WAVs <- function(
 
     # make file name -
     file_name <- sprintf(
-      "chord-%s-%s.wav",
+      "%s-%s.wav",
       signal,
       chord_label
     )
@@ -458,7 +458,7 @@ chord_WAVs <- function(
 #' @importFrom tuneR silence
 #' @param chord a vector of frequencies for the chord
 #' @param signal The `seewave` signal type: "sine", "tria",
-#' "square" or "saw", default = "saw"
+#' "square" or "saw", default = "tria"
 #' @param duration_sec how many seconds to hold each note,
 #' default = 1
 #' @param velocity MIDI velocity, default = 100, max is 127
@@ -474,7 +474,7 @@ chord_WAVs <- function(
 #'
 chord_synth <- function(
   chord,
-  signal = "saw",
+  signal = "tria",
   duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 48000,
@@ -540,3 +540,53 @@ utils::globalVariables(c(
   "highest_note",
   "freq"
 ))
+
+#' @title Render the Chords of a CPS
+#' @name render_cps_chords
+#' @description Make WAV files for all chords of a given CPS
+#' @export render_cps_chords
+#' @param scale_table the scale table for the CPS
+#' @param home_folder each chord will be rendered into a sub-folder
+#' of this one
+#' @returns the full path to output_directory
+#' @examples
+#' \dontrun{
+#'
+#' (hexany_scale_table <- cps_scale_table(
+#'   harmonics = c(1, 3, 5, 7),
+#'   choose = 2
+#' ))
+#' (render_cps_chords(hexany_scale_table, "~/hexany_chords"))
+#'
+#' (eikosany_scale_table <- cps_scale_table())
+#' (render_cps_chords(eikosany_scale_table, "~/eikosany_chords"))
+#'
+#' }
+#'
+render_cps_chords <- function(scale_table, home_folder) {
+
+  scale_degrees <- nrow(scale_table) - 1
+  chord_table <- cps_chord_table(scale_table)
+  keyboard_map <- keyboard_map(scale_table)
+  chord_degrees <- chord_table$degrees
+  chord_labels <- chord_table$chord
+
+  # santize for filename use
+  chord_labels <- gsub("/", "-", chord_labels, fixed = TRUE)
+  chord_labels <- gsub(":", "_", chord_labels, fixed = TRUE)
+
+  for (i in 1:length(chord_degrees)) {
+    chord <- as.numeric(unlist(strsplit(chord_degrees[i], ":")))
+    folder_name <-
+      paste0(home_folder, "/chord_", chord_labels[i])
+    chord_WAVs(
+      chord,
+      keyboard_map,
+      lowest_note = 60,
+      highest_note = 60 + 2 * scale_degrees,
+      output_directory = folder_name
+    )
+  }
+
+  return(home_folder)
+}

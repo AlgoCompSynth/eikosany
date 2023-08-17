@@ -13,7 +13,7 @@ scale_multisample(
   velocity = 100,
   sample_rate_hz = 48000,
   bit_width = 24,
-  signal = "saw"
+  signal = "tria"
 )
 }
 \arguments{
@@ -35,7 +35,7 @@ be created if it does not exist.}
 
 \item{bit_width}{bit width of samples, default = 24}
 
-\item{signal}{\code{seewave} signal type}
+\item{signal}{\code{seewave} signal type, default is "tria"}
 }
 \value{
 the full path to output_directory

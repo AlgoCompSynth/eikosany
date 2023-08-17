@@ -10,7 +10,7 @@ chord_WAVs(
   lowest_note = 48,
   highest_note = 84,
   output_directory = "~/Multisample",
-  signal = "saw",
+  signal = "tria",
   duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 48000,
@@ -31,7 +31,7 @@ is 84.}
 \item{output_directory}{character, default "~/Multisample". This will
 be created if it does not exist.}
 
-\item{signal}{the \code{seewave} signal type, default is "saw"}
+\item{signal}{the \code{seewave} signal type, default is "tria"}
 
 \item{duration_sec}{how long to hold each note, default = 4}
 
