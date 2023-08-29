@@ -105,9 +105,9 @@
   return(.matrix2label(t(combn(harmonics, choose)), .NOTE_SEP))
 }
 
-.ratio_table <- function(label, period = 2) {
+.ratio_table <- function(label, period = 2, root_divisor) {
   num_product <- .label2prod(label, .NOTE_SEP)
-  normalizer <- min(num_product)
+  normalizer <- root_divisor
   ratio <- .period_reduce(num_product / normalizer, period)
   ratio_frac <- as.character(fractional::fractional(ratio))
   ratio_cents <- .ratio2cents(ratio)
@@ -204,6 +204,10 @@ offset_matrix <- function(scale_table) {
 #'   `c("1x3", "1x5", "1x7", "3x5", "3x7", "5x7")`
 #'
 #' The default is the `ps_def` for the 1-3-5-7-9-11 Eikosany.
+#' @param root_divisor a divisor that scales one of the products to 1/1.
+#' Most published CPS scales just use the smallest of the products for this,
+#' but Erv Wilson used 1x3x11 for the Eikosany, because that maps 1x5x11 to
+#' concert pitches for A: 55, 110, 220, 440 etc. There is no default value.
 #' @returns a `data.table` with six columns:
 #' \itemize{
 #' \item `note_name`: the given product set definition, re-ordered by the
@@ -219,7 +223,7 @@ offset_matrix <- function(scale_table) {
 #' @examples
 #'
 #' # the default yields the 1-3-5-7-9-11 Eikosany
-#' print(eikosany <- ps_scale_table())
+#' print(eikosany <- ps_scale_table(root_divisor = 33))
 #'
 #' # Kraig Grady's Eikosany as two complementary extended Dekanies
 #' # See _Microtonality and the Tuning Systems of Erv Wilson_, pages 127 - 131
@@ -237,7 +241,7 @@ offset_matrix <- function(scale_table) {
 #'   "1x7",
 #'   "3x7x11",
 #'   "1x7x9"
-#' )))
+#' ), root_divisor = 33))
 #' print(grady_a_offsets <- offset_matrix(grady_a))
 #' print(grady_b <- ps_scale_table(c(
 #'   "3x5x11",
@@ -252,7 +256,7 @@ offset_matrix <- function(scale_table) {
 #'   "1x5x7",
 #'   "3x5x7x11",
 #'   "5x7x9"
-#' )))
+#' ), root_divisor = 3*5*11))
 #' print(grady_b_offsets <- offset_matrix(grady_b))
 
 ps_scale_table <- function(ps_def = c(
@@ -276,8 +280,8 @@ ps_scale_table <- function(ps_def = c(
   "1x3x9",
   "1x5x11",
   "3x7x11"
-)) {
-  scale_table <- .ratio_table(ps_def, period = 2)
+), root_divisor) {
+  scale_table <- .ratio_table(ps_def, period = 2, root_divisor)
 }
 
 #' @title Create Combination Product Set Scale Table
@@ -297,11 +301,15 @@ ps_scale_table <- function(ps_def = c(
 #' @param choose the number of harmonics to choose for each combination -
 #' defaults to 3, the number of harmonics for each combination in the
 #' Eikosany.
+#' @param root_divisor a divisor that scales one of the products to 1/1.
+#' Most published CPS scales just use the smallest of the products for this,
+#' but Erv Wilson used 1x3x11 for the Eikosany, because that maps 1x5x11 to
+#' concert pitches for A: 55, 110, 220, 440 etc. There is no default value.
 #' @returns a `data.table` with six columns:
 #' \itemize{
 #' \item `note_name`: the product of harmonics that defines the note (character)
-#' \item `ratio`: the ratio that defines the note, as a number between 1 and
-#' 2
+#' \item `ratio`: the ratio that defines the note, as a number >= 1 and
+#' < 2
 #' \item `ratio_frac`: the ratio as a vulgar fraction (character)
 #' \item `ratio_cents`: the ratio in cents (hundredths of a semitone)
 #' \item `interval_cents`: interval between this note and the previous note
@@ -309,19 +317,28 @@ ps_scale_table <- function(ps_def = c(
 #' }
 #' @examples
 #'
-#' # the defaults yield the 1-3-5-7-9-11 Eikosany
-#' print(eikosany <- cps_scale_table())
+#' # the defaults yield the 1-3-5-7-9-11 Eikosany.
+#'
+#' # Erv Wilson's design
+#' print(eikosany <- cps_scale_table(root_divisor = 33))
+#'
+#' # The usual public Eikosany
+#' print(eikosany <- cps_scale_table(root_divisor = 15))
 #'
 #' # the 1-3-5-7 Hexany
 #' hexany_harmonics <- c(1, 3, 5, 7)
 #' hexany_choose <- 2
-#' print(hexany <- cps_scale_table(hexany_harmonics, hexany_choose))
+#' print(hexany <-
+#'   cps_scale_table(hexany_harmonics, hexany_choose, 3)
+#' )
 #'
 #' # the 1-7-9-11-13 2)5 Dekany
 #'
 #' dekany_harmonics <- c(1, 7, 9, 11, 13)
 #' dekany_choose <- 2
-#' print(dekany <- cps_scale_table(dekany_harmonics, dekany_choose))
+#' print(dekany <-
+#'   cps_scale_table(dekany_harmonics, dekany_choose, 7)
+#' )
 #'
 #' # We might want to print out sheet music for a conventional keyboard
 #' # player, since the synthesizer is mapping MIDI note numbers to pitches.
@@ -330,12 +347,18 @@ ps_scale_table <- function(ps_def = c(
 #' # seven harmonics taken three at a time.
 #' harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 #' choose_35 <- 3
-#' print(any_35 <- cps_scale_table(harmonics_35, choose_35))
+#' print(any_35 <-
+#'   cps_scale_table(harmonics_35, choose_35, root_divisor = 15)
+#' )
 
 cps_scale_table <-
-  function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
+  function(
+    harmonics = c(1, 3, 5, 7, 9, 11),
+    choose = 3,
+    root_divisor
+  ) {
   label <- .cps_label(harmonics, choose)
-  return(ps_scale_table(ps_def = label))
+  return(ps_scale_table(ps_def = label, root_divisor))
 }
 
 #' @title Create Equal-Tempered Scale Table
@@ -443,7 +466,7 @@ et_scale_table <- function(note_names = c(
 #' @examples
 #'
 #' # default is the 1-3-5-7-9-11 Eikosany
-#' eikosany <- cps_scale_table()
+#' eikosany <- cps_scale_table(root_divisor = 33)
 #' print(eikosany_interval_table <-interval_table(eikosany))
 
 interval_table <- function(scale_table) {
@@ -526,12 +549,14 @@ interval_table <- function(scale_table) {
 #' @examples
 #'
 #' # compute the tetrads of the 1-3-5-7-9-11 Eikosany
-#' eikosany <- cps_scale_table()
+#' eikosany <- cps_scale_table(root_divisor = 33)
 #' print(eikosany_chords <- cps_chord_table(eikosany))
 #'
 #' # compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany
 #' hebdomekontany <- cps_scale_table(
-#'   harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
+#'   harmonics = c(1, 3, 5, 7, 9, 11, 13, 15),
+#'   choose = 4,
+#'   root_divisor = 3 * 5 * 7
 #' )
 #' print(hebdomekontany_chords <- cps_chord_table(hebdomekontany))
 
@@ -655,7 +680,7 @@ cps_chord_table <- function(scale_table) {
 #' # make sure we can print a whole keyboard map
 #' options(max.print = 2000)
 #'
-#' eikosany <- cps_scale_table()
+#' eikosany <- cps_scale_table(root_divisor = 33)
 #' print(eikosany_keyboard_map <- keyboard_map(eikosany), nrows = 128)
 #'
 #' # 12-EDO for sanity check
@@ -664,7 +689,7 @@ cps_chord_table <- function(scale_table) {
 #' # check middle C setting
 #' print(
 #'   eikosany_keyboard_map_c3 <-
-#'     keyboard_map(cps_scale_table(), middle_c_octave = 3), nrows = 128)
+#'     keyboard_map(cps_scale_table(root_divisor = 33), middle_c_octave = 3), nrows = 128)
 #'
 #' # Bohlen-Pierce (13 equal divisions of a perfect twelfth aka "tritave")
 #' bohlen_pierce_et_scale <- et_scale_table(bohlen_pierce_et_names, period = 3)

@@ -57,7 +57,7 @@ offset_matrix!
 # make sure we can print a whole keyboard map
 options(max.print = 2000)
 
-eikosany <- cps_scale_table()
+eikosany <- cps_scale_table(root_divisor = 33)
 print(eikosany_keyboard_map <- keyboard_map(eikosany), nrows = 128)
 
 # 12-EDO for sanity check
@@ -66,7 +66,7 @@ print(vanilla_keyboard_map <- keyboard_map(et_scale_table()), nrows = 128)
 # check middle C setting
 print(
   eikosany_keyboard_map_c3 <-
-    keyboard_map(cps_scale_table(), middle_c_octave = 3), nrows = 128)
+    keyboard_map(cps_scale_table(root_divisor = 33), middle_c_octave = 3), nrows = 128)
 
 # Bohlen-Pierce (13 equal divisions of a perfect twelfth aka "tritave")
 bohlen_pierce_et_scale <- et_scale_table(bohlen_pierce_et_names, period = 3)

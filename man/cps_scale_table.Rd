@@ -4,7 +4,7 @@
 \alias{cps_scale_table}
 \title{Create Combination Product Set Scale Table}
 \usage{
-cps_scale_table(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3)
+cps_scale_table(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3, root_divisor)
 }
 \arguments{
 \item{harmonics}{a vector of the harmonics to use - defaults to the first
@@ -13,13 +13,18 @@ six odd numbers, the harmonics that define the 1-3-5-7-9-11 Eikosany.}
 \item{choose}{the number of harmonics to choose for each combination -
 defaults to 3, the number of harmonics for each combination in the
 Eikosany.}
+
+\item{root_divisor}{a divisor that scales one of the products to 1/1.
+Most published CPS scales just use the smallest of the products for this,
+but Erv Wilson used 1x3x11 for the Eikosany, because that maps 1x5x11 to
+concert pitches for A: 55, 110, 220, 440 etc. There is no default value.}
 }
 \value{
 a \code{data.table} with six columns:
 \itemize{
 \item \code{note_name}: the product of harmonics that defines the note (character)
-\item \code{ratio}: the ratio that defines the note, as a number between 1 and
-2
+\item \code{ratio}: the ratio that defines the note, as a number >= 1 and
+< 2
 \item \code{ratio_frac}: the ratio as a vulgar fraction (character)
 \item \code{ratio_cents}: the ratio in cents (hundredths of a semitone)
 \item \code{interval_cents}: interval between this note and the previous note
@@ -31,19 +36,28 @@ Creates a scale table from a combination product set definition
 }
 \examples{
 
-# the defaults yield the 1-3-5-7-9-11 Eikosany
-print(eikosany <- cps_scale_table())
+# the defaults yield the 1-3-5-7-9-11 Eikosany.
+
+# Erv Wilson's design
+print(eikosany <- cps_scale_table(root_divisor = 33))
+
+# The usual public Eikosany
+print(eikosany <- cps_scale_table(root_divisor = 15))
 
 # the 1-3-5-7 Hexany
 hexany_harmonics <- c(1, 3, 5, 7)
 hexany_choose <- 2
-print(hexany <- cps_scale_table(hexany_harmonics, hexany_choose))
+print(hexany <-
+  cps_scale_table(hexany_harmonics, hexany_choose, 3)
+)
 
 # the 1-7-9-11-13 2)5 Dekany
 
 dekany_harmonics <- c(1, 7, 9, 11, 13)
 dekany_choose <- 2
-print(dekany <- cps_scale_table(dekany_harmonics, dekany_choose))
+print(dekany <-
+  cps_scale_table(dekany_harmonics, dekany_choose, 7)
+)
 
 # We might want to print out sheet music for a conventional keyboard
 # player, since the synthesizer is mapping MIDI note numbers to pitches.
@@ -52,5 +66,7 @@ print(dekany <- cps_scale_table(dekany_harmonics, dekany_choose))
 # seven harmonics taken three at a time.
 harmonics_35 <- c(1, 3, 5, 7, 9, 11, 13)
 choose_35 <- 3
-print(any_35 <- cps_scale_table(harmonics_35, choose_35))
+print(any_35 <-
+  cps_scale_table(harmonics_35, choose_35, root_divisor = 15)
+)
 }

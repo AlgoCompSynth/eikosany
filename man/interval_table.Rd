@@ -28,6 +28,6 @@ Creates an interval table from a scale table
 \examples{
 
 # default is the 1-3-5-7-9-11 Eikosany
-eikosany <- cps_scale_table()
+eikosany <- cps_scale_table(root_divisor = 33)
 print(eikosany_interval_table <-interval_table(eikosany))
 }

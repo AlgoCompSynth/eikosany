@@ -45,12 +45,14 @@ is the number of harmonic factors, the resulting chords will have
 \examples{
 
 # compute the tetrads of the 1-3-5-7-9-11 Eikosany
-eikosany <- cps_scale_table()
+eikosany <- cps_scale_table(root_divisor = 33)
 print(eikosany_chords <- cps_chord_table(eikosany))
 
 # compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany
 hebdomekontany <- cps_scale_table(
-  harmonics = c(1, 3, 5, 7, 9, 11, 13, 15), choose = 4
+  harmonics = c(1, 3, 5, 7, 9, 11, 13, 15),
+  choose = 4,
+  root_divisor = 3 * 5 * 7
 )
 print(hebdomekontany_chords <- cps_chord_table(hebdomekontany))
 }
