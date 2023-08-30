@@ -14,7 +14,7 @@ library(eikosany)
 ```
 
 ```{r fig.width=11, fig.height=4.25}
-scale <- cps_scale_table() # 1-3-5-7-9-11 Eikosany is the default
+scale <- cps_scale_table(root_divisor = 33) # 1-3-5-7-9-11 Eikosany default
 scale_degrees <- length(scale$degree) - 1
 map <- keyboard_map(scale)
 base_note_number = 48

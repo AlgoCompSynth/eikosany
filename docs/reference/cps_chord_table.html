@@ -102,44 +102,46 @@ is the number of harmonic factors, the resulting chords will have
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compute the tetrads of the 1-3-5-7-9-11 Eikosany</span></span></span>
-<span class="r-in"><span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="cps_scale_table.html">cps_scale_table</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="cps_scale_table.html">cps_scale_table</a></span><span class="op">(</span>root_divisor <span class="op">=</span> <span class="fl">33</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eikosany_chords</span> <span class="op">&lt;-</span> <span class="fu">cps_chord_table</span><span class="op">(</span><span class="va">eikosany</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            chord     degrees chord_index is_subharm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:      1:3:5:7   1:6:11:15           1          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2:  /1:/3:/5:/7   0:5:10:16           1          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3:      1:3:5:9  7:11:14:19           2          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4:  /1:/3:/5:/9   0:4:12:17           2          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5:     1:3:5:11   2:8:11:13           3          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6: /1:/3:/5:/11    0:3:9:18           3          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7:      1:3:7:9   1:9:14:18           4          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:  /1:/3:/7:/9  2:10:13:17           4          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9:     1:3:7:11    1:4:8:12           5          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10: /1:/3:/7:/11   3:7:10:19           5          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11:     1:3:9:11   5:8:14:16           6          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12: /1:/3:/9:/11   3:6:15:17           6          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13:      1:5:7:9    3:6:9:19           7          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14:  /1:/5:/7:/9    2:5:8:12           7          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15:     1:5:7:11   4:6:13:17           8          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16: /1:/5:/7:/11   5:7:14:18           8          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17:     1:5:9:11 10:13:16:19           9          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18: /1:/5:/9:/11  1:12:15:18           9          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19:     1:7:9:11    0:4:9:16          10          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20: /1:/7:/9:/11   2:7:11:15          10          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21:      3:5:7:9   3:7:15:18          11          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22:  /3:/5:/7:/9   4:8:13:16          11          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23:     3:5:7:11  2:12:15:17          12          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24: /3:/5:/7:/11  9:14:16:19          12          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25:     3:5:9:11    2:5:7:10          13          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26: /3:/5:/9:/11     1:4:6:9          13          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27:     3:7:9:11   0:5:12:18          14          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28: /3:/7:/9:/11  6:11:13:19          14          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29:     5:7:9:11   0:3:10:17          15          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30: /5:/7:/9:/11   1:8:11:14          15          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            chord     degrees chord_index is_subharm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            chord    degrees chord_index is_subharm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:      1:3:5:7  3:8:12:18           1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2:  /1:/3:/5:/7  2:7:13:17           1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:      1:3:5:9  4:8:11:16           2          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4:  /1:/3:/5:/9  1:9:14:17           2          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:     1:3:5:11  5:8:10:19           3          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6: /1:/3:/5:/11  0:6:15:17           3          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:      1:3:7:9 6:11:15:18           4          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:  /1:/3:/7:/9 7:10:14:19           4          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:     1:3:7:11   1:5:9:18           5          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10: /1:/3:/7:/11   0:4:7:16           5          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:     1:3:9:11  2:5:11:13           6          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12: /1:/3:/9:/11  0:3:12:14           6          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:      1:5:7:9   0:3:6:16           7          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14:  /1:/5:/7:/9   2:5:9:19           7          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15:     1:5:7:11  1:3:10:14           8          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16: /1:/5:/7:/11  2:4:11:15           8          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17:     1:5:9:11 7:10:13:16           9          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18: /1:/5:/9:/11 9:12:15:18           9          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19:     1:7:9:11  1:6:13:17          10          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20: /1:/7:/9:/11  4:8:12:19          10          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21:      3:5:7:9  0:4:12:15          11          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22:  /3:/5:/7:/9  1:5:10:13          11          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23:     3:5:7:11 9:12:14:19          12          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24: /3:/5:/7:/11 6:11:13:16          12          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25:     3:5:9:11   2:4:7:19          13          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26: /3:/5:/9:/11   1:3:6:18          13          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27:     3:7:9:11  2:9:15:17          14          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28: /3:/7:/9:/11  3:8:10:16          14          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29:     5:7:9:11  0:7:14:17          15          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30: /5:/7:/9:/11  5:8:11:18          15          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            chord    degrees chord_index is_subharm</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compute the pentads of the 1-3-5-7-9-11-13-15 Hebdomekontany</span></span></span>
 <span class="r-in"><span><span class="va">hebdomekontany</span> <span class="op">&lt;-</span> <span class="fu"><a href="cps_scale_table.html">cps_scale_table</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  harmonics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span>, <span class="fl">13</span>, <span class="fl">15</span><span class="op">)</span>, choose <span class="op">=</span> <span class="fl">4</span></span></span>
+<span class="r-in"><span>  harmonics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span>, <span class="fl">13</span>, <span class="fl">15</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  choose <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  root_divisor <span class="op">=</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">5</span> <span class="op">*</span> <span class="fl">7</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hebdomekontany_chords</span> <span class="op">&lt;-</span> <span class="fu">cps_chord_table</span><span class="op">(</span><span class="va">hebdomekontany</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  chord        degrees chord_index is_subharm</span>
