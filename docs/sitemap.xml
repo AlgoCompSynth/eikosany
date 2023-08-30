@@ -52,6 +52,12 @@
     <loc>/reference/chord_plot.html</loc>
   </url>
   <url>
+    <loc>/reference/chord_synth.html</loc>
+  </url>
+  <url>
+    <loc>/reference/chord_WAVs.html</loc>
+  </url>
+  <url>
     <loc>/reference/cps_chord_table.html</loc>
   </url>
   <url>
@@ -89,6 +95,12 @@
   </url>
   <url>
     <loc>/reference/ps_scale_table.html</loc>
+  </url>
+  <url>
+    <loc>/reference/render_cps_chords.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_multisample.html</loc>
   </url>
   <url>
     <loc>/reference/scale_sawtooth_multisample.html</loc>
