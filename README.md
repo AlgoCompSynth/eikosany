@@ -148,6 +148,40 @@ I have two main motivations:
 
 ## Developer notes
 
+### Project status update 2023-09-06:
+
+I presented the project in its current state at the Cascadia R
+Conference on August 19th, 2023. The slides and some sample data are at
+<https://github.com/AlgoCompSynth/eikosany-slides>. I have now begun
+what I am calling “The Great Refactor”. Approximate road map:
+
+1.  “Finish” [consonaR](https://algocompsynth.github.io/consonaR/). I am
+    moving most of the scale, keyboard, interval, spectral analysis and
+    synthesis functionality in `eikosany` to `consonaR`. I am also
+    adding functionality to `consonaR` to facilitate algorithmic
+    composition in the frequency domain. This *may* include a real-time
+    synthesis capability if I can find a way to make that work on
+    Windows, MacOS, Ubuntu 22.04 LTS and Raspberry Pi OS. It definitely
+    will include the current synthesis functionality based on `seewave`
+    and `tuneR`.
+
+2.  Replace much of the low-level functionality in `eikosany` with calls
+    to the equivalents in `consonaR`.
+
+3.  Removing the MIDI functionality from `eikosany`. First of all,
+    performing composed microtonal music on hardware and software
+    synthesizers that support it is a solved problem, using the other
+    tools listed above. Second, MIDI is a terrible score language for
+    the kind of music I want to make.
+
+    Open Sound Control (OSC) *may* be better, but I’m not convinced. I’d
+    much prefer a language that facilitates live coding / performance as
+    a human / computer interface over a communication protocol like MIDI
+    or OSC. [CLAMS](https://github.com/AlgoCompSynth/CLAMS) is my
+    approach.
+
+### Moving forward
+
 If you’re interested in helping with the development of this package, a
 few notes:
 
@@ -178,7 +212,7 @@ few notes:
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
-<div id="ref-Borasky2021a" class="csl-entry">
+<div id="ref-borasky2021a" class="csl-entry">
 
 Borasky, M. Edward (Ed). 2021. “When Harry Met Iannis.”
 <https://algocompsynth.bandcamp.com/album/when-harry-met-iannis>.

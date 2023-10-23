@@ -131,6 +131,22 @@
 <div class="section level2">
 <h2 id="developer-notes">Developer notes<a class="anchor" aria-label="anchor" href="#developer-notes"></a>
 </h2>
+<div class="section level3">
+<h3 id="project-status-update-2023-09-06">Project status update 2023-09-06:<a class="anchor" aria-label="anchor" href="#project-status-update-2023-09-06"></a>
+</h3>
+<p>I presented the project in its current state at the Cascadia R Conference on August 19th, 2023. The slides and some sample data are at <a href="https://github.com/AlgoCompSynth/eikosany-slides" class="external-link uri">https://github.com/AlgoCompSynth/eikosany-slides</a>. I have now begun what I am calling “The Great Refactor”. Approximate road map:</p>
+<ol style="list-style-type: decimal">
+<li><p>“Finish” <a href="https://algocompsynth.github.io/consonaR/" class="external-link">consonaR</a>. I am moving most of the scale, keyboard, interval, spectral analysis and synthesis functionality in <code>eikosany</code> to <code>consonaR</code>. I am also adding functionality to <code>consonaR</code> to facilitate algorithmic composition in the frequency domain. This <em>may</em> include a real-time synthesis capability if I can find a way to make that work on Windows, MacOS, Ubuntu 22.04 LTS and Raspberry Pi OS. It definitely will include the current synthesis functionality based on <code>seewave</code> and <code>tuneR</code>.</p></li>
+<li><p>Replace much of the low-level functionality in <code>eikosany</code> with calls to the equivalents in <code>consonaR</code>.</p></li>
+<li>
+<p>Removing the MIDI functionality from <code>eikosany</code>. First of all, performing composed microtonal music on hardware and software synthesizers that support it is a solved problem, using the other tools listed above. Second, MIDI is a terrible score language for the kind of music I want to make.</p>
+<p>Open Sound Control (OSC) <em>may</em> be better, but I’m not convinced. I’d much prefer a language that facilitates live coding / performance as a human / computer interface over a communication protocol like MIDI or OSC. <a href="https://github.com/AlgoCompSynth/CLAMS" class="external-link">CLAMS</a> is my approach.</p>
+</li>
+</ol>
+</div>
+<div class="section level3">
+<h3 id="moving-forward">Moving forward<a class="anchor" aria-label="anchor" href="#moving-forward"></a>
+</h3>
 <p>If you’re interested in helping with the development of this package, a few notes:</p>
 <ol style="list-style-type: decimal">
 <li><p>While you <em>can</em> install this package via <code>remotes::install("eikosany")</code>, it will be easier for me if you fork the repository <a href="https://github.com/AlgoCompSynth/eikosany.git" class="external-link uri">https://github.com/AlgoCompSynth/eikosany.git</a> and install it via <code>devtools::install(dependencies = TRUE)</code>. I don’t recommend using the package without RStudio; there may well be hidden dependencies on it. I regularly run <code>R CMD check</code> and you should too.</p></li>
@@ -141,11 +157,12 @@
 </li>
 </ol>
 </div>
+</div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Borasky2021a" class="csl-entry">
+<div id="ref-borasky2021a" class="csl-entry">
 Borasky, M. Edward (Ed). 2021. “When Harry Met Iannis.” <a href="https://algocompsynth.bandcamp.com/album/when-harry-met-iannis" class="external-link uri">https://algocompsynth.bandcamp.com/album/when-harry-met-iannis</a>.
 </div>
 <div id="ref-narushima2019microtonality" class="csl-entry">
