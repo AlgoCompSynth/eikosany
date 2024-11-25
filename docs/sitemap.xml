@@ -1,108 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Eikosany-Cascadia-R-Conference-Slides.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/introduction-to-combination-product-sets.html</loc>
-  </url>
-  <url>
-    <loc>/articles/ioslides_template.html</loc>
-  </url>
-  <url>
-    <loc>/articles/revealjs_template.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Slidy template.html</loc>
-  </url>
-  <url>
-    <loc>/articles/tetrads-on-37-key-synth.html</loc>
-  </url>
-  <url>
-    <loc>/articles/tuning-the-korg-minilogue-xd-to-the-eikosany.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/reference/bohlen_pierce_et_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/chord_music_object.html</loc>
-  </url>
-  <url>
-    <loc>/reference/chord_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/chord_synth.html</loc>
-  </url>
-  <url>
-    <loc>/reference/chord_WAVs.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cps_chord_table.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cps_scale_table.html</loc>
-  </url>
-  <url>
-    <loc>/reference/edo12_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/edo19_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/edo31_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/et_scale_table.html</loc>
-  </url>
-  <url>
-    <loc>/reference/export_music_object.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/interval_table.html</loc>
-  </url>
-  <url>
-    <loc>/reference/keyboard_map.html</loc>
-  </url>
-  <url>
-    <loc>/reference/minilogue_xd_scl_file.html</loc>
-  </url>
-  <url>
-    <loc>/reference/offset_matrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ps_scale_table.html</loc>
-  </url>
-  <url>
-    <loc>/reference/render_cps_chords.html</loc>
-  </url>
-  <url>
-    <loc>/reference/scale_multisample.html</loc>
-  </url>
-  <url>
-    <loc>/reference/scale_sawtooth_multisample.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>/CONTRIBUTING.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/articles/Eikosany-Cascadia-R-Conference-Slides.html</loc></url>
+<url><loc>/articles/Slidy template.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/introduction-to-combination-product-sets.html</loc></url>
+<url><loc>/articles/ioslides_template.html</loc></url>
+<url><loc>/articles/revealjs_template.html</loc></url>
+<url><loc>/articles/tetrads-on-37-key-synth.html</loc></url>
+<url><loc>/articles/tuning-the-korg-minilogue-xd-to-the-eikosany.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/bohlen_pierce_et_names.html</loc></url>
+<url><loc>/reference/chord_WAVs.html</loc></url>
+<url><loc>/reference/chord_music_object.html</loc></url>
+<url><loc>/reference/chord_plot.html</loc></url>
+<url><loc>/reference/chord_synth.html</loc></url>
+<url><loc>/reference/cps_chord_table.html</loc></url>
+<url><loc>/reference/cps_scale_table.html</loc></url>
+<url><loc>/reference/edo12_names.html</loc></url>
+<url><loc>/reference/edo19_names.html</loc></url>
+<url><loc>/reference/edo31_names.html</loc></url>
+<url><loc>/reference/et_scale_table.html</loc></url>
+<url><loc>/reference/export_music_object.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/interval_table.html</loc></url>
+<url><loc>/reference/keyboard_map.html</loc></url>
+<url><loc>/reference/minilogue_xd_scl_file.html</loc></url>
+<url><loc>/reference/offset_matrix.html</loc></url>
+<url><loc>/reference/ps_scale_table.html</loc></url>
+<url><loc>/reference/render_cps_chords.html</loc></url>
+<url><loc>/reference/scale_multisample.html</loc></url>
+<url><loc>/reference/scale_sawtooth_multisample.html</loc></url>
 </urlset>
+
