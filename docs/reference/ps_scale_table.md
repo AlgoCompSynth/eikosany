@@ -56,7 +56,6 @@ a `data.table` with six columns:
 ## Examples
 
 ``` r
-
 # the default yields the 1-3-5-7-9-11 Eikosany
 print(eikosany <- ps_scale_table(root_divisor = 33))
 #>     note_name    ratio ratio_frac ratio_cents interval_cents degree
