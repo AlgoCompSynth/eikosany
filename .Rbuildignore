@@ -1,4 +1,4 @@
-^eikosany\.Rproj$
+^.*\.Rproj$
 ^\.Rproj\.user$
 ^_pkgdown\.yml$
 ^docs$
@@ -9,4 +9,4 @@
 ^README_files$
 ^vignettes/articles$
 ^data-raw$
-^\.claude$
+^LICENSE\.md$
