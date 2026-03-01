@@ -1,17 +1,11 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
 <url><loc>/CODE_OF_CONDUCT.html</loc></url>
-<url><loc>/CONTRIBUTING.html</loc></url>
 <url><loc>/LICENSE-text.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
-<url><loc>/articles/Eikosany-Cascadia-R-Conference-Slides.html</loc></url>
-<url><loc>/articles/Slidy template.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/articles/introduction-to-combination-product-sets.html</loc></url>
-<url><loc>/articles/ioslides_template.html</loc></url>
-<url><loc>/articles/revealjs_template.html</loc></url>
 <url><loc>/articles/tetrads-on-37-key-synth.html</loc></url>
-<url><loc>/articles/tuning-the-korg-minilogue-xd-to-the-eikosany.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/bohlen_pierce_et_names.html</loc></url>
@@ -34,6 +28,5 @@
 <url><loc>/reference/ps_scale_table.html</loc></url>
 <url><loc>/reference/render_cps_chords.html</loc></url>
 <url><loc>/reference/scale_multisample.html</loc></url>
-<url><loc>/reference/scale_sawtooth_multisample.html</loc></url>
 </urlset>
 
