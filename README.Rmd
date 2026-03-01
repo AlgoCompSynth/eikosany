@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 `eikosany` is an R package of tools for algorithmic composition with Erv
 Wilson's Combination Product Sets [@narushima2019microtonality, chapter 6].
 It's meant to ***complement*** other microtonal composition tools, not
-replace any of them.
+replace any of them. `eikosany` is part of the `xen.assist` project for xentonal algorithmic composition.
 
 About the name: an _Eikosany_ is a 20-note scale derived by Erv Wilson from
 six harmonic factors. Although any six factors can be used, the most 
