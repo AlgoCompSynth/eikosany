@@ -4,10 +4,10 @@
 ## Overview
 
 `eikosany` is an R package of tools for algorithmic composition with Erv
-Wilson’s Combination Product Sets (Narushima 2019, chap. 6). It’s meant
-to ***complement*** other microtonal composition tools, not replace any
-of them. `eikosany` is part of the `xen.assist` project for xentonal
-algorithmic composition.
+Wilson’s Combination Product Sets (Narushima 2019, chap. 6; Grady 2026).
+It’s meant to ***complement*** other microtonal composition tools, not
+replace any of them. `eikosany` is part of the `xen.assist` project for
+xentonal algorithmic composition.
 
 About the name: an *Eikosany* is a 20-note scale derived by Erv Wilson
 from six harmonic factors. Although any six factors can be used, the
@@ -77,6 +77,13 @@ more ways of making microtonal music.
 
 <div id="refs" class="references csl-bib-body hanging-indent"
 entry-spacing="0">
+
+<div id="ref-grady2026" class="csl-entry">
+
+Grady, Kraig. 2026. “Anaphoria.com: The Wilson Archives (Website).”
+<https://www.anaphoria.com/wilson.html>.
+
+</div>
 
 <div id="ref-narushima2019microtonality" class="csl-entry">
 
