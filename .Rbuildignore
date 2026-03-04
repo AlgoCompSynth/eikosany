@@ -10,3 +10,4 @@
 ^vignettes/articles$
 ^data-raw$
 ^LICENSE\.md$
+inst/analysis/*
