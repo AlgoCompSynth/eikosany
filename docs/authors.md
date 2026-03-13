@@ -10,13 +10,13 @@ Source:
 [`DESCRIPTION`](https://github.com/AlgoCompSynth/eikosany/blob/HEAD/DESCRIPTION)
 
 Borasky M (2026). *eikosany: Algorithmic Composition With Erv Wilson's
-Combination Product Sets*. R package version 0.4.9.9000,
+Combination Product Sets*. R package version 0.2.0,
 <https://algocompsynth.github.io/eikosany/>.
 
     @Manual{,
       title = {eikosany: Algorithmic Composition With Erv Wilson's Combination Product Sets},
       author = {M. Edward (Ed) Borasky},
       year = {2026},
-      note = {R package version 0.4.9.9000},
+      note = {R package version 0.2.0},
       url = {https://algocompsynth.github.io/eikosany/},
     }
