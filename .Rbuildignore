@@ -11,3 +11,5 @@
 ^data-raw$
 ^LICENSE\.md$
 ^AGENTS\.md$
+^\.positai$
+^\.claude$
