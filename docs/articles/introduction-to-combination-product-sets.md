@@ -1,6 +1,7 @@
 # Introduction to Combination Product Sets
 
 ``` r
+
 library(eikosany)
 ```
 
@@ -91,6 +92,7 @@ can create a mapping for such a scale to a synthesizer keyboard.
 Here’s what the 19-EDO scale table and keyboard map look like:
 
 ``` r
+
 data("edo19_names")
 edo19_scale_table <- et_scale_table(edo19_names)
 print(edo19_scale_table)
@@ -182,5 +184,5 @@ Wilson*. Routledge Studies in Music Theory. Taylor & Francis Limited.
 Sethares, W. A. 1998. *Tuning, Timbre, Spectrum, Scale*. Springer
 London.
 
-———. 2013. *Tuning, Timbre, Spectrum, Scale, Second Edition*. Springer
-London.
+Sethares, W. A. 2013. *Tuning, Timbre, Spectrum, Scale, Second Edition*.
+Springer London.

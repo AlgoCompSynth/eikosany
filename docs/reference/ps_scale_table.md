@@ -51,11 +51,12 @@ a `data.table` with six columns:
 
 ## See also
 
-[`offset_matrix()`](offset_matrix.md)
+[`offset_matrix()`](https://algocompsynth.github.io/eikosany/reference/offset_matrix.md)
 
 ## Examples
 
 ``` r
+
 # the default yields the 1-3-5-7-9-11 Eikosany
 print(eikosany <- ps_scale_table(root_divisor = 33))
 #>     note_name    ratio ratio_frac ratio_cents interval_cents degree

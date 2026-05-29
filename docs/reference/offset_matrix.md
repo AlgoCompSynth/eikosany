@@ -50,4 +50,4 @@ this in *Microtonality and the Tuning Systems of Erv Wilson*, pages
 
 ## See also
 
-[`ps_scale_table()`](ps_scale_table.md)
+[`ps_scale_table()`](https://algocompsynth.github.io/eikosany/reference/ps_scale_table.md)

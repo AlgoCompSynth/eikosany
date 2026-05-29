@@ -3,6 +3,4 @@
 ### All vignettes
 
 - [Introduction to Combination Product
-  Sets](introduction-to-combination-product-sets.md):
-- [Tetrads of the 1-3-5-7-9-11 Eikosany on a 37-key
-  Synthesizer](tetrads-on-37-key-synth.md):
+  Sets](https://algocompsynth.github.io/eikosany/articles/introduction-to-combination-product-sets.md):

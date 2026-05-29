@@ -52,6 +52,7 @@ is the number of harmonic factors, the resulting chords will have
 ## Examples
 
 ``` r
+
 # compute the tetrads of the 1-3-5-7-9-11 Eikosany
 eikosany <- cps_scale_table(root_divisor = 33)
 print(eikosany_chords <- cps_chord_table(eikosany))
