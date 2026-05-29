@@ -204,10 +204,10 @@ chord_WAVs <- function(
     wave_object <- chord_synth(
       chord_frequencies,
       signal = signal,
-      duration_sec = 4,
-      velocity = 100,
-      sample_rate_hz = 48000,
-      bit_width = 24
+      duration_sec = duration_sec,
+      velocity = velocity,
+      sample_rate_hz = sample_rate_hz,
+      bit_width = bit_width
     )
 
     # make file name -

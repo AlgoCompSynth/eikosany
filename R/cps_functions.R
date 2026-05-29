@@ -78,10 +78,10 @@
 .period_reduce <- function(x, period) {
   w <- as.numeric(x)
 
-  ix <- (w > period)
+  ix <- (w >= period)
   while (any(ix)) {
     w[ix] <- w[ix] / period
-    ix <- (w > period)
+    ix <- (w >= period)
   }
 
   ix <- (w < 1)
