@@ -120,7 +120,7 @@ export_music_object <- function(
   # export the object
   gm::export(music_object, output_directory, file_name, formats = "mid")
 
-  return(paste0(output_directory, "/", file_name, ".mid"))
+  file.path(output_directory, paste0(file_name, ".mid"))
 }
 
 #' @title Create Chord WAV Files
@@ -216,7 +216,7 @@ chord_WAVs <- function(
       signal,
       chord_label
     )
-    file_path <- paste0(output_directory, "/", file_name)
+    file_path <- file.path(output_directory, file_name)
 
     # and write it!
     tuneR::writeWave(wave_object, file_path)
@@ -224,8 +224,7 @@ chord_WAVs <- function(
     root_index <- root_index + 1
   }
 
-  return(output_directory)
-
+  output_directory
 }
 
 #' @title Synthesize a Chord
@@ -358,7 +357,7 @@ render_cps_chords <- function(scale_table, home_folder) {
   for (i in 1:length(chord_degrees)) {
     chord <- as.numeric(unlist(strsplit(chord_degrees[i], ":")))
     folder_name <-
-      paste0(home_folder, "/chord_", chord_labels[i])
+      file.path(home_folder, paste0("chord_", chord_labels[i]))
     chord_WAVs(
       chord,
       keyboard_map,
@@ -368,5 +367,5 @@ render_cps_chords <- function(scale_table, home_folder) {
     )
   }
 
-  return(home_folder)
+  home_folder
 }
