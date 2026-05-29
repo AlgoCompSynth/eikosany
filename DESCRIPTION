@@ -14,7 +14,6 @@ URL: https://algocompsynth.github.io/eikosany/,
 BugReports: https://github.com/AlgoCompSynth/eikosany/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Suggests: 
     devtools (>= 2.4.5),
     knitr (>= 1.42),
@@ -37,3 +36,4 @@ Depends:
 Remotes: 
     mikldk/pichor
 LazyData: true
+Config/roxygen2/version: 8.0.0
