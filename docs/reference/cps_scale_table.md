@@ -47,7 +47,6 @@ a `data.table` with six columns:
 ## Examples
 
 ``` r
-
 # the defaults yield the 1-3-5-7-9-11 Eikosany.
 
 # Erv Wilson's design
