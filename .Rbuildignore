@@ -9,5 +9,4 @@
 ^README_files$
 ^vignettes/articles$
 ^data-raw$
-handover.md
-btw.md
+AGENTS.md
