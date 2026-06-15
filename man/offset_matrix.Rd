@@ -18,7 +18,7 @@ column name's key to get the row name's scale note.
 \description{
 Creates an offset matrix from a scale table. An offset
 matrix is used to retune an octave for synthesizers that support such
-retunings, like the Korg Minilogue XD and the Dirtywave M8 tracker.
+retunings (e.g., via cents-offset per key).
 }
 \details{
 The columns of an offset matrix represent key names in 12-tone

@@ -140,7 +140,7 @@
 #' @name offset_matrix
 #' @description Creates an offset matrix from a scale table. An offset
 #' matrix is used to retune an octave for synthesizers that support such
-#' retunings, like the Korg Minilogue XD and the Dirtywave M8 tracker.
+#' retunings (e.g., via cents-offset per key).
 #' @details The columns of an offset matrix represent key names in 12-tone
 #' equal temperament. Rows represent note names from a scale table. The
 #' value of a matrix cell is the offset in cents you need to apply to the
@@ -470,42 +470,26 @@ et_scale_table <- function(note_names = c(
 #' print(eikosany_interval_table <-interval_table(eikosany))
 
 interval_table <- function(scale_table) {
+  # Create a cross-join of the scale table with itself to get all pairs
+  pairs <- data.table::CJ(
+    from_idx = seq_len(nrow(scale_table)),
+    to_idx = seq_len(nrow(scale_table))
+  )[to_idx > from_idx]
 
-  # get dimensions
-  input_rows <- length(scale_table$degree)
-  out_rows <- input_rows * (input_rows - 1) / 2
-  # allocate output vectors
-  from_name <- to_name <- vector(mode = "character", length = out_rows)
-  from_degree <- to_degree <- vector(mode = "integer", length = out_rows)
-  ratio <- vector(mode = "numeric", length = out_rows)
+  # Join back to scale table to get values
+  result <- pairs[, list(
+    from_name = scale_table$note_name[from_idx],
+    from_degree = scale_table$degree[from_idx],
+    to_name = scale_table$note_name[to_idx],
+    to_degree = scale_table$degree[to_idx],
+    ratio = scale_table$ratio[to_idx] / scale_table$ratio[from_idx]
+  )]
 
-  out_ix <- 0
-  for (ix_from in 1:(input_rows - 1)) {
-    for (ix_to in (ix_from + 1):input_rows) {
+  result[, `:=`(
+    ratio_frac = as.character(fractional::fractional(ratio)),
+    ratio_cents = .ratio2cents(ratio)
+  )]
 
-      out_ix <- out_ix + 1
-      ratio[out_ix] <-
-        scale_table$ratio[ix_to] / scale_table$ratio[ix_from]
-      from_name[out_ix] <- scale_table$note_name[ix_from]
-      to_name[out_ix] <- scale_table$note_name[ix_to]
-      from_degree[out_ix] <- scale_table$degree[ix_from]
-      to_degree[out_ix] <- scale_table$degree[ix_to]
-
-    }
-  }
-
-  ratio_frac <- as.character(fractional::fractional(ratio))
-  ratio_cents <- .ratio2cents(ratio)
-
-  result <- data.table::data.table(
-    from_name,
-    from_degree,
-    to_name,
-    to_degree,
-    ratio,
-    ratio_frac,
-    ratio_cents
-  )
   data.table::setkey(result, ratio)
   return(result)
 }
@@ -659,8 +643,7 @@ cps_chord_table <- function(scale_table) {
 #' \item `freq`: the frequency in Hz
 #' \item `cents`: cents above lowest MIDI note `.NN_MIN`, which has frequency
 #' `.FREQ_MIN`.
-#' \item `ref_keyname`: some synthesizers, including the Korg Minilogue XD,
-#' let you retune a key as an offset in cents from another reference key.
+#' \item `ref_keyname`: some synthesizers let you retune a key as an offset in cents from another reference key.
 #' This column is the name of that reference key.
 #' \item `ref_octave`: the octave number of the reference key
 #' \item `ref_offset`: the offset in cents from the reference key
@@ -780,8 +763,11 @@ utils::globalVariables(c(
   "chord_index",
   "degree",
   "freq_12edo",
+  "from_idx",
   "is_subharm",
   "note_name",
   "note_number",
-  "product"
+  "product",
+  "ratio",
+  "to_idx"
 ))
