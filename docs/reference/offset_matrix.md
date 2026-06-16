@@ -1,8 +1,8 @@
 # Create Offset Matrix
 
 Creates an offset matrix from a scale table. An offset matrix is used to
-retune an octave for synthesizers that support such retunings, like the
-Korg Minilogue XD and the Dirtywave M8 tracker.
+retune an octave for synthesizers that support such retunings (e.g., via
+cents-offset per key).
 
 ## Usage
 

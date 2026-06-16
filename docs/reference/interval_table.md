@@ -36,7 +36,6 @@ an interval table. This is a data.table with seven columns
 ## Examples
 
 ``` r
-
 # default is the 1-3-5-7-9-11 Eikosany
 eikosany <- cps_scale_table(root_divisor = 33)
 print(eikosany_interval_table <-interval_table(eikosany))

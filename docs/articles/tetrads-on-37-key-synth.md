@@ -1,14 +1,12 @@
 # Tetrads of the 1-3-5-7-9-11 Eikosany on a 37-key Synthesizer
 
 ``` r
-
 library(eikosany)
 ```
 
 ## The scale table
 
 ``` r
-
 scale <- cps_scale_table(root_divisor = 33) # 1-3-5-7-9-11 Eikosany default
 print(scale)
 #>     note_name    ratio ratio_frac ratio_cents interval_cents degree
@@ -40,7 +38,6 @@ print(scale)
 ## The keyboard map
 
 ``` r
-
 map <- keyboard_map(scale)
 print(map)
 #> Key: <note_number>
@@ -75,7 +72,6 @@ print(map)
 ## The chord table
 
 ``` r
-
 chords <- cps_chord_table(scale)
 print(chords)
 #> Key: <chord_index, is_subharm>
@@ -117,7 +113,6 @@ print(chords)
 ## The plots
 
 ``` r
-
 scale_degrees <- length(scale$degree) - 1
 base_note_number = 48
 chord_names <- chords$chord

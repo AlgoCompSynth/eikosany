@@ -48,9 +48,9 @@ the keyboard map. This is a data.table with eight columns:
 - `cents`: cents above lowest MIDI note `.NN_MIN`, which has frequency
   `.FREQ_MIN`.
 
-- `ref_keyname`: some synthesizers, including the Korg Minilogue XD, let
-  you retune a key as an offset in cents from another reference key.
-  This column is the name of that reference key.
+- `ref_keyname`: some synthesizers let you retune a key as an offset in
+  cents from another reference key. This column is the name of that
+  reference key.
 
 - `ref_octave`: the octave number of the reference key
 
@@ -72,7 +72,6 @@ offset_matrix!
 ## Examples
 
 ``` r
-
 # make sure we can print a whole keyboard map
 options(max.print = 2000)
 

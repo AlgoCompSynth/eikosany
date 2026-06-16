@@ -19,7 +19,6 @@ chunks within the document.
 ## Slide with R Code and Output
 
 ``` r
-
 summary(cars)
 ```
 
