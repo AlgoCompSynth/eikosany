@@ -112,10 +112,10 @@ period_reduce <- function(x, period = 2) {
   w <- as.numeric(x)
 
   # Handle NA values to avoid while(NA) errors
-  ix <- !is.na(w) & (w > period)
+ ix <- !is.na(w) & (w >= period)
   while (any(ix)) {
     w[ix] <- w[ix] / period
-    ix <- !is.na(w) & (w > period)
+    ix <- !is.na(w) & (w >= period)
   }
 
   ix <- !is.na(w) & (w < 1)
