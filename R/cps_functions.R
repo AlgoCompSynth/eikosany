@@ -107,7 +107,7 @@ matrix2degree <- function(note_matrix, scale_table) {
 #' @param period The period to wrap the ratio into (default is 2 for an octave). Must be greater than 0.
 #' @return The reduced ratios, all within the range [1, period)
 #' @export
-period_reduce <- function(x, period) {
+period_reduce <- function(x, period = 2) {
   stopifnot(is.numeric(period), period > 0)
   w <- as.numeric(x)
 
