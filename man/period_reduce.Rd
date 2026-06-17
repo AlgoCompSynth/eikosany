@@ -4,7 +4,7 @@
 \alias{period_reduce}
 \title{Reduce a ratio into a specified period (e.g., an octave)}
 \usage{
-period_reduce(x, period)
+period_reduce(x, period = 2)
 }
 \arguments{
 \item{x}{A numeric value or vector of ratios}

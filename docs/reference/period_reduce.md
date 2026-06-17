@@ -5,7 +5,7 @@ Reduce a ratio into a specified period (e.g., an octave)
 ## Usage
 
 ``` r
-period_reduce(x, period)
+period_reduce(x, period = 2)
 ```
 
 ## Arguments
