@@ -9,7 +9,4 @@
 ^README_files$
 ^vignettes/articles$
 ^data-raw$
-^LICENSE\.md$
-^AGENTS\.md$
-^\.positai$
-^\.claude$
+AGENTS.md

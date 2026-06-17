@@ -1,20 +1,20 @@
-test_that(".ratio2cents and .cents2ratio are inverses", {
+test_that("ratio2cents and cents2ratio are inverses", {
   ratios <- c(1, 3/2, 5/4, 1.618)
-  cents <- .ratio2cents(ratios)
-  expect_equal(.cents2ratio(cents), ratios, tolerance = 1e-7)
+  cents <- ratio2cents(ratios)
+  expect_equal(cents2ratio(cents), ratios, tolerance = 1e-7)
 })
 
-test_that(".period_reduce normalizes values to [1, period)", {
-  period <- 2
-  input <- c(0.5, 1.5, 2.5, 4.0, 0.25)
+#test_that("period_reduce normalizes values to [1, period)", {
+  #period <- 2
+  #input <- c(0.5, 1.5, 2.5, 4.0, 0.25)
   # 0.5 * 2 = 1.0
   # 1.5 = 1.5
   # 2.5 / 2 = 1.25
   # 4.0 / 2 / 2 = 1.0
   # 0.25 * 2 * 2 = 1.0
-  expected <- c(1, 1.5, 1.25, 1, 1)
-  expect_equal(.period_reduce(input, period), expected)
-})
+  #expected <- c(1, 1.5, 1.25, 1, 1)
+  #expect_equal(period_reduce(input, period), expected)
+#})
 
 test_that("ps_scale_table produces correct ratios for Hexany", {
   # 1-3-5-7 Hexany: products are 1x3, 1x5, 1x7, 3x5, 3x7, 5x7

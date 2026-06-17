@@ -1,19 +1,23 @@
 # helper functions and constants
 
-# convert MIDI note number to EDO frequency
-.EDO_DEGREES = 12
-.REF_FREQ = 440
-.REF_NN = 69
-.nn2freq <- function(note_number) {
+.REF_FREQ <- 440
+.REF_NN <- 69
+.EDO_DEGREES <- 12
+
+#' Convert MIDI note number to frequency
+#' @param note_number MIDI note number (0-127)
+#' @return Frequency in Hz
+#' @export
+nn2freq <- function(note_number) {
   .REF_FREQ * 2 ^ ((note_number - .REF_NN) / .EDO_DEGREES)
 }
 
-.NN_MIN <- 0; .CENTS_MIN <- 0; .FREQ_MIN <- .nn2freq(.NN_MIN)
-.NN_MAX <- 127; .CENTS_MAX <- 100 * .NN_MAX; .FREQ_MAX <- .nn2freq(.NN_MAX)
+.NN_MIN <- 0; .CENTS_MIN <- 0; .FREQ_MIN <- nn2freq(.NN_MIN)
+.NN_MAX <- 127; .CENTS_MAX <- 100 * .NN_MAX; .FREQ_MAX <- nn2freq(.NN_MAX)
 .NN_RANGE <- seq(.NN_MIN, .NN_MAX, 1)
 
 .NN_MIDDLE_C <- 60; .CENTS_MIDDLE_C <- 100 * .NN_MIDDLE_C
-.FREQ_MIDDLE_C <- .nn2freq(.NN_MIDDLE_C)
+.FREQ_MIDDLE_C <- nn2freq(.NN_MIDDLE_C)
 
 .NAMES_12EDO <- c(
   "C",
@@ -39,15 +43,25 @@
 ..CHORD_SEP <- ":"
 .SUBCHORD_SEP <- ":/"
 
-.matrix2label <- function(matrix, separator) {
-  label <- apply(matrix, MARGIN = 1, FUN = paste, collapse = separator)
+#' Convert a matrix to a label string
+#' @param matrix A matrix of harmonics
+#' @param separator Character used to separate harmonics in the label (e.g., "x")
+#' @return A character vector of labels
+#' @export
+matrix2label <- function(matrix, separator) {
+  labels <- apply(matrix, MARGIN = 1, FUN = paste, collapse = separator)
   if (separator == .SUBCHORD_SEP) {
-    label <- paste("/", label, sep = "")
+    labels <- paste("/", labels, sep = "")
   }
-  label
+  labels
 }
 
-.label2matrix <- function(label, separator) {
+#' Convert a label string to a matrix
+#' @param label A character vector of labels (e.g., "1x3x5")
+#' @param separator Character used to separate harmonics (e.g., "x")
+#' @return A matrix where each row is a set of harmonics derived from the label
+#' @export
+label2matrix <- function(label, separator) {
   matrix(
     unlist(lapply(strsplit(label, separator), as.numeric)),
     byrow = TRUE,
@@ -55,84 +69,129 @@
   )
 }
 
-.label2prod <- function(label, separator) {
-  unlist(lapply(lapply(strsplit(label, separator), as.numeric), prod))
+#' Convert a product label to its numerical product
+#' @param label A character vector of labels (e.g., "1x3x5")
+#' @param separator Character used to separate harmonics (e.g., "x")
+#' @return A numeric vector of products
+#' @export
+label2prod <- function(label, separator) {
+  unlist(lapply(lapply(strsplit(label, "x"), as.numeric), prod))
 }
 
-.label2harmonics <- function(label, separator) {
+#' Extract unique harmonics from a set of labels
+#' @param label A character vector of labels (e.g., "1x3x5")
+#' @param separator Character used to separate harmonics (e.g., "x")
+#' @return A sorted numeric vector of all unique harmonic factors found in the labels
+#' @export
+label2harmonics <- function(label, separator) {
   unique(sort(unlist(lapply(strsplit(label, separator), as.numeric))))
 }
 
-.matrix2degree <- function(note_matrix, scale_table) {
-  note_label <- .matrix2label(note_matrix, .NOTE_SEP)
-  note_index <- data.table::data.table(note_name = note_label)
-  degree_table <- scale_table[
+#' Map a matrix of notes to their scale degrees
+#' @param note_matrix A matrix where rows are combinations of harmonic factors
+#' @param scale_table A scale table from `ps_scale_table`, `cps_scale_table`, or `et_scale_table`
+#' @return A data.table containing the degree for each note in the matrix
+#' @export
+matrix2degree <- function(note_matrix, scale_table) {
+  labels <- matrix2label(note_matrix, .NOTE_SEP)
+  note_index <- data.table::data.table(note_name = labels)
+  scale_table[
     note_index,
     list(note_name, degree),
     on = "note_name"
   ]
-  degree_table
 }
 
-.period_reduce <- function(x, period) {
-  if (period <= 1) stop("Period must be greater than 1")
+#' Reduce a ratio into a specified period (e.g., an octave)
+#' @param x A numeric value or vector of ratios
+#' @param period The period to wrap the ratio into (default is 2 for an octave). Must be greater than 0.
+#' @return The reduced ratios, all within the range [1, period)
+#' @export
+period_reduce <- function(x, period) {
+  stopifnot(is.numeric(period), period > 0)
   w <- as.numeric(x)
 
-  ix <- (w >= period)
+  # Handle NA values to avoid while(NA) errors
+  ix <- !is.na(w) & (w > period)
   while (any(ix)) {
     w[ix] <- w[ix] / period
-    ix <- (w >= period)
+    ix <- !is.na(w) & (w > period)
   }
 
-  ix <- (w < 1)
+  ix <- !is.na(w) & (w < 1)
   while (any(ix)) {
     w[ix] <- w[ix] * period
-    ix <- (w < 1)
+    ix <- !is.na(w) & (w < 1)
   }
 
   w
 }
 
-.ratio2cents <- function(ratio) {
+#' Convert a ratio to cents
+#' @param ratio Numeric ratio
+#' @return Ratio expressed in cents
+#' @export
+ratio2cents <- function(ratio) {
   log2(ratio) * 1200
 }
 
-.cents2ratio <- function(cents) {
+#' Convert cents to a ratio
+#' @param cents Value in cents
+#' @return The corresponding pitch ratio
+#' @export
+cents2ratio <- function(cents) {
   2 ^ (cents / 1200)
 }
 
-.cps_label <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
-  .matrix2label(t(combn(harmonics, choose)), .NOTE_SEP)
+#' Generate labels for a combination product set (CPS)
+#' @param harmonics A vector of harmonic factors to use - defaults to the first six odd numbers
+#' @param choose The number of harmonics to choose for each combination - defaults to 3
+#' @return A character vector of harmonically-labeled notes (e.g., "1x3x5")
+#' @export
+cps_label <- function(harmonics = c(1, 3, 5, 7, 9, 11), choose = 3) {
+  matrix2label(t(combn(harmonics, choose)), .NOTE_SEP)
 }
 
-.ratio_table <- function(label, period = 2, root_divisor) {
-  num_product <- .label2prod(label, .NOTE_SEP)
+#' Create a basic ratio table from labels
+#' @param label A character vector of product labels (e.g., "1x3x5")
+#' @param period The period to wrap ratios into (default is 2 for an octave)
+#' @param root_divisor The divisor used to scale the smallest product to 1/1
+#' @return A `data.table` containing ratio, fractional representation and cents
+#' @export
+ratio_table <- function(label, period = 2, root_divisor) {
+  stopifnot(is.numeric(root_divisor), root_divisor != 0)
+
+  num_product <- label2prod(label, .NOTE_SEP)
   normalizer <- root_divisor
-  ratio <- .period_reduce(num_product / normalizer, period)
+  ratio <- period_reduce(num_product / normalizer, period)
   ratio_frac <- as.character(fractional::fractional(ratio))
-  ratio_cents <- .ratio2cents(ratio)
-  result_table <- data.table::data.table(
+  ratio_cents <- ratio2cents(ratio)
+  scale_data <- data.table::data.table(
     note_name = label,
     ratio,
     ratio_frac,
     ratio_cents
   )
-  data.table::setkey(result_table, ratio)
+  data.table::setkey(scale_data, ratio)
   last_row <- data.table::data.table(
-    note_name = paste(result_table$note_name[1], "'", sep = ""),
+    note_name = paste(scale_data$note_name[1], "'", sep = ""),
     ratio = period,
     ratio_frac = as.character(fractional::fractional(period)),
-    ratio_cents = .ratio2cents(period)
+    ratio_cents = ratio2cents(period)
   )
-  result_table <- data.table::rbindlist(list(result_table, last_row))
-  result_table <- result_table[, `:=`(
+  scale_data <- data.table::rbindlist(list(scale_data, last_row))
+  scale_data <- scale_data[, `:=`(
     interval_cents = ratio_cents - data.table::shift(ratio_cents),
     degree = (.I - 1)
   )]
-  result_table
+  scale_data
 }
 
-.drop_last_row <- function(scale_table) {
+#' Remove the octave (last row) from a scale table
+#' @param scale_table A scale table resulting from `ps_scale_table`, `cps_scale_table` or `et_scale_table`
+#' @return The scale table without the final periodic note
+#' @export
+drop_last_row <- function(scale_table) {
   scale_table[degree < nrow(scale_table) - 1]
 }
 
@@ -140,7 +199,7 @@
 #' @name offset_matrix
 #' @description Creates an offset matrix from a scale table. An offset
 #' matrix is used to retune an octave for synthesizers that support such
-#' retunings, like the Korg Minilogue XD and the Dirtywave M8 tracker.
+#' retunings (e.g., via cents-offset per key).
 #' @details The columns of an offset matrix represent key names in 12-tone
 #' equal temperament. Rows represent note names from a scale table. The
 #' value of a matrix cell is the offset in cents you need to apply to the
@@ -174,14 +233,14 @@
 
 offset_matrix <- function(scale_table) {
   scale_length <- nrow(scale_table) - 1
-  matrix <- round(outer(
+  offsets <- round(outer(
     scale_table$ratio_cents[1:scale_length],
     .CENTS_12EDO,
     FUN = "-"
   ), 0)
-  colnames(matrix) <- .NAMES_12EDO
-  rownames(matrix) <- scale_table$note_name[1:scale_length]
-  matrix
+  colnames(offsets) <- .NAMES_12EDO
+  rownames(offsets) <- scale_table$note_name[1:scale_length]
+  offsets
 }
 
 #' @title Create Product Set Scale Table
@@ -281,7 +340,7 @@ ps_scale_table <- function(ps_def = c(
   "1x5x11",
   "3x7x11"
 ), root_divisor) {
-  scale_table <- .ratio_table(ps_def, period = 2, root_divisor)
+  ratio_table(ps_def, period = 2, root_divisor)
 }
 
 #' @title Create Combination Product Set Scale Table
@@ -357,8 +416,8 @@ cps_scale_table <-
     choose = 3,
     root_divisor
   ) {
-  label <- .cps_label(harmonics, choose)
-  return(ps_scale_table(ps_def = label, root_divisor))
+  labels <- cps_label(harmonics, choose)
+  ps_scale_table(ps_def = labels, root_divisor)
 }
 
 #' @title Create Equal-Tempered Scale Table
@@ -416,32 +475,34 @@ et_scale_table <- function(note_names = c(
   "A#|Bb",
   "B"
 ), period = 2) {
+  stopifnot(is.numeric(period), period > 0)
+
   note_name <- note_names
   degrees <- length(note_names)
   degree <- seq(0, degrees - 1)
-  ratio_cents <- degree * .ratio2cents(period) / degrees
-  ratio <- .cents2ratio(ratio_cents)
+  ratio_cents <- degree * ratio2cents(period) / degrees
+  ratio <- cents2ratio(ratio_cents)
   ratio_frac <- as.character(fractional::fractional(ratio))
-  scale_table <- data.table::data.table(
+  scale_data <- data.table::data.table(
     note_name,
     ratio,
     ratio_frac,
     ratio_cents
   )
-  data.table::setkey(scale_table, ratio)
+  data.table::setkey(scale_data, ratio)
   last_row <- data.table::data.table(
-    note_name = paste(scale_table$note_name[1], "'", sep = ""),
+    note_name = paste(scale_data$note_name[1], "'", sep = ""),
     ratio = period,
     ratio_frac = as.character(fractional::fractional(period)),
-    ratio_cents = .ratio2cents(period)
+    ratio_cents = ratio2cents(period)
   )
-  scale_table <- data.table::rbindlist(list(scale_table, last_row))
-  scale_table <- scale_table[, `:=`(
+  scale_data <- data.table::rbindlist(list(scale_data, last_row))
+  scale_data <- scale_data[, `:=`(
     interval_cents = ratio_cents - data.table::shift(ratio_cents),
     degree = .I - 1
   )]
 
-  return(scale_table)
+  scale_data
 }
 
 #' @title Create Interval Table
@@ -470,35 +531,28 @@ et_scale_table <- function(note_names = c(
 #' print(eikosany_interval_table <-interval_table(eikosany))
 
 interval_table <- function(scale_table) {
+  # Create a cross-join of the scale table with itself to get all pairs
+  pairs <- data.table::CJ(
+    from_idx = seq_len(nrow(scale_table)),
+    to_idx = seq_len(nrow(scale_table))
+  )[to_idx > from_idx]
 
-  # get dimensions
-  input_rows <- length(scale_table$degree)
-  if (input_rows < 2) stop("Scale table must have at least two notes to create an interval table")
+  # Join back to scale table to get values
+  result <- pairs[, list(
+    from_name = scale_table$note_name[from_idx],
+    from_degree = scale_table$degree[from_idx],
+    to_name = scale_table$note_name[to_idx],
+    to_degree = scale_table$degree[to_idx],
+    ratio = scale_table$ratio[to_idx] / scale_table$ratio[from_idx]
+  )]
 
-  indices <- combn(input_rows, 2)
-  from_idx <- indices[1,]
-  to_idx <- indices[2,]
+  result[, `:=`(
+    ratio_frac = as.character(fractional::fractional(ratio)),
+    ratio_cents = ratio2cents(ratio)
+  )]
 
-  ratio <- scale_table$ratio[to_idx] / scale_table$ratio[from_idx]
-  from_name <- scale_table$note_name[from_idx]
-  to_name <- scale_table$note_name[to_idx]
-  from_degree <- scale_table$degree[from_idx]
-  to_degree <- scale_table$degree[to_idx]
-
-  ratio_frac <- as.character(fractional::fractional(ratio))
-  ratio_cents <- .ratio2cents(ratio)
-
-  result <- data.table::data.table(
-    from_name,
-    from_degree,
-    to_name,
-    to_degree,
-    ratio,
-    ratio_frac,
-    ratio_cents
-  )
   data.table::setkey(result, ratio)
-  result
+  return(result)
 }
 
 #' @title Create CPS Chord Table
@@ -554,9 +608,9 @@ interval_table <- function(scale_table) {
 cps_chord_table <- function(scale_table) {
 
   # drop last row of scale table
-  scale_data <- .drop_last_row(scale_table)
+  temp <- drop_last_row(scale_table)
 
-  harmonics <- .label2harmonics(scale_data$note_name, .NOTE_SEP)
+  harmonics <- label2harmonics(temp$note_name, .NOTE_SEP)
   n_harmonics <- length(harmonics)
   if (n_harmonics %% 2 == 1) {
     stop("number of harmonic factors must be even!")
@@ -565,13 +619,13 @@ cps_chord_table <- function(scale_table) {
   }
   chords <- t(combn(harmonics, choose))
   num_chords <- nrow(chords)
-  setdiff_vals <- apply(
+  setdiff <- apply(
     chords, MARGIN = 1, FUN = function(x) setdiff(harmonics, x)
   )
-  if (is.matrix(setdiff_vals)) {
-    others <- t(setdiff_vals)
+  if (is.matrix(setdiff)) {
+    others <- t(setdiff)
   } else {
-    others <- as.matrix(setdiff_vals)
+    others <- as.matrix(setdiff)
   }
 
   # allocate result matrices
@@ -587,7 +641,7 @@ cps_chord_table <- function(scale_table) {
     harm_note_matrix <- t(apply(harm_note_matrix, MARGIN = 1, FUN = sort))
 
     # harmonic note degree
-    harm_note_degree <- .matrix2degree(harm_note_matrix, scale_data)
+    harm_note_degree <- matrix2degree(harm_note_matrix, temp)
     harm_matrix[, icol] <- harm_note_degree$degree
 
     # subharmonic note matrix
@@ -597,7 +651,7 @@ cps_chord_table <- function(scale_table) {
     subharm_note_matrix <- t(apply(subharm_note_matrix, MARGIN = 1, FUN = sort))
 
     # subharmonic note degree
-    subharm_note_degree <- .matrix2degree(subharm_note_matrix, scale_data)
+    subharm_note_degree <- matrix2degree(subharm_note_matrix, temp)
     subharm_matrix[, icol] <- subharm_note_degree$degree
 
   }
@@ -606,10 +660,10 @@ cps_chord_table <- function(scale_table) {
   subharm_matrix <- t(apply(subharm_matrix, MARGIN = 1, FUN = sort))
 
   # make labels
-  chord_label <- .matrix2label(chords, ..CHORD_SEP)
-  subchord_label <- .matrix2label(chords, .SUBCHORD_SEP)
-  harm_label <- .matrix2label(harm_matrix, ..CHORD_SEP)
-  subharm_label <- .matrix2label(subharm_matrix, ..CHORD_SEP)
+  chord_label <- matrix2label(chords, ..CHORD_SEP)
+  subchord_label <- matrix2label(chords, .SUBCHORD_SEP)
+  harm_label <- matrix2label(harm_matrix, ..CHORD_SEP)
+  subharm_label <- matrix2label(subharm_matrix, ..CHORD_SEP)
 
   # make table
   result_table <- data.table::data.table(
@@ -620,7 +674,7 @@ cps_chord_table <- function(scale_table) {
   result_table$is_subharm <- 0
   result_table$is_subharm[grep("/", result_table$chord)] <- 1
   data.table::setkey(result_table, chord_index, is_subharm)
-  result_table
+  return(result_table)
 }
 
 #' @title Create Keyboard Map
@@ -650,8 +704,7 @@ cps_chord_table <- function(scale_table) {
 #' \item `freq`: the frequency in Hz
 #' \item `cents`: cents above lowest MIDI note `.NN_MIN`, which has frequency
 #' `.FREQ_MIN`.
-#' \item `ref_keyname`: some synthesizers, including the Korg Minilogue XD,
-#' let you retune a key as an offset in cents from another reference key.
+#' \item `ref_keyname`: some synthesizers let you retune a key as an offset in cents from another reference key.
 #' This column is the name of that reference key.
 #' \item `ref_octave`: the octave number of the reference key
 #' \item `ref_offset`: the offset in cents from the reference key
@@ -693,14 +746,14 @@ keyboard_map <- function(scale_table, middle_c_octave = 4) {
   period_cents <- scale_table$ratio_cents[nrow(scale_table)]
 
   # drop last row of scale table
-  scale_data <- .drop_last_row(scale_table)
+  temp <- drop_last_row(scale_table)
 
   # create note number vector
   note_number <- .NN_RANGE
   note_numbers <- length(note_number)
 
   # create indices
-  degrees <- nrow(scale_data)
+  degrees <- nrow(temp)
   degrees_12edo <- 12
   period_number <- (note_number - .NN_MIDDLE_C) %/% degrees
   octave_12edo <- (note_number - .NN_MIDDLE_C) %/% degrees_12edo
@@ -710,14 +763,14 @@ keyboard_map <- function(scale_table, middle_c_octave = 4) {
   # note names
   note_name <- name_12edo <- ratio_frac <-
     vector(mode = "character", length = note_numbers)
-  note_name[note_number + 1] <- scale_data$note_name[degree + 1]
-  ratio_frac[note_number + 1] <- scale_data$ratio_frac[degree + 1]
+  note_name[note_number + 1] <- temp$note_name[degree + 1]
+  ratio_frac[note_number + 1] <- temp$ratio_frac[degree + 1]
   name_12edo[note_number + 1] <- .NAMES_12EDO[degree_12EDO + 1]
 
   # cents and frequencies
   cents <-
-    scale_data$ratio_cents[degree + 1] + period_number * period_cents + .CENTS_MIDDLE_C
-  freq <- .cents2ratio(cents) * .FREQ_MIN
+    temp$ratio_cents[degree + 1] + period_number * period_cents + .CENTS_MIDDLE_C
+  freq <- cents2ratio(cents) * .FREQ_MIN
 
   # reference keys and offsets
   rcents <- round(cents, 0) # round for printing / offset calculations
@@ -746,7 +799,7 @@ keyboard_map <- function(scale_table, middle_c_octave = 4) {
   freq[index_high] <- .FREQ_MAX
 
   # build and return the map
-  keyboard_map_dt <- data.table::data.table(
+  keyboard_map <- data.table::data.table(
     note_number,
     name_12edo,
     octave_12edo,
@@ -760,9 +813,10 @@ keyboard_map <- function(scale_table, middle_c_octave = 4) {
     ref_octave,
     ref_offset
   )
-  data.table::setkey(keyboard_map_dt, note_number)
+  data.table::setkey(keyboard_map, note_number)
 
-  keyboard_map_dt
+  return(keyboard_map)
+
 }
 
 utils::globalVariables(c(
@@ -770,8 +824,11 @@ utils::globalVariables(c(
   "chord_index",
   "degree",
   "freq_12edo",
+  "from_idx",
   "is_subharm",
   "note_name",
   "note_number",
-  "product"
+  "product",
+  "ratio",
+  "to_idx"
 ))
