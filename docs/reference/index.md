@@ -54,3 +54,5 @@
   : Create a basic ratio table from labels
 - [`render_cps_chords()`](https://algocompsynth.github.io/eikosany/reference/render_cps_chords.md)
   : Render the Chords of a CPS
+- [`xen_chat()`](https://algocompsynth.github.io/eikosany/reference/xen_chat.md)
+  : xen.assist - Shiny app for xentonal composition via chat

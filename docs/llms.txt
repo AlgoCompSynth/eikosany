@@ -136,10 +136,14 @@ Wilson*. Routledge Studies in Music Theory. Taylor & Francis Limited.
   : Create a basic ratio table from labels
 - [`render_cps_chords()`](https://algocompsynth.github.io/eikosany/reference/render_cps_chords.md)
   : Render the Chords of a CPS
+- [`xen_chat()`](https://algocompsynth.github.io/eikosany/reference/xen_chat.md)
+  : xen.assist - Shiny app for xentonal composition via chat
 
 # Articles
 
 ### All vignettes
 
+- [Chatting with the Xentonal
+  Assistant](https://algocompsynth.github.io/eikosany/articles/chatting-with-the-assistant.md):
 - [Introduction to Combination Product
   Sets](https://algocompsynth.github.io/eikosany/articles/introduction-to-combination-product-sets.md):

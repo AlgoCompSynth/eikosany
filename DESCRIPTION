@@ -30,7 +30,11 @@ Imports:
     fractional,
     data.table,
     seewave,
-    tuneR
+    tuneR,
+    bslib,
+    ellmer,
+    shiny,
+    shinychat
 Depends: 
     R (>= 4.6.0)
 LazyData: true
