@@ -15,7 +15,6 @@ BugReports: https://github.com/AlgoCompSynth/eikosany/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    btw,
     devtools,
     duckdb,
     knitr,
@@ -34,7 +33,9 @@ Imports:
     bslib,
     ellmer,
     shiny,
-    shinychat
+    shinychat,
+    ollamar,
+    btw
 Depends: 
     R (>= 4.6.0)
 LazyData: true

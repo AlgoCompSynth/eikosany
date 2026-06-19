@@ -2,7 +2,8 @@
 #'
 #' @description Launches a two-pane Shiny app: left/main pane runs the `btw`-enhanced chat,
 #' right/sidebar pane holds an audio player that plays back the last WAV file
-#' synthesized. Uses Bootstrap 5 darkly theme per project conventions.
+#' synthesized and a model picker to swap LLM models mid-session.
+#' Uses Bootstrap 5 darkly theme per project conventions.
 #'
 #' @param client Configuration for the LLM client; passed through to
 #'   `btw::btw_client()`. Supply a list or object compatible with your
@@ -21,12 +22,42 @@
 #'   xen_chat()
 #' }
 #'
+#' @importFrom ollamar list_models
+#' @importFrom shiny addResourcePath tags selectizeInput uiOutput reactiveVal observeEvent showNotification renderUI shinyApp req
+#' @importFrom bslib page_fillable layout_sidebar sidebar bs_theme
+#' @importFrom shinychat chat_mod_ui chat_mod_server
+#' @importFrom ellmer tool type_string
+#' @importFrom btw btw_client
 #' @export
 xen_chat <- function(
   client   = NULL,
   tools    = c("env", "run", "files"),
   messages = list()
 ) {
+  # ---- Model discovery via ollamar ---------------------------------
+
+  # Discover available models through the ollamar R package (wraps Ollama API)
+  model_df <- tryCatch(
+    ollamar::list_models(),
+    error = function(e) NULL
+  )
+
+  if (!is.null(model_df) && nrow(model_df) > 0L) {
+    # Unique, sorted character vector of model names
+    model_choices <- sort(unique(model_df[["name"]], na.rm = TRUE))
+  } else {
+    model_choices <- character(0)
+  }
+
+  # Determine default: prefer client$model if set, otherwise first available
+  default_model <- if (!is.null(client[["model"]]) && nzchar(client[["model"]])) {
+    client[["model"]]
+  } else if (length(model_choices) > 0L) {
+    model_choices[1]
+  } else {
+    NULL
+  }
+
   # ---- Setup -----------------------------------------------------
 
   # Create a temporary directory for WAV files so synthesized output
@@ -44,13 +75,33 @@ xen_chat <- function(
     bslib::layout_sidebar(
       sidebar = bslib::sidebar(
         width = 300,
+
+        # -- Model picker section --
+        shiny::tags$h4("[Model] LLM"),
+        if (length(model_choices) > 0L) {
+          shiny::selectizeInput(
+            "model_picker",
+            NULL,
+            choices = model_choices,
+            selected = default_model %||% model_choices[1],
+            options = list(placeholder = "(choose a model)", create = FALSE),
+            width = "100%"
+          )
+        } else {
+          shiny::tags$p(style = "color: gray;", "No models detected.")
+        },
+
+        shiny::tags$hr(),
+
+        # -- Audio player section --
         shiny::tags$h4("[Audio] Last synthesis"),
         shiny::uiOutput("audio_panel"),
         shiny::tags$hr(),
         shiny::tags$p("The agent can synthesize xentonal scales and chords using the 'eikosany' package."),
         shiny::tags$p("Request a WAV file to hear the result here.")
       ),
-      # The chat interface is the mainContent of layout_sidebar
+
+      # The chat interface is the main content of layout_sidebar
       shinychat::chat_mod_ui(
         "chat",
         messages = if (length(messages) == 0) NULL else messages
@@ -111,17 +162,68 @@ xen_chat <- function(
       full_tools <- append(full_tools, list(update_wav_tool))
     }
 
-    # Instantiate the chat server
-    shinychat::chat_mod_server(
+    # Build initial btw client
+    initial_client <- btw::btw_client(client = client, tools = full_tools)
+
+    # Remember the provider so we can rebuild on swap when `client` was NULL.
+    # ellmer's $get_provider() returns an R6 Provider object (not a string),
+    # so we prefer the explicit config field; default to "ollama" since
+    # ollamar only works with Ollama endpoints anyway.
+    provider_name <- if (is.list(client) && !is.null(client[["provider"]])) {
+      client[["provider"]]
+    } else {
+      "ollama"
+    }
+
+    # Instantiate the chat server -- returns an env with $set_client()
+    chat_server <- shinychat::chat_mod_server(
       "chat",
-      client = btw::btw_client(
-        client = client,
-        tools  = full_tools
-      )
+      client = initial_client
     )
 
-    # Reactively render the audio panel -- src URL always points at our
-    # managed resource path ("wav/") so playback is reliable.
+    # ---- Model picker: reactively swap the client -----------------------
+
+    shiny::observeEvent(input$model_picker, label = "model_swap", {
+      req(length(model_choices) > 0L)
+
+      new_model <- input$model_picker
+
+      # Build a fresh btw-configured ellmer Chat with the chosen model.
+      # We reuse the original client config, overriding only the model field.
+      new_client_config <- client
+      if (is.null(new_client_config)) {
+        new_client_config <- list(provider = provider_name)
+      }
+      new_client_config[["model"]] <- new_model
+
+      new_ellmer_chat <- tryCatch(
+        btw::btw_client(client = new_client_config, tools = full_tools),
+        error = function(e) NULL
+      )
+
+      if (is.null(new_ellmer_chat)) {
+        shiny::showNotification(
+          paste("Could not switch model: could not create client."),
+          type = "error",
+          duration = 5
+        )
+        return()
+      }
+
+      # Use shinychat's built-in $set_client() which handles:
+      #   - copying history, system prompt, tools onto the new client
+      #   - pending-swapping if a stream is currently running
+      chat_server$set_client(new_ellmer_chat, sync = TRUE)
+
+      shiny::showNotification(
+        paste0("Switched to ", new_model),
+        type = "message",
+        duration = 3
+      )
+    })
+
+    # ---- Audio panel ----------------------------------------------------
+
     output$audio_panel <- shiny::renderUI({
       wav_path <- r_last_wav()
       if (is.null(wav_path) || !file.exists(wav_path)) {
@@ -145,4 +247,3 @@ xen_chat <- function(
 
   shiny::shinyApp(ui, server)
 }
-
