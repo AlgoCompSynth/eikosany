@@ -2,8 +2,8 @@
 
 Launches a two-pane Shiny app: left/main pane runs the `btw`-enhanced
 chat, right/sidebar pane holds an audio player that plays back the last
-WAV file synthesized. Uses Bootstrap 5 darkly theme per project
-conventions.
+WAV file synthesized and a model picker to swap LLM models mid-session.
+Uses Bootstrap 5 darkly theme per project conventions.
 
 ## Usage
 

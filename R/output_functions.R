@@ -190,12 +190,6 @@ chord_synth <- function(
 
 }
 
-
-utils::globalVariables(c(
-  "highest_note",
-  "freq"
-))
-
 #' @title Render the Chords of a CPS
 #' @name render_cps_chords
 #' @description Make WAV files for all chords of a given CPS
@@ -245,3 +239,51 @@ render_cps_chords <- function(scale_table, home_folder) {
 
   return(home_folder)
 }
+
+#' @title Combine WAV Files into a Single WAV File
+#' @name combine_wav_files
+#' @description Reads a list of WAV files and concatenates them in order into
+#' a single output WAV file.
+#' @export combine_wav_files
+#' @importFrom tuneR readWave
+#' @importFrom tuneR bind
+#' @importFrom tuneR writeWave
+#' @param wav_files character vector of paths to WAV files to combine, in the
+#' order they should appear in the output.
+#' @param output_file character, full path (including filename) for the
+#' combined output WAV file.
+#' @returns the full path to `output_file`, invisibly.
+#' @examples
+#' \dontrun{
+#' wav_paths <- list.files("~/my_chords", pattern = "\\.wav$", full.names = TRUE)
+#' combine_wav_files(wav_paths, "~/my_chords/combined.wav")
+#' }
+#'
+combine_wav_files <- function(wav_files, output_file) {
+
+  if (length(wav_files) == 0) {
+    stop("wav_files must contain at least one file path.")
+  }
+
+  stopifnot(length(wav_files) > 0)
+
+  # read first file to start accumulation
+  combined <- tuneR::readWave(wav_files[[1]])
+
+  # bind remaining files sequentially
+  if (length(wav_files) > 1) {
+    for (i in 2:length(wav_files)) {
+      combined <- tuneR::bind(combined, tuneR::readWave(wav_files[[i]]))
+    }
+  }
+
+  tuneR::writeWave(combined, output_file)
+
+  return(invisible(output_file))
+
+}
+
+utils::globalVariables(c(
+  "highest_note",
+  "freq"
+))

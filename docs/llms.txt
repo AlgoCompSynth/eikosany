@@ -92,6 +92,8 @@ Wilson*. Routledge Studies in Music Theory. Taylor & Francis Limited.
   : Create Chord WAV Files
 - [`chord_synth()`](https://algocompsynth.github.io/eikosany/reference/chord_synth.md)
   : Synthesize a Chord
+- [`combine_wav_files()`](https://algocompsynth.github.io/eikosany/reference/combine_wav_files.md)
+  : Combine WAV Files into a Single WAV File
 - [`cps_chord_table()`](https://algocompsynth.github.io/eikosany/reference/cps_chord_table.md)
   : Create CPS Chord Table
 - [`cps_label()`](https://algocompsynth.github.io/eikosany/reference/cps_label.md)
