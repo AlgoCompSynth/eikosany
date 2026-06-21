@@ -5,14 +5,15 @@ client:
   echo: output
   base_url: "http://localhost:11434"
 tools:
+  - agent
+  - cran
   - docs
   - env
   - files
-  - git
-  - github
-  - ide
-  - search
-  - session
+  - pkg
+  - run
+  - sessioninfo
+  - skills
   - web
 ---
 
