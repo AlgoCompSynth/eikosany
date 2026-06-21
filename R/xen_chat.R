@@ -158,12 +158,36 @@ xen_chat <- function(
       )
     )
 
-    # Merge custom tool with user-supplied tools
-    full_tools <- tools
-    if (is.character(full_tools)) {
-      full_tools <- c(full_tools, list(update_wav_tool))
+    # Tool for the agent to identify itself via current session state.
+
+    get_model_info_tool <- ellmer::tool(
+
+      fun = function() {
+
+        paste0("Current Provider: ", provider_name, "\nLoaded Model: ", input$model_picker)
+
+      },
+
+      description = "Returns the name of the current LLM model and provider being used for this chat session.",
+
+      name = "get_current_model_info",
+
+      arguments = list()
+
+    )
+
+    # Merge custom tools with user-supplied tools
+
+    custom_tools <- list(update_wav_tool, get_model_info_tool)
+
+    full_tools <- if (is.character(tools)) {
+
+      c(tools, custom_tools)
+
     } else {
-      full_tools <- append(full_tools, list(update_wav_tool))
+
+      append(tools, custom_tools)
+
     }
 
     # Build initial btw client

@@ -1,7 +1,7 @@
 ---
 client:
   provider: ollama
-  model: "gemma4:26b-a4b-it-qat"
+  model: "gemma4:31b-it-qat"
   echo: output
   base_url: "http://localhost:11434"
 tools:
