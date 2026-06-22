@@ -114,16 +114,34 @@ chord_WAVs <- function(
 #' @param chord a vector of frequencies for the chord
 #' @param signal The `seewave` signal type: "sine", "tria",
 #' "square" or "saw", default = "tria"
-#' @param duration_sec how many seconds to hold each note,
-#' default = 1
+#' @param duration_sec total duration of the chord in seconds, default = 1
 #' @param velocity MIDI velocity, default = 100, max is 127
 #' @param sample_rate_hz sample rate in hz, default = 48000
 #' @param bit_width bit width of samples, default = 24
-#' @returns the full path to output_directory
+#' @param attack_sec ADSR attack time in seconds - linear ramp from silence
+#' to peak amplitude, default = 0
+#' @param decay_sec ADSR decay time in seconds - linear ramp from peak
+#' amplitude down to `sustain_level`, default = 0
+#' @param sustain_level ADSR sustain amplitude level as a fraction of peak,
+#' between 0 and 1, default = 1
+#' @param release_sec ADSR release time in seconds - linear ramp from
+#' `sustain_level` to silence, default = 0
+#' @returns a `Wave` object containing the synthesized chord
 #' @examples
 #' \dontrun{
 #' justmajor7th <- c(1, 5/4, 3/2, 7/4)
 #' wave <- chord_synth(256*justmajor7th, duration_sec = 10)
+#' tuneR::play(wave)
+#'
+#' # with ADSR envelope
+#' wave <- chord_synth(
+#'   256 * justmajor7th,
+#'   duration_sec = 4,
+#'   attack_sec = 0.1,
+#'   decay_sec = 0.2,
+#'   sustain_level = 0.7,
+#'   release_sec = 0.5
+#' )
 #' tuneR::play(wave)
 #' }
 #'
@@ -133,13 +151,25 @@ chord_synth <- function(
   duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 48000,
-  bit_width = 24
+  bit_width = 24,
+  attack_sec = 0,
+  decay_sec = 0,
+  sustain_level = 1,
+  release_sec = 0
 ) {
 
   # detonate if bad bit width
   legal_bit_widths <- c(8, 16, 24, 32, 64)
   if (!(bit_width %in% legal_bit_widths)) {
     stop(paste0("bit_width", bit_width, "not in", legal_bit_widths))
+  }
+
+  # validate envelope parameters
+  if (attack_sec + decay_sec + release_sec > duration_sec) {
+    stop("attack_sec + decay_sec + release_sec must not exceed duration_sec")
+  }
+  if (sustain_level < 0 || sustain_level > 1) {
+    stop("sustain_level must be between 0 and 1")
   }
 
   # set `pcm`
@@ -170,6 +200,21 @@ chord_synth <- function(
     sample_vector <- sample_vector + note_wave@left
 
   }
+
+  # build and apply ADSR envelope
+  n_samples <- length(sample_vector)
+  n_attack  <- round(attack_sec  * sample_rate_hz)
+  n_decay   <- round(decay_sec   * sample_rate_hz)
+  n_release <- round(release_sec * sample_rate_hz)
+  n_sustain <- n_samples - n_attack - n_decay - n_release
+
+  envelope <- c(
+    seq(0,             1,             length.out = n_attack),
+    seq(1,             sustain_level, length.out = n_decay),
+    rep(sustain_level,                n_sustain),
+    seq(sustain_level, 0,             length.out = n_release)
+  )
+  sample_vector <- sample_vector * envelope
 
   # convert numeric to Wave object
   chord_wave_raw <- tuneR::Wave(

@@ -10,7 +10,11 @@ chord_synth(
   duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 48000,
-  bit_width = 24
+  bit_width = 24,
+  attack_sec = 0,
+  decay_sec = 0,
+  sustain_level = 1,
+  release_sec = 0
 )
 }
 \arguments{
@@ -19,17 +23,28 @@ chord_synth(
 \item{signal}{The \code{seewave} signal type: "sine", "tria",
 "square" or "saw", default = "tria"}
 
-\item{duration_sec}{how many seconds to hold each note,
-default = 1}
+\item{duration_sec}{total duration of the chord in seconds, default = 1}
 
 \item{velocity}{MIDI velocity, default = 100, max is 127}
 
 \item{sample_rate_hz}{sample rate in hz, default = 48000}
 
 \item{bit_width}{bit width of samples, default = 24}
+
+\item{attack_sec}{ADSR attack time in seconds - linear ramp from silence
+to peak amplitude, default = 0}
+
+\item{decay_sec}{ADSR decay time in seconds - linear ramp from peak
+amplitude down to \code{sustain_level}, default = 0}
+
+\item{sustain_level}{ADSR sustain amplitude level as a fraction of peak,
+between 0 and 1, default = 1}
+
+\item{release_sec}{ADSR release time in seconds - linear ramp from
+\code{sustain_level} to silence, default = 0}
 }
 \value{
-the full path to output_directory
+a \code{Wave} object containing the synthesized chord
 }
 \description{
 Creates a \code{Wave} object for a given chord
@@ -38,6 +53,17 @@ Creates a \code{Wave} object for a given chord
 \dontrun{
 justmajor7th <- c(1, 5/4, 3/2, 7/4)
 wave <- chord_synth(256*justmajor7th, duration_sec = 10)
+tuneR::play(wave)
+
+# with ADSR envelope
+wave <- chord_synth(
+  256 * justmajor7th,
+  duration_sec = 4,
+  attack_sec = 0.1,
+  decay_sec = 0.2,
+  sustain_level = 0.7,
+  release_sec = 0.5
+)
 tuneR::play(wave)
 }
 
