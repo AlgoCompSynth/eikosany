@@ -9,8 +9,8 @@ chord_WAVs(
   keyboard_map,
   lowest_note = 48,
   highest_note = 84,
-  signal = "tria",
-  duration_sec = 2,
+  signal = "sine",
+  duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 44100,
   bit_width = 16,
@@ -28,9 +28,9 @@ is 48.}
 \item{highest_note}{the highest MIDI note number to use, default
 is 84.}
 
-\item{signal}{the \code{seewave} signal type, default is "tria"}
+\item{signal}{the \code{seewave} signal type, default is "sine"}
 
-\item{duration_sec}{how long to hold each note, default = 2}
+\item{duration_sec}{how long to hold each note, default = 1}
 
 \item{velocity}{MIDI velocity, default = 100, max is 127}
 

@@ -6,24 +6,24 @@
 \usage{
 chord_synth(
   chord,
-  signal = "tria",
-  duration_sec = 2,
+  signal = "sine",
+  duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 44100,
   bit_width = 16,
-  attack_sec = 0,
+  attack_sec = 0.05,
   decay_sec = 0,
   sustain_level = 1,
-  release_sec = 0
+  release_sec = 0.05
 )
 }
 \arguments{
 \item{chord}{a vector of frequencies for the chord}
 
 \item{signal}{The \code{seewave} signal type: "sine", "tria",
-"square" or "saw", default = "tria"}
+"square" or "saw", default = "sine"}
 
-\item{duration_sec}{total duration of the chord in seconds, default = 2}
+\item{duration_sec}{total duration of the chord in seconds, default = 1}
 
 \item{velocity}{MIDI velocity, default = 100, max is 127}
 

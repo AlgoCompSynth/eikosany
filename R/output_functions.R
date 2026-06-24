@@ -10,8 +10,8 @@
 #' @param highest_note the highest MIDI note number to use, default
 #' is 84.
 #' @param output_directory character, no default; will be created!
-#' @param signal the `seewave` signal type, default is "tria"
-#' @param duration_sec how long to hold each note, default = 2
+#' @param signal the `seewave` signal type, default is "sine"
+#' @param duration_sec how long to hold each note, default = 1
 #' @param velocity MIDI velocity, default = 100, max is 127
 #' @param sample_rate_hz sample rate in hz, default = 44100
 #' @param bit_width bit width of samples, default = 16
@@ -42,8 +42,8 @@ chord_WAVs <- function(
     keyboard_map,
     lowest_note = 48,
     highest_note = 84,
-    signal = "tria",
-    duration_sec = 2,
+    signal = "sine",
+    duration_sec = 1,
     velocity = 100,
     sample_rate_hz = 44100,
     bit_width = 16,
@@ -82,7 +82,7 @@ chord_WAVs <- function(
     wave_object <- chord_synth(
       chord_frequencies,
       signal = signal,
-      duration_sec = 2,
+      duration_sec = 1,
       velocity = 100,
       sample_rate_hz = 44100,
       bit_width = 16
@@ -117,8 +117,8 @@ chord_WAVs <- function(
 #' @importFrom tuneR silence
 #' @param chord a vector of frequencies for the chord
 #' @param signal The `seewave` signal type: "sine", "tria",
-#' "square" or "saw", default = "tria"
-#' @param duration_sec total duration of the chord in seconds, default = 2
+#' "square" or "saw", default = "sine"
+#' @param duration_sec total duration of the chord in seconds, default = 1
 #' @param velocity MIDI velocity, default = 100, max is 127
 #' @param sample_rate_hz samploutput_directorye rate in hz, default = 44100
 #' @param bit_width bit width of samples, default = 16
@@ -151,15 +151,15 @@ chord_WAVs <- function(
 #'
 chord_synth <- function(
   chord,
-  signal = "tria",
-  duration_sec = 2,
+  signal = "sine",
+  duration_sec = 1,
   velocity = 100,
   sample_rate_hz = 44100,
   bit_width = 16,
-  attack_sec = 0,
+  attack_sec = 0.05,
   decay_sec = 0,
   sustain_level = 1,
-  release_sec = 0
+  release_sec = 0.05
 ) {
 
   # detonate if bad bit width
@@ -287,7 +287,7 @@ render_cps_chords <- function(scale_table, output_directory) {
     )
   }
 
-   return(output_directory)
+   return(invisible(output_directory))
 }
 
 #' @title Combine WAV Files into a Single WAV File
