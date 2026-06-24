@@ -34,7 +34,7 @@ test_that("chord_synth creates a Wave object", {
   wave <- chord_synth(freqs, duration_sec = 0.1)
 
   expect_s4_class(wave, "Wave")
-  expect_equal(wave@samp.rate, 48000)
+  expect_equal(wave@samp.rate, 44100)
 })
 
 test_that("chord_WAVs handles directory creation and output", {

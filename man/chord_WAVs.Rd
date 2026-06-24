@@ -9,12 +9,12 @@ chord_WAVs(
   keyboard_map,
   lowest_note = 48,
   highest_note = 84,
-  output_directory = "~/Multisample",
   signal = "tria",
-  duration_sec = 1,
+  duration_sec = 2,
   velocity = 100,
-  sample_rate_hz = 48000,
-  bit_width = 24
+  sample_rate_hz = 44100,
+  bit_width = 16,
+  output_directory
 )
 }
 \arguments{
@@ -28,18 +28,17 @@ is 48.}
 \item{highest_note}{the highest MIDI note number to use, default
 is 84.}
 
-\item{output_directory}{character, default "~/Multisample". This will
-be created if it does not exist.}
-
 \item{signal}{the \code{seewave} signal type, default is "tria"}
 
-\item{duration_sec}{how long to hold each note, default = 4}
+\item{duration_sec}{how long to hold each note, default = 2}
 
 \item{velocity}{MIDI velocity, default = 100, max is 127}
 
-\item{sample_rate_hz}{sample rate in hz, default = 48000}
+\item{sample_rate_hz}{sample rate in hz, default = 44100}
 
-\item{bit_width}{bit width of samples, default = 24}
+\item{bit_width}{bit width of samples, default = 16}
+
+\item{output_directory}{character, no default; will be created!}
 }
 \value{
 the full path to output_directory

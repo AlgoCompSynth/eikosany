@@ -7,10 +7,10 @@
 chord_synth(
   chord,
   signal = "tria",
-  duration_sec = 1,
+  duration_sec = 2,
   velocity = 100,
-  sample_rate_hz = 48000,
-  bit_width = 24,
+  sample_rate_hz = 44100,
+  bit_width = 16,
   attack_sec = 0,
   decay_sec = 0,
   sustain_level = 1,
@@ -23,13 +23,13 @@ chord_synth(
 \item{signal}{The \code{seewave} signal type: "sine", "tria",
 "square" or "saw", default = "tria"}
 
-\item{duration_sec}{total duration of the chord in seconds, default = 1}
+\item{duration_sec}{total duration of the chord in seconds, default = 2}
 
 \item{velocity}{MIDI velocity, default = 100, max is 127}
 
-\item{sample_rate_hz}{sample rate in hz, default = 48000}
+\item{sample_rate_hz}{samploutput_directorye rate in hz, default = 44100}
 
-\item{bit_width}{bit width of samples, default = 24}
+\item{bit_width}{bit width of samples, default = 16}
 
 \item{attack_sec}{ADSR attack time in seconds - linear ramp from silence
 to peak amplitude, default = 0}

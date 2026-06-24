@@ -9,13 +9,12 @@
 #' is 48.
 #' @param highest_note the highest MIDI note number to use, default
 #' is 84.
-#' @param output_directory character, default "~/Multisample". This will
-#' be created if it does not exist.
+#' @param output_directory character, no default; will be created!
 #' @param signal the `seewave` signal type, default is "tria"
-#' @param duration_sec how long to hold each note, default = 4
+#' @param duration_sec how long to hold each note, default = 2
 #' @param velocity MIDI velocity, default = 100, max is 127
-#' @param sample_rate_hz sample rate in hz, default = 48000
-#' @param bit_width bit width of samples, default = 24
+#' @param sample_rate_hz sample rate in hz, default = 44100
+#' @param bit_width bit width of samples, default = 16
 #' @returns the full path to output_directory
 #' @examples
 #' \dontrun{
@@ -43,16 +42,20 @@ chord_WAVs <- function(
     keyboard_map,
     lowest_note = 48,
     highest_note = 84,
-    output_directory = "~/Multisample",
     signal = "tria",
-    duration_sec = 1,
+    duration_sec = 2,
     velocity = 100,
-    sample_rate_hz = 48000,
-    bit_width = 24
+    sample_rate_hz = 44100,
+    bit_width = 16,
+    output_directory
 ) {
 
+  chord_degrees_label <- paste(chord, collapse = "_")
+
   # create the directory
-  dir.create(output_directory, recursive = TRUE)
+  if (! dir.exists(output_directory)) {
+    dir.create(output_directory, recursive = TRUE)
+  }
 
   # get the frequencies for all the notes in the chord
   chord_map <- keyboard_map[
@@ -79,16 +82,17 @@ chord_WAVs <- function(
     wave_object <- chord_synth(
       chord_frequencies,
       signal = signal,
-      duration_sec = 4,
+      duration_sec = 2,
       velocity = 100,
-      sample_rate_hz = 48000,
-      bit_width = 24
+      sample_rate_hz = 44100,
+      bit_width = 16
     )
 
     # make file name -
     file_name <- sprintf(
-      "%s-%s.wav",
+      "%s-%s-%s.wav",
       signal,
+      chord_degrees_label,
       chord_label
     )
     file_path <- paste0(output_directory, "/", file_name)
@@ -99,7 +103,7 @@ chord_WAVs <- function(
     root_index <- root_index + 1
   }
 
-  return(output_directory)
+  return(invisible(output_directory))
 
 }
 
@@ -114,10 +118,10 @@ chord_WAVs <- function(
 #' @param chord a vector of frequencies for the chord
 #' @param signal The `seewave` signal type: "sine", "tria",
 #' "square" or "saw", default = "tria"
-#' @param duration_sec total duration of the chord in seconds, default = 1
+#' @param duration_sec total duration of the chord in seconds, default = 2
 #' @param velocity MIDI velocity, default = 100, max is 127
-#' @param sample_rate_hz sample rate in hz, default = 48000
-#' @param bit_width bit width of samples, default = 24
+#' @param sample_rate_hz samploutput_directorye rate in hz, default = 44100
+#' @param bit_width bit width of samples, default = 16
 #' @param attack_sec ADSR attack time in seconds - linear ramp from silence
 #' to peak amplitude, default = 0
 #' @param decay_sec ADSR decay time in seconds - linear ramp from peak
@@ -148,10 +152,10 @@ chord_WAVs <- function(
 chord_synth <- function(
   chord,
   signal = "tria",
-  duration_sec = 1,
+  duration_sec = 2,
   velocity = 100,
-  sample_rate_hz = 48000,
-  bit_width = 24,
+  sample_rate_hz = 44100,
+  bit_width = 16,
   attack_sec = 0,
   decay_sec = 0,
   sustain_level = 1,
@@ -240,24 +244,27 @@ chord_synth <- function(
 #' @description Make WAV files for all chords of a given CPS
 #' @export render_cps_chords
 #' @param scale_table the scale table for the CPS
-#' @param home_folder each chord will be rendered into a sub-folder
-#' of this one
+#' @param output_directory chords will be rendered into this folder
 #' @returns the full path to output_directory
 #' @examples
 #' \dontrun{
 #'
-#' (hexany_scale_table <- cps_scale_table(
-#'   harmonics = c(1, 3, 5, 7),
-#'   choose = 2
-#' ))
-#' (render_cps_chords(hexany_scale_table, "~/hexany_chords"))
+#'   hexany_scale_table <- cps_scale_table(
+#'     harmonics = c(1, 3, 5, 7, 9, 11),
+#'     choose = 2,
+#'     root_divisor = 15
+#'   )
+#'   render_cps_chords(hexany_scale_table, "~/Music/hexany_chords")#'
 #'
-#' (eikosany_scale_table <- cps_scale_table())
-#' (render_cps_chords(eikosany_scale_table, "~/eikosany_chords"))
-#'
+#'   eikosany_scale_table <- cps_scale_table(
+#'     harmonics = c(1, 3, 5, 7, 9, 11),
+#'     choose = 3,
+#'     root_divisor = 33
+#'   )
+#'   render_cps_chords(eikosany_scale_table, "~/Music/eikosany_chords")#'
 #' }
 #'
-render_cps_chords <- function(scale_table, home_folder) {
+render_cps_chords <- function(scale_table, output_directory) {
 
   scale_degrees <- nrow(scale_table) - 1
   chord_table <- cps_chord_table(scale_table)
@@ -271,18 +278,16 @@ render_cps_chords <- function(scale_table, home_folder) {
 
   for (i in 1:length(chord_degrees)) {
     chord <- as.numeric(unlist(strsplit(chord_degrees[i], ":")))
-    folder_name <-
-      paste0(home_folder, "/chord_", chord_labels[i])
     chord_WAVs(
       chord,
       keyboard_map,
       lowest_note = 60,
       highest_note = 60 + 2 * scale_degrees,
-      output_directory = folder_name
+      output_directory = output_directory
     )
   }
 
-  return(home_folder)
+   return(output_directory)
 }
 
 #' @title Combine WAV Files into a Single WAV File
