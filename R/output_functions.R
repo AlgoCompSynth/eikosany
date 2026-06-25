@@ -285,8 +285,8 @@ render_cps_chords <- function(scale_table, output_directory) {
     chord_WAVs(
       chord,
       keyboard_map,
-      lowest_note = 60,
-      highest_note = 60 + 2 * scale_degrees,
+      lowest_note = 60 - scale_degrees,
+      highest_note = 127,
       output_directory = output_directory
     )
   }
