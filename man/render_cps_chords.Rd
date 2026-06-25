@@ -21,7 +21,7 @@ Make WAV files for all chords of a given CPS
 \dontrun{
 
   hexany_scale_table <- cps_scale_table(
-    harmonics = c(1, 3, 5, 7, 9, 11),
+    harmonics = c(1, 3, 5, 7),
     choose = 2,
     root_divisor = 15
   )
