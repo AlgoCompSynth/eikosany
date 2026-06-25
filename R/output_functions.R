@@ -60,8 +60,7 @@ chord_WAVs <- function(
   # get the frequencies for all the notes in the chord
   chord_map <- keyboard_map[
     degree %in% chord &
-      note_number >= lowest_note &
-      note_number <= highest_note
+      note_number >= lowest_note
   ]
   frequencies <- sort(chord_map$freq)
   note_numbers <- sort(chord_map$note_number)
@@ -70,10 +69,10 @@ chord_WAVs <- function(
   chord_span <- length(chord)
   last_index <- length(frequencies)
   root_index <- 1
+  inversions2do <- chord_span + 1
 
-  while (root_index <= last_index) {
+  while (inversions2do > 0) {
     end_index <- root_index + chord_span - 1
-    if (end_index > last_index) { break }
     chord_frequencies <- frequencies[root_index:end_index]
     chord_label <- paste(
       note_numbers[root_index:end_index],
@@ -101,6 +100,7 @@ chord_WAVs <- function(
     tuneR::writeWave(wave_object, file_path)
 
     root_index <- root_index + 1
+    inversions2do <- inversions2do - 1
   }
 
   return(invisible(output_directory))
@@ -254,14 +254,14 @@ chord_synth <- function(
 #'     choose = 2,
 #'     root_divisor = 15
 #'   )
-#'   render_cps_chords(hexany_scale_table, "~/Music/hexany_chords")#'
+#'   render_cps_chords(hexany_scale_table, "~/Music/hexany_chords")
 #'
 #'   eikosany_scale_table <- cps_scale_table(
 #'     harmonics = c(1, 3, 5, 7, 9, 11),
 #'     choose = 3,
 #'     root_divisor = 33
 #'   )
-#'   render_cps_chords(eikosany_scale_table, "~/Music/eikosany_chords")#'
+#'   render_cps_chords(eikosany_scale_table, "~/Music/eikosany_chords")
 #' }
 #'
 render_cps_chords <- function(scale_table, output_directory) {

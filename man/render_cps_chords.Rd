@@ -25,14 +25,14 @@ Make WAV files for all chords of a given CPS
     choose = 2,
     root_divisor = 15
   )
-  render_cps_chords(hexany_scale_table, "~/Music/hexany_chords")#'
+  render_cps_chords(hexany_scale_table, "~/Music/hexany_chords")
 
   eikosany_scale_table <- cps_scale_table(
     harmonics = c(1, 3, 5, 7, 9, 11),
     choose = 3,
     root_divisor = 33
   )
-  render_cps_chords(eikosany_scale_table, "~/Music/eikosany_chords")#'
+  render_cps_chords(eikosany_scale_table, "~/Music/eikosany_chords")
 }
 
 }
