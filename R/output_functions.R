@@ -255,6 +255,8 @@ chord_synth <- function(
 #'     root_divisor = 15
 #'   )
 #'   render_cps_chords(hexany_scale_table, "~/Music/hexany_chords")
+#'   hexany_paths <- list.files("~/Music/hexany_chords", pattern = "\\.wav$", full.names = TRUE)
+#'   combine_wav_files(hexany_paths, "~/Music/hexany_combined.wav")
 #'
 #'   eikosany_scale_table <- cps_scale_table(
 #'     harmonics = c(1, 3, 5, 7, 9, 11),
@@ -262,6 +264,8 @@ chord_synth <- function(
 #'     root_divisor = 33
 #'   )
 #'   render_cps_chords(eikosany_scale_table, "~/Music/eikosany_chords")
+#'   eikosany_paths <- list.files("~/Music/eikosany_chords", pattern = "\\.wav$", full.names = TRUE)
+#'   combine_wav_files(eikosany_paths, "~/Music/eikosany_combined.wav")
 #' }
 #'
 render_cps_chords <- function(scale_table, output_directory) {
