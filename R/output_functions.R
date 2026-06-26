@@ -105,23 +105,17 @@ chord_synth <- function(
   velocity = 100
 ) {
 
-  # compute level
-  level = velocity / MAX_VELOCITY
-
-  # initialize sample vector
-  sample_vector <- tuneR::silence(
+  # initialize wave object
+  chord_wave <- tuneR::silence(
     duration = duration_sec,
     samp.rate = SAMP_RATE,
     bit = BIT,
     pcm = PCM,
     xunit = "time"
   )
-  sample_vector <- sample_vector@left
-  sample_vector <- 0
 
   for (note in chord) {
-
-    note_wave <- tuneR::sine(
+    chord_wave <- chord_wave + tuneR::sine(
       freq = note,
       duration = duration_sec,
       samp.rate = SAMP_RATE,
@@ -129,29 +123,16 @@ chord_synth <- function(
       pcm = PCM,
       xunit = "time"
     )
-    sample_vector <- sample_vector + note_wave@left
-
   }
 
-  # convert numeric to Wave object
-  chord_wave_raw <- tuneR::Wave(
-    sample_vector,
-    samp.rate = SAMP_RATE,
-    bit = BIT,
-    pcm = PCM
-  )
-
-  # normalize to given velocity - max velocity is 127.0
+  # normalize to given velocity
   chord_wave <- tuneR::normalize(
-    chord_wave_raw,
-    level = level,
+    chord_wave,
+    level = velocity / MAX_VELOCITY,
     unit = as.character(BIT),
     pcm = PCM,
     center = TRUE
   )
-
-  return(chord_wave)
-
 }
 
 #' @title Render the Chords of a CPS
@@ -200,7 +181,7 @@ render_cps_chords <- function(scale_table, output_directory) {
     chord_WAVs(
       chord,
       keyboard_map,
-      lowest_note = 60,
+      lowest_note = 60 - scale_degrees / 2,
       duration_sec = DURATION_SEC,
       output_directory = output_directory
     )
