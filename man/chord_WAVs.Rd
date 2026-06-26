@@ -7,13 +7,9 @@
 chord_WAVs(
   chord,
   keyboard_map,
-  lowest_note = 48,
-  highest_note = 84,
-  signal = "sine",
-  duration_sec = 1,
+  lowest_note,
+  duration_sec,
   velocity = 100,
-  sample_rate_hz = 44100,
-  bit_width = 16,
   output_directory
 )
 }
@@ -22,21 +18,11 @@ chord_WAVs(
 
 \item{keyboard_map}{the keyboard map for the scale}
 
-\item{lowest_note}{the lowest MIDI note number to use, default
-is 48.}
+\item{lowest_note}{the lowest MIDI note number to use}
 
-\item{highest_note}{the highest MIDI note number to use, default
-is 84.}
-
-\item{signal}{the \code{seewave} signal type, default is "sine"}
-
-\item{duration_sec}{how long to hold each note, default = 1}
+\item{duration_sec}{how long to hold each note}
 
 \item{velocity}{MIDI velocity, default = 100, max is 127}
-
-\item{sample_rate_hz}{sample rate in hz, default = 44100}
-
-\item{bit_width}{bit width of samples, default = 16}
 
 \item{output_directory}{character, no default; will be created!}
 }
@@ -46,26 +32,4 @@ the full path to output_directory
 \description{
 Creates WAV files for inversions of a chord between
 two notes
-}
-\examples{
-\dontrun{
-eikosany <- cps_scale_table()
-eikosany_chords <- cps_chord_table(eikosany)
-eikosany_map <- keyboard_map(eikosany)
-chord_degrees <- eikosany_chords$degrees
-for (i in 1:length(chord_degrees)) {
-  chord <- as.numeric(unlist(strsplit(chord_degrees[i], ":")))
-  folder_name <-
-    paste0("~/eikosany-chords/chord-", gsub(":", "-", chord_degrees[i]))
-  print(paste0("generating WAVs in folder ", folder_name))
-  chord_WAVs(
-    chord,
-    keyboard_map = eikosany_map,
-    lowest_note = 40,
-    highest_note = 80,
-    output_directory = folder_name
-  )
-}
-}
-
 }

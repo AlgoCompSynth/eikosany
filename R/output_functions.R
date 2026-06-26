@@ -1,3 +1,10 @@
+# Wave file / object defaults
+SAMP_RATE <- 44100
+BIT <- 32
+PCM <- FALSE
+MAX_VELOCITY <- 127.0
+DURATION_SEC <- 1.5
+
 #' @title Create Chord WAV Files
 #' @name chord_WAVs
 #' @description Creates WAV files for inversions of a chord between
@@ -5,48 +12,18 @@
 #' @export chord_WAVs
 #' @param chord a numeric vector with the scale degrees for the chord
 #' @param keyboard_map the keyboard map for the scale
-#' @param lowest_note the lowest MIDI note number to use, default
-#' is 48.
-#' @param highest_note the highest MIDI note number to use, default
-#' is 84.
+#' @param lowest_note the lowest MIDI note number to use
 #' @param output_directory character, no default; will be created!
-#' @param signal the `seewave` signal type, default is "sine"
-#' @param duration_sec how long to hold each note, default = 1
+#' @param duration_sec how long to hold each note
 #' @param velocity MIDI velocity, default = 100, max is 127
-#' @param sample_rate_hz sample rate in hz, default = 44100
-#' @param bit_width bit width of samples, default = 16
 #' @returns the full path to output_directory
-#' @examples
-#' \dontrun{
-#' eikosany <- cps_scale_table()
-#' eikosany_chords <- cps_chord_table(eikosany)
-#' eikosany_map <- keyboard_map(eikosany)
-#' chord_degrees <- eikosany_chords$degrees
-#' for (i in 1:length(chord_degrees)) {
-#'   chord <- as.numeric(unlist(strsplit(chord_degrees[i], ":")))
-#'   folder_name <-
-#'     paste0("~/eikosany-chords/chord-", gsub(":", "-", chord_degrees[i]))
-#'   print(paste0("generating WAVs in folder ", folder_name))
-#'   chord_WAVs(
-#'     chord,
-#'     keyboard_map = eikosany_map,
-#'     lowest_note = 40,
-#'     highest_note = 80,
-#'     output_directory = folder_name
-#'   )
-#' }
-#' }
 #'
 chord_WAVs <- function(
     chord,
     keyboard_map,
-    lowest_note = 48,
-    highest_note = 84,
-    signal = "sine",
-    duration_sec = 1,
+    lowest_note,
+    duration_sec,
     velocity = 100,
-    sample_rate_hz = 44100,
-    bit_width = 16,
     output_directory
 ) {
 
@@ -80,17 +57,13 @@ chord_WAVs <- function(
     )
     wave_object <- chord_synth(
       chord_frequencies,
-      signal = signal,
-      duration_sec = 1,
-      velocity = 100,
-      sample_rate_hz = 44100,
-      bit_width = 16
+      duration_sec,
+      velocity = 100
     )
 
     # make file name -
     file_name <- sprintf(
-      "%s-%s-%s.wav",
-      signal,
+      "%s-%s.wav",
       chord_degrees_label,
       chord_label
     )
@@ -111,83 +84,36 @@ chord_WAVs <- function(
 #' @name chord_synth
 #' @description Creates a `Wave` object for a given chord
 #' @export chord_synth
-#' @importFrom seewave synth
 #' @importFrom tuneR Wave
 #' @importFrom tuneR normalize
 #' @importFrom tuneR silence
+#' @importFrom tuneR sine
 #' @param chord a vector of frequencies for the chord
-#' @param signal The `seewave` signal type: "sine", "tria",
-#' "square" or "saw", default = "sine"
-#' @param duration_sec total duration of the chord in seconds, default = 1
+#' @param duration_sec total duration of the chord in seconds
 #' @param velocity MIDI velocity, default = 100, max is 127
-#' @param sample_rate_hz samploutput_directorye rate in hz, default = 44100
-#' @param bit_width bit width of samples, default = 16
-#' @param attack_sec ADSR attack time in seconds - linear ramp from silence
-#' to peak amplitude, default = 0
-#' @param decay_sec ADSR decay time in seconds - linear ramp from peak
-#' amplitude down to `sustain_level`, default = 0
-#' @param sustain_level ADSR sustain amplitude level as a fraction of peak,
-#' between 0 and 1, default = 1
-#' @param release_sec ADSR release time in seconds - linear ramp from
-#' `sustain_level` to silence, default = 0
 #' @returns a `Wave` object containing the synthesized chord
 #' @examples
 #' \dontrun{
-#' justmajor7th <- c(1, 5/4, 3/2, 7/4)
-#' wave <- chord_synth(256*justmajor7th, duration_sec = 10)
-#' tuneR::play(wave)
-#'
-#' # with ADSR envelope
-#' wave <- chord_synth(
-#'   256 * justmajor7th,
-#'   duration_sec = 4,
-#'   attack_sec = 0.1,
-#'   decay_sec = 0.2,
-#'   sustain_level = 0.7,
-#'   release_sec = 0.5
-#' )
-#' tuneR::play(wave)
+#'   justmajor7th <- c(1, 5/4, 3/2, 7/4)
+#'   wave <- chord_synth(256*justmajor7th, duration_sec = 10)
+#'   tuneR::play(wave)
 #' }
 #'
 chord_synth <- function(
   chord,
-  signal = "sine",
-  duration_sec = 1,
-  velocity = 100,
-  sample_rate_hz = 44100,
-  bit_width = 16,
-  attack_sec = 0.05,
-  decay_sec = 0,
-  sustain_level = 1,
-  release_sec = 0.05
+  duration_sec,
+  velocity = 100
 ) {
 
-  # detonate if bad bit width
-  legal_bit_widths <- c(8, 16, 24, 32, 64)
-  if (!(bit_width %in% legal_bit_widths)) {
-    stop(paste0("bit_width", bit_width, "not in", legal_bit_widths))
-  }
-
-  # validate envelope parameters
-  if (attack_sec + decay_sec + release_sec > duration_sec) {
-    stop("attack_sec + decay_sec + release_sec must not exceed duration_sec")
-  }
-  if (sustain_level < 0 || sustain_level > 1) {
-    stop("sustain_level must be between 0 and 1")
-  }
-
-  # set `pcm`
-  pcm <- ifelse(bit_width < 32, TRUE, FALSE)
-
   # compute level
-  MAX_VELOCITY = 127.0
   level = velocity / MAX_VELOCITY
 
   # initialize sample vector
   sample_vector <- tuneR::silence(
     duration = duration_sec,
-    samp.rate = sample_rate_hz,
-    bit = 32,
+    samp.rate = SAMP_RATE,
+    bit = BIT,
+    pcm = PCM,
     xunit = "time"
   )
   sample_vector <- sample_vector@left
@@ -195,44 +121,33 @@ chord_synth <- function(
 
   for (note in chord) {
 
-    note_wave <- seewave::synth(
-      f = sample_rate_hz,
-      d = duration_sec,
-      cf = note,
-      signal = signal,
-      output = "Wave")
+    note_wave <- tuneR::sine(
+      freq = note,
+      duration = duration_sec,
+      samp.rate = SAMP_RATE,
+      bit = BIT,
+      pcm = PCM,
+      xunit = "time"
+    )
     sample_vector <- sample_vector + note_wave@left
 
   }
 
-  # build and apply ADSR envelope
-  n_samples <- length(sample_vector)
-  n_attack  <- round(attack_sec  * sample_rate_hz)
-  n_decay   <- round(decay_sec   * sample_rate_hz)
-  n_release <- round(release_sec * sample_rate_hz)
-  n_sustain <- n_samples - n_attack - n_decay - n_release
-
-  envelope <- c(
-    seq(0,             1,             length.out = n_attack),
-    seq(1,             sustain_level, length.out = n_decay),
-    rep(sustain_level,                n_sustain),
-    seq(sustain_level, 0,             length.out = n_release)
-  )
-  sample_vector <- sample_vector * envelope
-
   # convert numeric to Wave object
   chord_wave_raw <- tuneR::Wave(
     sample_vector,
-    samp.rate = sample_rate_hz,
-    bit = bit_width,
-    pcm = pcm
+    samp.rate = SAMP_RATE,
+    bit = BIT,
+    pcm = PCM
   )
 
   # normalize to given velocity - max velocity is 127.0
   chord_wave <- tuneR::normalize(
     chord_wave_raw,
-    unit = as.character(bit_width),
-    level = level
+    level = level,
+    unit = as.character(BIT),
+    pcm = PCM,
+    center = TRUE
   )
 
   return(chord_wave)
@@ -285,8 +200,8 @@ render_cps_chords <- function(scale_table, output_directory) {
     chord_WAVs(
       chord,
       keyboard_map,
-      lowest_note = 60 - scale_degrees,
-      highest_note = 127,
+      lowest_note = 60,
+      duration_sec = DURATION_SEC,
       output_directory = output_directory
     )
   }
@@ -336,8 +251,3 @@ combine_wav_files <- function(wav_files, output_file) {
   return(invisible(output_file))
 
 }
-
-utils::globalVariables(c(
-  "highest_note",
-  "freq"
-))

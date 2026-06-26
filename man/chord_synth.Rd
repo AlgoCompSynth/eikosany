@@ -4,44 +4,14 @@
 \alias{chord_synth}
 \title{Synthesize a Chord}
 \usage{
-chord_synth(
-  chord,
-  signal = "sine",
-  duration_sec = 1,
-  velocity = 100,
-  sample_rate_hz = 44100,
-  bit_width = 16,
-  attack_sec = 0.05,
-  decay_sec = 0,
-  sustain_level = 1,
-  release_sec = 0.05
-)
+chord_synth(chord, duration_sec, velocity = 100)
 }
 \arguments{
 \item{chord}{a vector of frequencies for the chord}
 
-\item{signal}{The \code{seewave} signal type: "sine", "tria",
-"square" or "saw", default = "sine"}
-
-\item{duration_sec}{total duration of the chord in seconds, default = 1}
+\item{duration_sec}{total duration of the chord in seconds}
 
 \item{velocity}{MIDI velocity, default = 100, max is 127}
-
-\item{sample_rate_hz}{samploutput_directorye rate in hz, default = 44100}
-
-\item{bit_width}{bit width of samples, default = 16}
-
-\item{attack_sec}{ADSR attack time in seconds - linear ramp from silence
-to peak amplitude, default = 0}
-
-\item{decay_sec}{ADSR decay time in seconds - linear ramp from peak
-amplitude down to \code{sustain_level}, default = 0}
-
-\item{sustain_level}{ADSR sustain amplitude level as a fraction of peak,
-between 0 and 1, default = 1}
-
-\item{release_sec}{ADSR release time in seconds - linear ramp from
-\code{sustain_level} to silence, default = 0}
 }
 \value{
 a \code{Wave} object containing the synthesized chord
@@ -51,20 +21,9 @@ Creates a \code{Wave} object for a given chord
 }
 \examples{
 \dontrun{
-justmajor7th <- c(1, 5/4, 3/2, 7/4)
-wave <- chord_synth(256*justmajor7th, duration_sec = 10)
-tuneR::play(wave)
-
-# with ADSR envelope
-wave <- chord_synth(
-  256 * justmajor7th,
-  duration_sec = 4,
-  attack_sec = 0.1,
-  decay_sec = 0.2,
-  sustain_level = 0.7,
-  release_sec = 0.5
-)
-tuneR::play(wave)
+  justmajor7th <- c(1, 5/4, 3/2, 7/4)
+  wave <- chord_synth(256*justmajor7th, duration_sec = 10)
+  tuneR::play(wave)
 }
 
 }

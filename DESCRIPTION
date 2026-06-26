@@ -28,7 +28,6 @@ VignetteBuilder: knitr
 Imports: 
     fractional,
     data.table,
-    seewave,
     tuneR,
     bslib,
     ellmer,
