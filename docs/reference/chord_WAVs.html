@@ -21,6 +21,7 @@ two notes"></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/chatting-with-the-assistant.html">Chatting with the Xentonal Assistant</a></li>
+    <li><a class="dropdown-item" href="../articles/example-session.html">Example Session</a></li>
     <li><a class="dropdown-item" href="../articles/introduction-to-combination-product-sets.html">Introduction to Combination Product Sets</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -49,14 +50,10 @@ two notes</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">chord_WAVs</span><span class="op">(</span></span>
 <span>  <span class="va">chord</span>,</span>
 <span>  <span class="va">keyboard_map</span>,</span>
-<span>  lowest_note <span class="op">=</span> <span class="fl">48</span>,</span>
-<span>  highest_note <span class="op">=</span> <span class="fl">84</span>,</span>
-<span>  output_directory <span class="op">=</span> <span class="st">"~/Multisample"</span>,</span>
-<span>  signal <span class="op">=</span> <span class="st">"tria"</span>,</span>
-<span>  duration_sec <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">lowest_note</span>,</span>
+<span>  <span class="va">duration_sec</span>,</span>
 <span>  velocity <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  sample_rate_hz <span class="op">=</span> <span class="fl">48000</span>,</span>
-<span>  bit_width <span class="op">=</span> <span class="fl">24</span></span>
+<span>  <span class="va">output_directory</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -73,38 +70,19 @@ two notes</p>
 
 
 <dt id="arg-lowest-note">lowest_note<a class="anchor" aria-label="anchor" href="#arg-lowest-note"></a></dt>
-<dd><p>the lowest MIDI note number to use, default
-is 48.</p></dd>
-
-
-<dt id="arg-highest-note">highest_note<a class="anchor" aria-label="anchor" href="#arg-highest-note"></a></dt>
-<dd><p>the highest MIDI note number to use, default
-is 84.</p></dd>
-
-
-<dt id="arg-output-directory">output_directory<a class="anchor" aria-label="anchor" href="#arg-output-directory"></a></dt>
-<dd><p>character, default "~/Multisample". This will
-be created if it does not exist.</p></dd>
-
-
-<dt id="arg-signal">signal<a class="anchor" aria-label="anchor" href="#arg-signal"></a></dt>
-<dd><p>the <code>seewave</code> signal type, default is "tria"</p></dd>
+<dd><p>the lowest MIDI note number to use</p></dd>
 
 
 <dt id="arg-duration-sec">duration_sec<a class="anchor" aria-label="anchor" href="#arg-duration-sec"></a></dt>
-<dd><p>how long to hold each note, default = 4</p></dd>
+<dd><p>how long to hold each note</p></dd>
 
 
 <dt id="arg-velocity">velocity<a class="anchor" aria-label="anchor" href="#arg-velocity"></a></dt>
 <dd><p>MIDI velocity, default = 100, max is 127</p></dd>
 
 
-<dt id="arg-sample-rate-hz">sample_rate_hz<a class="anchor" aria-label="anchor" href="#arg-sample-rate-hz"></a></dt>
-<dd><p>sample rate in hz, default = 48000</p></dd>
-
-
-<dt id="arg-bit-width">bit_width<a class="anchor" aria-label="anchor" href="#arg-bit-width"></a></dt>
-<dd><p>bit width of samples, default = 24</p></dd>
+<dt id="arg-output-directory">output_directory<a class="anchor" aria-label="anchor" href="#arg-output-directory"></a></dt>
+<dd><p>character, no default; will be created!</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -112,30 +90,6 @@ be created if it does not exist.</p></dd>
     <p>the full path to output_directory</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">eikosany</span> <span class="op">&lt;-</span> <span class="fu"><a href="cps_scale_table.html">cps_scale_table</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">eikosany_chords</span> <span class="op">&lt;-</span> <span class="fu"><a href="cps_chord_table.html">cps_chord_table</a></span><span class="op">(</span><span class="va">eikosany</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">eikosany_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="keyboard_map.html">keyboard_map</a></span><span class="op">(</span><span class="va">eikosany</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">chord_degrees</span> <span class="op">&lt;-</span> <span class="va">eikosany_chords</span><span class="op">$</span><span class="va">degrees</span></span></span>
-<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">chord_degrees</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">chord</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">chord_degrees</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="st">":"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">folder_name</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"~/eikosany-chords/chord-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"-"</span>, <span class="va">chord_degrees</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"generating WAVs in folder "</span>, <span class="va">folder_name</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu">chord_WAVs</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="va">chord</span>,</span></span>
-<span class="r-in"><span>    keyboard_map <span class="op">=</span> <span class="va">eikosany_map</span>,</span></span>
-<span class="r-in"><span>    lowest_note <span class="op">=</span> <span class="fl">40</span>,</span></span>
-<span class="r-in"><span>    highest_note <span class="op">=</span> <span class="fl">80</span>,</span></span>
-<span class="r-in"><span>    output_directory <span class="op">=</span> <span class="va">folder_name</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

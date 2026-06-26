@@ -1,14 +1,19 @@
 # xen.assist - Shiny app for xentonal composition via chat
 
-Launches a two-pane Shiny app: left/main pane runs the `btw`-enhanced
-chat, right/sidebar pane holds an audio player that plays back the last
+Launches a two-pane Shiny app: right/main pane runs the `btw`-enhanced
+chat, left/sidebar pane holds an audio player that plays back the last
 WAV file synthesized and a model picker to swap LLM models mid-session.
-Uses Bootstrap 5 darkly theme per project conventions.
+Uses Bootstrap 5 `darkly` theme per project conventions.
 
 ## Usage
 
 ``` r
-xen_chat(client = NULL, tools = c("env", "run", "files"), messages = list())
+xen_chat(
+  client = NULL,
+  tools = c("agent", "cran", "docs", "env", "files", "pkg", "run", "sessioninfo",
+    "skills", "web"),
+  messages = list()
+)
 ```
 
 ## Arguments
@@ -24,7 +29,9 @@ xen_chat(client = NULL, tools = c("env", "run", "files"), messages = list())
 - tools:
 
   Tools available to the agent. Character vector of tool names, or list
-  of tool objects. Defaults to `c("env", "run", "files")`.
+  of tool objects. Defaults to
+
+  `c("agent", "cran", "docs", "env", "files", "pkg", "run", "sessioninfo", "skills", "web")`.
 
 - messages:
 
