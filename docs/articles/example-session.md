@@ -1,6 +1,7 @@
 # Example Session
 
 ``` r
+
 library(eikosany)
 library(data.table)
 #> 
@@ -33,6 +34,7 @@ use `root_divisor = 33` (i.e., 1×3×11) following Erv Wilson’s original
 convention, which maps the product 1×5×11 to the 5/3 ratio.
 
 ``` r
+
 eik_root_33 <- cps_scale_table(root_divisor = 33)
 eik_root_33
 ```
@@ -46,6 +48,7 @@ Next, we compute the chord table — all tetrads (4-note chords) that can
 be formed from the scale:
 
 ``` r
+
 chord_eik_root_33 <- cps_chord_table(eik_root_33)
 chord_eik_root_33
 #> Key: <chord_index, is_subharm>
@@ -99,6 +102,7 @@ to MIDI note numbers 60–79 to keep all chords in a consistent register
 around middle C.
 
 ``` r
+
 output_dir <- path.expand("~/Music/eik_wavs_sequential")
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -125,6 +129,7 @@ chord, named and numbered to match the order in `chord_eik_root_33`.
 ### Combining into a Single File
 
 ``` r
+
 wav_files <- sort(list.files(output_dir, pattern = "\\.wav$", full.names = TRUE))
 combine_wav_files(wav_files, file.path(output_dir, "eik_root_33_combined.wav"))
 ```
@@ -141,6 +146,7 @@ chord with a uniformly random duration between 0.25 and 1 second. The
 walk stops once the accumulated duration reaches 2 minutes.
 
 ``` r
+
 set.seed(6174)
 
 n_chords        <- nrow(chord_eik_root_33)
@@ -170,6 +176,7 @@ chords, and reaches 120.16 seconds total.
 ### Combining into a Single File
 
 ``` r
+
 combined <- wave_list[[1]]
 for (w in wave_list[-1]) {
   combined <- tuneR::bind(combined, w)

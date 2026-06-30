@@ -32,6 +32,7 @@ To use the chat functionality, you will need:
     between R and the LLM.
 
     ``` r
+
     install.packages("btw")
     ```
 
@@ -42,6 +43,7 @@ To start an interactive session, call the
 function with a suitable client configuration.
 
 ``` r
+
 # Example: connect to a local Ollama instance running gemma4:31b
 ollama_client <- btw::btw_client_ollama(
   model = "gemma4:31b"

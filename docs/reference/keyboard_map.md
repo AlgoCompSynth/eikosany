@@ -72,6 +72,7 @@ offset_matrix!
 ## Examples
 
 ``` r
+
 # make sure we can print a whole keyboard map
 options(max.print = 2000)
 
